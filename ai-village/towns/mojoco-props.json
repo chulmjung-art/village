@@ -1,0 +1,203 @@
+{
+ "town": "mojoco",
+ "map": "assets/maps/mojoco-map.webp",
+ "map_size": [
+  3840,
+  2160
+ ],
+ "coordinates": "x,y = pixel position on the map where the bottom-center (base) of the prop sits; height = drawn height in map pixels (width keeps the prop image proportions)",
+ "props": [
+  {
+   "prop": "paper-lantern-post",
+   "x": 1819,
+   "y": 1032,
+   "height": 82
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 2054,
+   "y": 1032,
+   "height": 82
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 1819,
+   "y": 1536,
+   "height": 82
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 2054,
+   "y": 1536,
+   "height": 82
+  },
+  {
+   "prop": "stone-lantern",
+   "x": 1781,
+   "y": 720,
+   "height": 72
+  },
+  {
+   "prop": "stone-lantern",
+   "x": 2093,
+   "y": 720,
+   "height": 72
+  },
+  {
+   "prop": "jangseung-guardian",
+   "x": 1709,
+   "y": 1992,
+   "height": 96
+  },
+  {
+   "prop": "jangseung-guardian",
+   "x": 2184,
+   "y": 1992,
+   "height": 96
+  },
+  {
+   "prop": "sotdae-bird-pole",
+   "x": 1584,
+   "y": 2016,
+   "height": 106
+  },
+  {
+   "prop": "bench",
+   "x": 1747,
+   "y": 1404,
+   "height": 38
+  },
+  {
+   "prop": "bench",
+   "x": 2122,
+   "y": 1404,
+   "height": 38
+  },
+  {
+   "prop": "onggi-jars",
+   "x": 566,
+   "y": 1469,
+   "height": 58
+  },
+  {
+   "prop": "straw-lidded-jar",
+   "x": 509,
+   "y": 1560,
+   "height": 48
+  },
+  {
+   "prop": "barrel",
+   "x": 1166,
+   "y": 1469,
+   "height": 46
+  },
+  {
+   "prop": "crate",
+   "x": 1128,
+   "y": 1560,
+   "height": 41
+  },
+  {
+   "prop": "firewood",
+   "x": 2628,
+   "y": 948,
+   "height": 48
+  },
+  {
+   "prop": "millstone",
+   "x": 2724,
+   "y": 972,
+   "height": 43
+  },
+  {
+   "prop": "hand-cart",
+   "x": 2496,
+   "y": 2016,
+   "height": 58
+  },
+  {
+   "prop": "drying-peppers",
+   "x": 3492,
+   "y": 1572,
+   "height": 34
+  },
+  {
+   "prop": "well",
+   "x": 1380,
+   "y": 2004,
+   "height": 72
+  },
+  {
+   "prop": "water-trough",
+   "x": 1524,
+   "y": 2040,
+   "height": 43
+  },
+  {
+   "prop": "chrysanthemum-bed",
+   "x": 1536,
+   "y": 696,
+   "height": 43
+  },
+  {
+   "prop": "balsam-bed",
+   "x": 2340,
+   "y": 684,
+   "height": 43
+  },
+  {
+   "prop": "azalea-bush",
+   "x": 1344,
+   "y": 1092,
+   "height": 53
+  },
+  {
+   "prop": "forsythia-bush",
+   "x": 2400,
+   "y": 1008,
+   "height": 53
+  },
+  {
+   "prop": "peony-bed",
+   "x": 3480,
+   "y": 1128,
+   "height": 43
+  },
+  {
+   "prop": "boxwood-bush",
+   "x": 792,
+   "y": 1128,
+   "height": 48
+  },
+  {
+   "prop": "haystack",
+   "x": 2832,
+   "y": 2040,
+   "height": 72
+  },
+  {
+   "prop": "beehive",
+   "x": 720,
+   "y": 2004,
+   "height": 58
+  },
+  {
+   "prop": "persimmon-tree",
+   "x": 264,
+   "y": 1536,
+   "height": 158
+  },
+  {
+   "prop": "willow",
+   "x": 3684,
+   "y": 1344,
+   "height": 149
+  },
+  {
+   "prop": "laundry-line",
+   "x": 3120,
+   "y": 2028,
+   "height": 62
+  }
+ ]
+}
