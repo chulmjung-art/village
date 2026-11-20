@@ -1,0 +1,20 @@
+{
+ "id": "satto-bak-jeongdo",
+ "title": "사또",
+ "name": "박정도",
+ "display": "사또 박정도",
+ "townId": "mojoco",
+ "houseId": "satto",
+ "home": "Mojoco 관아 (the magistrate's hall)",
+ "reports_to": [
+  "영의정 이균, at morning 조회.",
+  "The 임금 is at the top."
+ ],
+ "reports_from": [
+  "Town office: 이방 김차례 (tasks and deadlines), 예방 이소식 (email and communications), 사관 문적음 (Mojoco's 실록).",
+  "Defined, not hired: 호방, 병방, 형방, 공방. Houses: none yet."
+ ],
+ "model": "Opus 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/satto-bak-jeongdo.webp"
+}

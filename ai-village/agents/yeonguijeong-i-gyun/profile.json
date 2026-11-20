@@ -1,0 +1,18 @@
+{
+ "id": "yeonguijeong-i-gyun",
+ "title": "영의정",
+ "name": "이균",
+ "display": "영의정 이균",
+ "townId": "capital",
+ "houseId": "kings-office",
+ "home": "편전 (King's office), 궁궐",
+ "reports_to": [
+  "The 임금, directly."
+ ],
+ "reports_from": [
+  "Every 사또 (now: 사또 박정도 of Mojoco). You send work only to 사또."
+ ],
+ "model": "Opus 5.5",
+ "status": "appointed; not running yet",
+ "sheet": null
+}

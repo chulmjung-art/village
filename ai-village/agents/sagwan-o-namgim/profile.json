@@ -1,0 +1,18 @@
+{
+ "id": "sagwan-o-namgim",
+ "title": "사관",
+ "name": "오남김",
+ "display": "사관 오남김",
+ "townId": "capital",
+ "houseId": "p-sagwan",
+ "home": "Palace archive, 한양",
+ "reports_to": [
+  "상선 김모심, who heads the palace household."
+ ],
+ "reports_from": [
+  "No one."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": null
+}

@@ -63,3 +63,11 @@ size, so the game scales each prop to its real size when placing it.
 `balsam-bed`, `peony-bed`, `persimmon-tree`, `plum-tree`, `red-pine`, `bamboo`, `lotus-basin`,
 `stone-pagoda`, `garden-rocks`, `brushwood-fence`, `stepping-stones`, `beehive`, `willow`,
 `mossy-stone`, `wildflower-grass`, `bonsai`
+
+## characters/ — walking sheets, transparent background
+Each sheet is a grid of 3 columns x 4 rows of 400x400 frames. Rows: toward the camera, right, left, away.
+Columns: left foot, standing, right foot. Feet sit on y = 390 in every frame. See the character rule in STYLE_GUIDE.md.
+- king.webp: the director as the King (the Chief Human Officer). Red dragon robe, ikseongwan crown, glasses.
+- kim-mosim.webp: 김모심, the 상선 (chief of staff), K-drama look: green robe, wingless black cap, gold belt.
+- kim-mosim-myeongpae.webp: 김모심 walking while holding the red 명패 summons tablet (for when they're calling someone).
+- satto-bak-jeongdo.webp: 사또 박정도, Mojoco's director. Deep indigo robe, double-crane 흉배, winged 사모, short beard.

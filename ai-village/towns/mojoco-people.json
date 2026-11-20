@@ -1,0 +1,54 @@
+{
+ "town": "mojoco",
+ "note": "People who live in this town. house = the id of their building in mojoco-houses.json. yard = spots in front of the house they stroll between; room = spots inside the house's room (2048 x 2048). They split their time between the yard and the room, and only leave for real events (morning 조회 at the palace, carrying a 상소, the 신문고), which aren't wired up yet.",
+ "people": [
+  {
+   "id": "bak-jeongdo",
+   "title": "사또",
+   "name": "박정도",
+   "role": "Mojoco's 사또 (director)",
+   "sheet": "assets/characters/satto-bak-jeongdo.webp",
+   "house": "satto",
+   "yard": [
+    {
+     "x": 1885,
+     "y": 752
+    },
+    {
+     "x": 1980,
+     "y": 756
+    },
+    {
+     "x": 1932,
+     "y": 776
+    },
+    {
+     "x": 1840,
+     "y": 770
+    },
+    {
+     "x": 2025,
+     "y": 772
+    }
+   ],
+   "room": [
+    {
+     "x": 1024,
+     "y": 800
+    },
+    {
+     "x": 880,
+     "y": 860
+    },
+    {
+     "x": 1170,
+     "y": 860
+    },
+    {
+     "x": 1024,
+     "y": 1000
+    }
+   ]
+  }
+ ]
+}

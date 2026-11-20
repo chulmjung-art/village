@@ -1,0 +1,18 @@
+{
+ "id": "amhaengeosa-bak-moreum",
+ "title": "암행어사",
+ "name": "박모름",
+ "display": "암행어사 박모름",
+ "townId": "capital",
+ "houseId": null,
+ "home": "Anywhere: travels in plain clothes",
+ "reports_to": [
+  "The 임금, directly."
+ ],
+ "reports_from": [
+  "No one."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": null
+}

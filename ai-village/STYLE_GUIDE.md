@@ -8,6 +8,28 @@ Lush hand-painted 2D game art of an original, cozy Joseon-era Korean village, in
 
 ---
 
+## Characters
+
+For character art (walking sheets, portraits), paste this paragraph word for word instead of the village paragraph.
+The village paragraph made the image model paint a village scene instead of the character (one failed final, 2026-11-20).
+
+---
+
+Lush hand-painted 2D game character art for a cozy Joseon-era Korean village RPG, in the style of a modern indie RPG. Soft, visible brush texture, with no visible pixels, photorealism or 3D rendering. Use a warm, sunny palette of honey yellows, terracotta reds, soft leafy greens and warm earthy browns, with gentle watercolor-like light. Light always comes from the upper left, so highlights sit on the top-left edges and soft shadows fall toward the lower right. Characters have clean, dark hand-drawn linework (deep brown, not pure black) so every shape reads clearly. There is no text anywhere: no letters, numbers, writing, logos, watermarks or interface elements.
+
+---
+
+### Rule for every new character (director's rule, 2026-11-20)
+
+- Every character uses the same walking sheet: 4 rows x 3 columns, all frames the same size, on a plain background.
+  Row 1 walks toward the camera, row 2 walks right, row 3 walks left, row 4 walks away. In each row: left foot forward, standing, right foot forward.
+  Big obvious strides, arms swinging. The same person, outfit and size in all 12 frames.
+- Cute toy proportions, painted 2D: a big round head about a third of the height, a chunky body, big hands and boots.
+- **After the first character (the King), never make a character from words alone.** Always give Higgsfield an existing
+  character sheet as the reference, and ask it to redraw it as a DIFFERENT person in the same style, the same proportions
+  and the same grid. Words only describe what changes (face, clothes, hat, props). That way the whole cast matches.
+- Dress each character for their role using COURT_DRESS.md.
+
 ## Retired (do not use)
 
 The original 16-bit pixel-art guide, replaced on 2026-11-19 when the director chose a

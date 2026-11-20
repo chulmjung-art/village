@@ -1,5 +1,10 @@
 # AI Village — Joseon Province Spec
 
+> **Team structure has moved to [TEAM.md](TEAM.md) (official, 2026-11-20).** Wherever this spec disagrees with
+> TEAM.md about levels, roles, who reports to whom, houses, names, models or data fields, TEAM.md wins. In particular:
+> a town is a whole project or company (one 사또 each), houses are workstreams inside a town (workplaces, not homes),
+> 행수 lead houses, the palace has a household under the 상선 and its own 규장각, and Fable is never used.
+
 A visual "village" where the user can watch their AI agents live and work. The world is styled as a **Joseon-era Korean province**: a capital (한양) at the center with a palace, surrounded by towns (고을). Each town represents one company or area of the user's life. Agents are characters who work in buildings, walk between them, and travel to the capital to report.
 
 The visuals are not decoration: **every animation reflects real agent state or a real event.** If nothing is happening, characters stay put. Looking at the map should tell the user what's going on.

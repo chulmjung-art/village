@@ -198,6 +198,78 @@
    "x": 3120,
    "y": 2028,
    "height": 62
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 1764,
+   "y": 1603,
+   "height": 82
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 2124,
+   "y": 1603,
+   "height": 82
+  },
+  {
+   "prop": "stone-lantern",
+   "x": 1836,
+   "y": 1932,
+   "height": 72
+  },
+  {
+   "prop": "stone-lantern",
+   "x": 2054,
+   "y": 1932,
+   "height": 72
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 1829,
+   "y": 883,
+   "height": 77
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 2040,
+   "y": 883,
+   "height": 77
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 612,
+   "y": 1613,
+   "height": 77
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 2400,
+   "y": 1373,
+   "height": 77
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 2892,
+   "y": 1373,
+   "height": 77
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 3168,
+   "y": 1020,
+   "height": 77
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 1020,
+   "y": 893,
+   "height": 77
+  },
+  {
+   "prop": "paper-lantern-post",
+   "x": 1315,
+   "y": 1267,
+   "height": 77
   }
  ]
 }

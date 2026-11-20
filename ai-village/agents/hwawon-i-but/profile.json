@@ -1,0 +1,18 @@
+{
+ "id": "hwawon-i-but",
+ "title": "화원",
+ "name": "이붓",
+ "display": "화원 이붓",
+ "townId": "capital",
+ "houseId": "p-seonbi",
+ "home": "Shared specialists' workshop, 한양",
+ "reports_to": [
+  "Whoever borrows you (a 사또, a 행수, or the 상선). They assign the task, give only their own town's (or the palace's) context, and check your work."
+ ],
+ "reports_from": [
+  "No one."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": null
+}

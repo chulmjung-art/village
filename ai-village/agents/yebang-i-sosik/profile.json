@@ -1,0 +1,18 @@
+{
+ "id": "yebang-i-sosik",
+ "title": "예방",
+ "name": "이소식",
+ "display": "예방 이소식",
+ "townId": "mojoco",
+ "houseId": "munjangga",
+ "home": "Mojoco 예방 office",
+ "reports_to": [
+  "사또 박정도. Every task comes from the 사또, who checks your work."
+ ],
+ "reports_from": [
+  "No one."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": null
+}
