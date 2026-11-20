@@ -1,6 +1,6 @@
 {
  "town": "mojoco",
- "note": "Walkable houses. door = map pixel where the doorway meets the ground (foot of the steps); w = doorway width. Walking into the doorway goes inside, using the interior art. Player height is in map pixels.",
+ "note": "Walkable houses. door.y = the doorway itself (where you walk in); door.stairs_bottom = the foot of its steps (where you come back out). seats = desk spots inside the room (2048 px room coordinates) where people sit to work; route = optional waypoints from the room's door to the seats, around furniture.",
  "player_height": 66,
  "spawn": {
   "x": 1932,
@@ -13,9 +13,16 @@
    "interior": "assets/interiors/mojoco-satto.webp",
    "door": {
     "x": 1930,
-    "y": 718,
-    "w": 140
-   }
+    "y": 608,
+    "w": 140,
+    "stairs_bottom": 718
+   },
+   "seats": [
+    [
+     1050,
+     620
+    ]
+   ]
   },
   {
    "id": "seonbi",
@@ -23,8 +30,9 @@
    "interior": "assets/interiors/mojoco-seonbi.webp",
    "door": {
     "x": 1105,
-    "y": 893,
-    "w": 90
+    "y": 838,
+    "w": 90,
+    "stairs_bottom": 893
    }
   },
   {
@@ -33,9 +41,26 @@
    "interior": "assets/interiors/mojoco-sagwan.webp",
    "door": {
     "x": 1125,
-    "y": 1342,
-    "w": 110
-   }
+    "y": 1307,
+    "w": 110,
+    "stairs_bottom": 1342
+   },
+   "seats": [
+    [
+     1012,
+     1170
+    ]
+   ],
+   "route": [
+    [
+     300,
+     1780
+    ],
+    [
+     300,
+     1170
+    ]
+   ]
   },
   {
    "id": "munjangga",
@@ -43,9 +68,16 @@
    "interior": "assets/interiors/mojoco-munjangga.webp",
    "door": {
     "x": 2773,
-    "y": 1325,
-    "w": 110
-   }
+    "y": 1275,
+    "w": 110,
+    "stairs_bottom": 1325
+   },
+   "seats": [
+    [
+     1020,
+     1250
+    ]
+   ]
   },
   {
    "id": "hyeongbang",
@@ -53,9 +85,16 @@
    "interior": "assets/interiors/mojoco-hyeongbang.webp",
    "door": {
     "x": 2520,
-    "y": 1648,
-    "w": 90
-   }
+    "y": 1613,
+    "w": 90,
+    "stairs_bottom": 1648
+   },
+   "seats": [
+    [
+     1084,
+     1080
+    ]
+   ]
   },
   {
    "id": "forge",
@@ -63,8 +102,9 @@
    "interior": "assets/interiors/mojoco-forge.webp",
    "door": {
     "x": 3050,
-    "y": 995,
-    "w": 160
+    "y": 965,
+    "w": 160,
+    "stairs_bottom": 995
    }
   }
  ]

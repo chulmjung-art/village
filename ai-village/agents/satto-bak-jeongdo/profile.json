@@ -16,5 +16,8 @@
  ],
  "model": "Opus 5.5",
  "status": "appointed; not running yet",
- "sheet": "assets/characters/satto-bak-jeongdo.webp"
+ "sheet": "assets/characters/satto-bak-jeongdo.webp",
+ "portrait": "assets/characters/portraits/satto-bak-jeongdo.webp",
+ "role": "Runs Mojoco: sets priorities, assigns work and confirms when projects are truly done.",
+ "boss": "영의정 이균 (chief of staff)"
 }

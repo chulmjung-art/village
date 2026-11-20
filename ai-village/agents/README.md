@@ -20,3 +20,9 @@ Folders follow the official roster in TEAM.md (18 agents): 영의정 이균, 상
 천문관 남별, 화원 이붓, 목수 장이음; 암행어사 박모름; Mojoco: 사또 박정도, 이방 김차례, 예방 이소식, 사관 문적음.
 Folder names are romanized IDs (e.g. `satto-bak-jeongdo`); Korean names are for display.
 Town-life figures (파발 마날쌘, 포졸 돌쇠, 주모 막순이) are signals, not task agents, so they have no folder.
+
+## Village safety rules (enforced by the village code, never optional)
+- Email is always a draft; nothing can send.
+- No spending: no money, no Higgsfield credits.
+- No publishing, posting or listing.
+- Finished work waits for the 임금's own approval; nobody else can approve.

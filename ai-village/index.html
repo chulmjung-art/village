@@ -2,7 +2,7 @@
 <title>My AI Village</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@700&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Inter:wght@400;500;600&display=swap">
 <style>
   /* Layout: a full-screen painted town with a slim lacquer-and-paper control bar on top. */
   :root {
@@ -46,6 +46,135 @@
   .zoom button { width: 40px; height: 40px; font-size: 1.2rem; background: var(--bar); color: var(--paper); border: 1px solid var(--line); border-radius: 10px; }
   .hint { position: absolute; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); font-size: 0.75rem; color: var(--muted); background: var(--bar); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; max-width: calc(100% - 100px); }
   #loading { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-size: 1.1rem; color: var(--paper); background: var(--ink); }
+  #chat, #orders { position: absolute; top: 12px; bottom: 12px; width: min(360px, calc(100% - 32px)); z-index: 15; display: flex; flex-direction: column;
+            background: var(--bar); border: 1px solid var(--line); border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.4); overflow: hidden; }
+  #chat[hidden], #orders[hidden] { display: none; }
+  #chat { right: max(16px, env(safe-area-inset-right, 0px)); border-top: 3px solid var(--home, #b8342b); }
+  #orders { left: max(16px, env(safe-area-inset-left, 0px)); border-top: 3px solid #c9a227; }
+  #chat .head, #orders .head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  #chat .head img { width: 44px; height: 44px; border-radius: 6px; border: 2px solid var(--home, #b8342b); object-fit: cover; }
+  .htext { flex: 1; min-width: 0; }
+  #chat .title, #orders .title { font: 600 1rem/1.2 var(--display); color: var(--paper); }
+  #chat .sub, #orders .sub { font-size: 0.74rem; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #chat .head button, #orders .head button { padding: 4px 8px; font-size: 0.78rem; }
+  #chat .head .close, #orders .head .close { font-size: 1.1rem; line-height: 1; }
+  #chat .log, #orders .log { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .msg { max-width: 88%; align-self: flex-start; }
+  .msg.me { align-self: flex-end; text-align: right; }
+  .msg .who { font: 600 0.72rem/1.2 var(--display); color: var(--muted); margin-bottom: 3px; }
+  .msg .txt { font-size: 0.86rem; line-height: 1.45; color: var(--paper); background: rgba(243,234,216,0.08); border: 1px solid var(--line);
+              border-radius: 10px; padding: 7px 10px; white-space: pre-wrap; text-align: left; }
+  .msg.me .txt { background: rgba(201,162,39,0.18); }
+  .msg.note { align-self: center; max-width: 100%; }
+  .msg.note .txt { background: none; border: none; color: var(--muted); font-size: 0.76rem; text-align: center; padding: 0; }
+  #chat form { border-top: 1px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+  #chat textarea { resize: none; font: 400 0.86rem/1.4 var(--body); color: var(--paper); background: rgba(0,0,0,0.25); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+  #chat textarea:focus { outline: 2px solid var(--muted); outline-offset: 0; }
+  #chat .row { display: flex; justify-content: flex-end; gap: 6px; }
+  #chat .stop { display: none; }
+  #chat.busy .stop { display: inline-block; }
+  #chat.busy .send { opacity: 0.5; }
+  #todo { position: absolute; top: 12px; right: max(16px, env(safe-area-inset-right, 0px)); z-index: 18; width: min(380px, calc(100% - 32px)); max-height: calc(100% - 24px);
+          display: flex; flex-direction: column; background: var(--bar); border: 1px solid var(--line); border-top: 3px solid #c9a227; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.4); overflow: hidden; }
+  #todo[hidden] { display: none; }
+  #todo .head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  #todo .title { font: 600 1rem/1.2 var(--display); color: var(--paper); }
+  #todo .sub { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+  #todo .head .close { padding: 4px 8px; font-size: 1.1rem; line-height: 1; }
+  #todo form { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  #todo input { width: 100%; box-sizing: border-box; font: 400 0.88rem/1.4 var(--body); color: var(--paper); background: rgba(0,0,0,0.25); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+  #todo ul { list-style: none; margin: 0; padding: 6px 0; overflow-y: auto; }
+  #todo li.empty { color: var(--muted); font-size: 0.8rem; padding: 10px 14px; }
+  #todo li.task { display: flex; align-items: flex-start; gap: 10px; padding: 8px 12px; cursor: default; }
+  #todo li.task:hover { background: rgba(243,234,216,0.06); }
+  #todo .ic { width: 20px; height: 20px; flex-shrink: 0; border-radius: 50%; border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--muted); }
+  #todo li.done .ic { background: #6f9a5b; border-color: #6f9a5b; color: #fff; }
+  #todo li.working .ic { border-color: #c9a227; color: #c9a227; }
+  #todo li.needs .ic, #todo li.failed .ic { border-color: #c0573f; color: #e58a74; }
+  #todo .body { flex: 1; min-width: 0; }
+  #todo .tx { display: block; font-size: 0.88rem; line-height: 1.35; color: var(--paper); word-wrap: break-word; }
+  #todo li.done .tx { text-decoration: line-through; color: var(--muted); }
+  #todo .st { display: block; font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+  #todo .del { padding: 0 6px; font-size: 1rem; line-height: 1.2; opacity: 0.5; }
+  #todo .del:hover { opacity: 1; }
+  #todo li.review .ic { border-color: #c9a227; color: #c9a227; font-weight: 700; }
+  #todo .approve { display: flex; gap: 6px; margin-top: 6px; }
+  #todo .approve button { padding: 3px 10px; font-size: 0.74rem; border-radius: 6px; }
+  #todo .approve .ok { border: 1px solid #6f9a5b; color: #b8dca6; background: rgba(111,154,91,0.18); }
+  #todo .approve input { flex: 1; min-width: 0; font-size: 0.78rem; padding: 4px 8px; border-radius: 6px; border: 1px solid var(--line); background: rgba(0,0,0,0.25); color: var(--paper); }
+  #todo .pdf { margin-top: 5px; padding: 3px 9px; font-size: 0.72rem; border: 1px solid #c9a227; color: #e8cf7a; border-radius: 6px; background: rgba(201,162,39,0.12); }
+  #toast { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); z-index: 40; display: flex; align-items: center; gap: 10px; max-width: calc(100% - 32px);
+           background: var(--bar); border: 1px solid #6f9a5b; border-radius: 10px; padding: 9px 12px; box-shadow: 0 8px 24px rgba(0,0,0,.45); color: var(--paper); font-size: 0.85rem; }
+  #toast[hidden] { display: none; }
+  #toast button { padding: 5px 10px; font-size: 0.8rem; border: 1px solid #c9a227; color: #e8cf7a; background: rgba(201,162,39,0.12); border-radius: 6px; white-space: nowrap; }
+  #toast .x { border: none; background: none; color: var(--muted); font-size: 1rem; padding: 2px 6px; }
+  #hirebar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--line); background: rgba(201,162,39,0.10); font-size: 0.8rem; color: var(--paper); }
+  #hirebar[hidden] { display: none; }
+  #hirebar span { flex: 1; }
+  #hirebar button { padding: 4px 10px; font-size: 0.78rem; border-radius: 6px; }
+  #hirebar .yes { border: 1px solid #6f9a5b; color: #b8dca6; background: rgba(111,154,91,0.18); }
+  #todotip { position: fixed; z-index: 30; width: min(420px, calc(100vw - 32px)); max-height: 70vh; overflow-y: auto; background: var(--bar); border: 1px solid var(--line);
+             border-left: 3px solid #6f9a5b; border-radius: 10px; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.45); color: var(--paper); font-size: 0.82rem; line-height: 1.45; }
+  #todotip .th { font: 600 0.95rem/1.3 var(--display); margin-bottom: 6px; }
+  #todotip .tb { color: #9fc48c; font-size: 0.78rem; margin-bottom: 6px; }
+  #todotip .ts { margin-bottom: 6px; }
+  #todotip .tl { color: #e9b26f; margin-bottom: 6px; }
+  #todotip ol { margin: 6px 0; padding-left: 18px; color: var(--muted); }
+  #todotip ol b { color: var(--paper); font-weight: 600; }
+  #todotip .tw { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); white-space: pre-wrap; }
+  #talklog { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); z-index: 17; width: min(520px, calc(100% - 32px)); height: min(380px, 55%);
+             min-width: 260px; min-height: 200px; resize: both; overflow: hidden; display: flex; flex-direction: column; background: var(--bar);
+             border: 1px solid var(--line); border-top: 3px solid #6f9a5b; border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+  #talklog[hidden] { display: none; }
+  #talklog .head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  #talklog .title { font: 600 1rem/1.2 var(--display); color: var(--paper); }
+  #talklog .sub { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+  #talklog .head button { padding: 4px 8px; font-size: 0.78rem; }
+  #talklog .head .close { font-size: 1.1rem; line-height: 1; }
+  #talklog .log { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+  #meetchat { position: absolute; top: 12px; left: max(16px, env(safe-area-inset-left, 0px)); z-index: 16; width: 400px; height: min(640px, calc(100% - 24px));
+              min-width: 260px; min-height: 280px; max-width: calc(100% - 32px); max-height: calc(100% - 24px); resize: both; overflow: hidden;
+              display: flex; flex-direction: column; background: var(--bar); border: 1px solid var(--line); border-top: 3px solid #c9a227;
+              border-radius: 12px; box-shadow: 0 8px 24px rgba(0,0,0,.4); --av: 64px; }
+  #meetchat[hidden] { display: none; }
+  #meetchat .head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  #meetchat .title { font: 600 1rem/1.2 var(--display); color: var(--paper); }
+  #meetchat .sub { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+  #meetchat .size { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: var(--muted); }
+  #meetchat .size input { width: 80px; }
+  #meetchat .head .close { padding: 4px 8px; font-size: 1.1rem; line-height: 1; }
+  #meetchat .people { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); max-height: 45%; overflow-y: auto; flex-shrink: 0; }
+  #meetchat .person { display: flex; flex-direction: column; align-items: center; gap: 4px; width: calc(var(--av) + 16px); padding: 4px; border-radius: 8px;
+                      background: transparent; border: 1px solid transparent; color: var(--paper); cursor: pointer; }
+  #meetchat .person[aria-pressed="true"] { border-color: #c9a227; background: rgba(201,162,39,0.18); }
+  #meetchat .person img, #meetchat .person .all { width: var(--av); height: var(--av); border-radius: 6px; object-fit: cover; border: 2px solid var(--line); }
+  #meetchat .person .all { display: flex; align-items: center; justify-content: center; font: 600 calc(var(--av) * 0.45)/1 var(--display); color: #c9a227; background: rgba(0,0,0,0.25); }
+  #meetchat .person .nm { font: 600 calc(9px + var(--av) * 0.08)/1.2 var(--display); text-align: center; word-break: keep-all; }
+  #meetchat .log { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; min-height: 60px; }
+  #meetchat form { border-top: 1px solid var(--line); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+  #meetchat textarea { resize: none; font: 400 0.86rem/1.4 var(--body); color: var(--paper); background: rgba(0,0,0,0.25); border: 1px solid var(--line); border-radius: 8px; padding: 7px 9px; }
+  #meetchat .row { display: flex; justify-content: flex-end; gap: 6px; }
+  #meetchat .stop { display: none; }
+  #meetchat.busy .stop { display: inline-block; }
+  #vcard { position: fixed; z-index: 20; pointer-events: none; max-width: 260px; background: var(--bar); border: 1px solid var(--line);
+            border-left: 3px solid var(--home, #b8342b); border-radius: 10px; padding: 9px 12px; box-shadow: 0 6px 18px rgba(0,0,0,.35); }
+  #vcard .vn { font: 600 0.95rem/1.25 var(--display); color: var(--paper); }
+  #vcard .vr { font: 400 0.8rem/1.4 var(--body); color: var(--paper); margin-top: 4px; }
+  #vcard .vb { font: 500 0.74rem/1.3 var(--body); color: var(--muted); margin-top: 6px; }
+  #call { position: absolute; top: 12px; left: max(16px, env(safe-area-inset-left, 0px)); display: flex; gap: 10px; align-items: flex-end;
+          background: var(--bar); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  #call .who { display: flex; flex-direction: column; align-items: center; gap: 4px; opacity: 0.55; transition: opacity .2s; }
+  #call .who.speaking { opacity: 1; }
+  #call img { width: 72px; height: 72px; border-radius: 6px; border: 3px solid var(--home, #b8342b); display: block; }
+  #call .who.speaking img { box-shadow: 0 0 0 2px var(--paper); }
+  #call .name { font-family: var(--display); font-size: 0.8rem; color: var(--paper); white-space: nowrap; }
+  #call .tag { font-size: 0.7rem; color: var(--muted); align-self: center; padding: 0 2px; }
+  #editbar { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
+             max-width: calc(100% - 32px); background: var(--bar); border: 1px solid var(--line); border-radius: 12px; padding: 8px 10px; color: var(--paper); font-size: 0.8rem; }
+  #editbar .edtitle { font-family: var(--display); margin-right: 4px; }
+  #editbar i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  #editbar select { background: var(--ink); color: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; }
+  #editbar .edhint { color: var(--muted); font-size: 0.72rem; width: 100%; }
   [hidden], #loading[hidden] { display: none !important; }
   @media (max-width: 560px) { h1 { width: 100%; } .hint { display: none; } }
 </style>
@@ -62,16 +191,71 @@
       <button data-light="day" aria-pressed="false">Day</button>
       <button data-light="night" aria-pressed="false">Night</button>
     </div>
+    <button id="meeting" aria-pressed="false" title="Gather the court in the throne hall">Call Meeting</button>
+    <button id="todo-btn" aria-pressed="false" title="Your to-do list: 영의정 이균 passes each task to the right 사또">To-do</button>
+    <button id="chat-btn" aria-pressed="false" title="Chat (T near someone · double-tap M for 영의정 이균 · double-tap N for 상선 김모심)">Chat</button>
+    <button id="orders-btn" aria-pressed="false" title="What 영의정 이균 has passed to the 사또">Orders log</button>
+    <button id="talk-btn" aria-pressed="false" title="What the villagers say to each other (C)">Village talk</button>
+    <button id="meetchat-btn" hidden title="The meeting chat">Meeting chat</button>
+    <button id="edit-map" aria-pressed="false" title="Mark grid squares as walkable, blocked or roof">Edit map</button>
     <div class="spacer"></div>
     <span id="clock" aria-live="off"></span>
     <button id="sound" aria-pressed="false" title="The odd bird">Sound off</button>
   </header>
   <main>
     <canvas id="scene" aria-label="Painted map of the village with living effects. Walk the King with the arrow keys or WASD."></canvas>
-    <div class="hint">Arrow keys or WASD to walk · hold Shift to run · drag your King anywhere · drag the map to look around · scroll to zoom</div>
+    <div class="hint">Arrow keys or WASD to walk · hold Shift to run · drag your King anywhere · drag the map to look around · scroll to zoom · T = talk to someone nearby · double-tap M = 영의정 이균 · double-tap N = 상선 김모심 · in chat: "[name], come here" / "get back to work" · C = village talk · J = try "everyone at work"</div>
     <div class="zoom">
       <button id="zoom-in" aria-label="Zoom in">+</button>
       <button id="zoom-out" aria-label="Zoom out">−</button>
+    </div>
+    <div id="call" hidden aria-live="polite"></div>
+    <aside id="orders" hidden aria-label="Orders log">
+      <div class="head"><div class="htext"><div class="title">Orders log</div><div class="sub">영의정 이균 and the 사또</div></div>
+        <button class="clear" title="Clear the log">Clear</button><button class="close" aria-label="Close the orders log">×</button></div>
+      <div class="log" aria-live="polite"></div>
+    </aside>
+    <aside id="todo" hidden aria-label="To-do list">
+      <div class="head"><div class="htext"><div class="title">To-do</div><div class="sub">영의정 이균 passes each task to the right 사또 · hover a task for details</div></div>
+        <button class="close" aria-label="Close the to-do list">×</button></div>
+      <form><input type="text" placeholder="Add a task and press Enter" maxlength="500"></form>
+      <ul></ul>
+    </aside>
+    <div id="todotip" hidden role="tooltip"></div>
+    <div id="toast" hidden role="status"></div>
+    <aside id="talklog" hidden aria-label="Village talk">
+      <div class="head"><div class="htext"><div class="title">Village talk</div><div class="sub"></div></div>
+        <button class="clear" title="Clear the log">Clear</button><button class="close" aria-label="Close village talk">×</button></div>
+      <div class="log" aria-live="polite"></div>
+    </aside>
+    <aside id="meetchat" hidden aria-label="Meeting chat">
+      <div class="head"><div class="htext"><div class="title">Court meeting</div><div class="sub">Speak to everyone, or click a face</div></div>
+        <label class="size" title="Picture and name size">Size <input type="range" min="36" max="128" step="4" value="64"></label>
+        <button class="close" aria-label="Hide the meeting chat">×</button></div>
+      <div class="people"></div>
+      <div class="log" aria-live="polite"></div>
+      <form><textarea rows="2" placeholder="Speak to everyone…"></textarea>
+        <div class="row"><button type="button" class="stop">Stop</button><button type="submit" class="send">Send</button></div></form>
+    </aside>
+    <aside id="chat" hidden aria-label="Chat">
+      <div class="head"><img alt=""><div class="htext"><div class="title"></div><div class="sub"></div></div>
+        <button class="clear" title="Forget this conversation">Clear</button><button class="close" aria-label="Close the chat">×</button></div>
+      <div id="hirebar" hidden><span>Interview · hire them?</span><button type="button" class="yes">Hire</button><button type="button" class="no">Don't hire</button></div>
+      <div class="log" aria-live="polite"></div>
+      <form><textarea rows="2" placeholder="Say something… (Enter to send, Shift+Enter for a new line)"></textarea>
+        <div class="row"><button type="button" class="stop">Stop</button><button type="submit" class="send">Send</button></div></form>
+    </aside>
+    <div id="vcard" hidden role="tooltip"><div class="vn"></div><div class="vr"></div><div class="vb"></div></div>
+    <div id="editbar" hidden>
+      <span class="edtitle">Edit map</span>
+      <button data-tool="walk" aria-pressed="true"><i style="background:#3cd070"></i>Can walk</button>
+      <button data-tool="block" aria-pressed="false"><i style="background:#e62828"></i>Can't walk</button>
+      <button data-tool="roof" aria-pressed="false"><i style="background:#2b5cf0"></i>Roof</button>
+      <button data-tool="unroof" aria-pressed="false"><i style="background:transparent;border:1px dashed #9ab"></i>No roof</button>
+      <label>Square <select id="brush"><option value="8">small</option><option value="16" selected>medium</option><option value="32">large</option></select></label>
+      <button id="undo-edit">Undo</button>
+      <button id="done-edit">Done</button>
+      <span class="edhint">Click or drag over squares · hold Space and drag to move the map · saves as you go</span>
     </div>
     <div id="loading">Loading the town…</div>
   </main>

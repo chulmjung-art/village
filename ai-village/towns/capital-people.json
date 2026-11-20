@@ -1,0 +1,128 @@
+{
+ "town": "hanyang",
+ "note": "People who live or work in 한양. house = their building's id in capital-houses.json (yard spots are made around its doorway unless given). They move around their workplace as they like and go inside now and then. The 암행어사 roams in disguise. 상선 김모심 isn't listed: he follows the 임금.",
+ "people": [
+  {
+   "id": "yeonguijeong-i-gyun",
+   "title": "영의정",
+   "name": "이균",
+   "sheet": "assets/characters/yeonguijeong-i-gyun.webp",
+   "house": "kings-office"
+  },
+  {
+   "id": "naegwan-yun-pyeonji",
+   "title": "내관",
+   "name": "윤편지",
+   "sheet": "assets/characters/naegwan-yun-pyeonji.webp",
+   "house": "household-inbox"
+  },
+  {
+   "id": "naegwan-gwak-gotgan",
+   "title": "내관",
+   "name": "곽곳간",
+   "sheet": "assets/characters/naegwan-gwak-gotgan.webp",
+   "house": "household-finance"
+  },
+  {
+   "id": "sanggung-jeong-sallim",
+   "title": "상궁",
+   "name": "정살림",
+   "sheet": "assets/characters/sanggung-jeong-sallim.webp",
+   "house": "p-helper"
+  },
+  {
+   "id": "sagwan-o-namgim",
+   "title": "사관",
+   "name": "오남김",
+   "sheet": "assets/characters/sagwan-o-namgim.webp",
+   "house": "p-sagwan"
+  },
+  {
+   "id": "seonbi-seo-mureum",
+   "title": "선비",
+   "name": "서물음",
+   "sheet": "assets/characters/seonbi-seo-mureum.webp",
+   "house": "library"
+  },
+  {
+   "id": "munjangga-song-geulwol",
+   "title": "문장가",
+   "name": "송글월",
+   "sheet": "assets/characters/munjangga-song-geulwol.webp",
+   "house": "library"
+  },
+  {
+   "id": "yeokgwan-han-dari",
+   "title": "역관",
+   "name": "한다리",
+   "sheet": "assets/characters/yeokgwan-han-dari.webp",
+   "house": "library"
+  },
+  {
+   "id": "cheonmungwan-nam-byeol",
+   "title": "천문관",
+   "name": "남별",
+   "sheet": "assets/characters/cheonmungwan-nam-byeol.webp",
+   "house": "library"
+  },
+  {
+   "id": "daejangjangi-soedori",
+   "title": "대장장이",
+   "name": "쇠돌이",
+   "sheet": "assets/characters/daejangjangi-soedori.webp",
+   "house": "p-seonbi"
+  },
+  {
+   "id": "hwawon-i-but",
+   "title": "화원",
+   "name": "이붓",
+   "sheet": "assets/characters/hwawon-i-but.webp",
+   "house": "p-seonbi"
+  },
+  {
+   "id": "moksu-jang-ieum",
+   "title": "목수",
+   "name": "장이음",
+   "sheet": "assets/characters/moksu-jang-ieum.webp",
+   "house": "p-seonbi"
+  },
+  {
+   "id": "amhaengeosa-bak-moreum",
+   "title": "암행어사",
+   "name": "박모름",
+   "sheet": "assets/characters/amhaengeosa-bak-moreum.webp",
+   "house": null,
+   "disguise": "나그네",
+   "roam": [
+    {
+     "x": 1640,
+     "y": 1300
+    },
+    {
+     "x": 1300,
+     "y": 1700
+    },
+    {
+     "x": 2000,
+     "y": 1700
+    },
+    {
+     "x": 1640,
+     "y": 1900
+    },
+    {
+     "x": 900,
+     "y": 1750
+    },
+    {
+     "x": 2500,
+     "y": 1850
+    },
+    {
+     "x": 1640,
+     "y": 2250
+    }
+   ]
+  }
+ ]
+}

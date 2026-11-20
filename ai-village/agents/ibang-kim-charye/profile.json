@@ -14,5 +14,8 @@
  ],
  "model": "Sonnet 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/ibang-kim-charye.webp",
+ "portrait": "assets/characters/portraits/ibang-kim-charye.webp",
+ "role": "Keeps Mojoco's task queue and deadlines, and nudges when something slips.",
+ "boss": "사또 박정도"
 }

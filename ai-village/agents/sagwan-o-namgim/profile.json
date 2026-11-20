@@ -14,5 +14,8 @@
  ],
  "model": "Sonnet 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/sagwan-o-namgim.webp",
+ "portrait": "assets/characters/portraits/sagwan-o-namgim.webp",
+ "role": "Writes the 실록 for the palace household and for shared specialists working in 한양.",
+ "boss": "상선 김모심"
 }

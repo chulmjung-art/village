@@ -14,5 +14,8 @@
  ],
  "model": "Sonnet 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/sanggung-jeong-sallim.webp",
+ "portrait": "assets/characters/portraits/sanggung-jeong-sallim.webp",
+ "role": "Handles family and household matters: errands, appointments and family dates.",
+ "boss": "상선 김모심"
 }

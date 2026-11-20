@@ -14,5 +14,8 @@
  ],
  "model": "Opus 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/daejangjangi-soedori.webp",
+ "portrait": "assets/characters/portraits/daejangjangi-soedori.webp",
+ "role": "Shared specialist for code, scripts, tools and fixes.",
+ "boss": "Whoever borrows them: a 사또, a 행수 or the 상선"
 }

@@ -15,5 +15,8 @@
  "model": "Opus 5.5",
  "status": "appointed; not running yet",
  "sheet": "assets/characters/kim-mosim.webp",
- "sheet_calling": "assets/characters/kim-mosim-myeongpae.webp"
+ "sheet_calling": "assets/characters/kim-mosim-myeongpae.webp",
+ "portrait": "assets/characters/portraits/sangseon-kim-mosim.webp",
+ "role": "The 임금's personal attendant: manages his attention, handles personal requests and heads the palace household.",
+ "boss": "The 임금, directly"
 }

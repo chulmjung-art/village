@@ -14,5 +14,8 @@
  ],
  "model": "Sonnet 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/naegwan-yun-pyeonji.webp",
+ "portrait": "assets/characters/portraits/naegwan-yun-pyeonji.webp",
+ "role": "Keeps the 임금's personal inbox and calendar in order.",
+ "boss": "상선 김모심"
 }

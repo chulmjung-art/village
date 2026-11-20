@@ -14,5 +14,8 @@
  ],
  "model": "Sonnet 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/moksu-jang-ieum.webp",
+ "portrait": "assets/characters/portraits/moksu-jang-ieum.webp",
+ "role": "Shared specialist who builds automations and workflows that connect tools.",
+ "boss": "Whoever borrows them: a 사또, a 행수 or the 상선"
 }

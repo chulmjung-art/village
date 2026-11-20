@@ -14,5 +14,8 @@
  ],
  "model": "Opus 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/seonbi-seo-mureum.webp",
+ "portrait": "assets/characters/portraits/seonbi-seo-mureum.webp",
+ "role": "Shared specialist for research and summaries; writes the daily AI news report.",
+ "boss": "Whoever borrows them: a 사또, a 행수 or the 상선"
 }

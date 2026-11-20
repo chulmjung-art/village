@@ -130,3 +130,9 @@ Town life: 파발 마날쌘 · 포졸 돌쇠 · 주모 막순이
 
 ## Updates (director's decisions after the official text above; these win where they differ)
 - **Movement (2026-11-20):** characters may move around as they like: 사또 strolling their 관아 yard, and every other character moving freely around their workplace or town. This replaces "Only animate movement for real events. No random wandering." in section 5. The director can always call anyone (through the 상선's 명패) if they can't be found.
+
+## Village safety rules (never optional; built into the village, not just told to agents)
+- Email is always a draft. No agent can ever send an email.
+- No agent can spend money or Higgsfield credits.
+- No agent can publish, post or list anything.
+- Everything finished comes to the 임금 to approve. The 영의정 (or anyone else) can't approve for him.

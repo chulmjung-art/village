@@ -14,5 +14,8 @@
  ],
  "model": "Opus 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/yeonguijeong-i-gyun.webp",
+ "portrait": "assets/characters/portraits/yeonguijeong-i-gyun.webp",
+ "role": "Chief of staff: collects every 사또's report and writes one combined briefing for the 임금.",
+ "boss": "The 임금, directly"
 }

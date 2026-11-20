@@ -1,0 +1,191 @@
+{
+ "note": "Court meetings in the throne hall (근정전). Officials stand or kneel at their rank stones in two rows that face each other across the aisle, never toward the 임금. They stand when the 임금 stands and kneel when he sits on the throne. Left row (as seen on screen) is the 임금's right side; 영의정 has the top seat. 상선 김모심 stands beside the throne. The 암행어사 never attends (his cover).",
+ "hall": "throne-hall",
+ "throne": {
+  "x": 1024,
+  "y": 312
+ },
+ "sangseon": {
+  "x": 1182,
+  "y": 338
+ },
+ "exitTo": "throne-hall",
+ "seats": [
+  {
+   "id": "yeonguijeong-i-gyun",
+   "title": "영의정",
+   "name": "이균",
+   "home": "hanyang",
+   "x": 682,
+   "y": 540,
+   "face": "right",
+   "sheet": "assets/characters/yeonguijeong-i-gyun.webp",
+   "kneel": "assets/characters/kneel/yeonguijeong-i-gyun.webp"
+  },
+  {
+   "id": "satto-bak-jeongdo",
+   "title": "사또",
+   "name": "박정도",
+   "home": "mojoco",
+   "x": 1360,
+   "y": 540,
+   "face": "left",
+   "sheet": "assets/characters/satto-bak-jeongdo.webp",
+   "kneel": "assets/characters/kneel/satto-bak-jeongdo.webp"
+  },
+  {
+   "id": "sagwan-o-namgim",
+   "title": "사관",
+   "name": "오남김",
+   "home": "hanyang",
+   "x": 650,
+   "y": 690,
+   "face": "right",
+   "sheet": "assets/characters/sagwan-o-namgim.webp",
+   "kneel": "assets/characters/kneel/sagwan-o-namgim.webp"
+  },
+  {
+   "id": "ibang-kim-charye",
+   "title": "이방",
+   "name": "김차례",
+   "home": "mojoco",
+   "x": 1392,
+   "y": 690,
+   "face": "left",
+   "sheet": "assets/characters/ibang-kim-charye.webp",
+   "kneel": "assets/characters/kneel/ibang-kim-charye.webp"
+  },
+  {
+   "id": "naegwan-yun-pyeonji",
+   "title": "내관",
+   "name": "윤편지",
+   "home": "hanyang",
+   "x": 618,
+   "y": 840,
+   "face": "right",
+   "sheet": "assets/characters/naegwan-yun-pyeonji.webp",
+   "kneel": "assets/characters/kneel/naegwan-yun-pyeonji.webp"
+  },
+  {
+   "id": "yebang-i-sosik",
+   "title": "예방",
+   "name": "이소식",
+   "home": "mojoco",
+   "x": 1425,
+   "y": 840,
+   "face": "left",
+   "sheet": "assets/characters/yebang-i-sosik.webp",
+   "kneel": "assets/characters/kneel/yebang-i-sosik.webp"
+  },
+  {
+   "id": "naegwan-gwak-gotgan",
+   "title": "내관",
+   "name": "곽곳간",
+   "home": "hanyang",
+   "x": 585,
+   "y": 990,
+   "face": "right",
+   "sheet": "assets/characters/naegwan-gwak-gotgan.webp",
+   "kneel": "assets/characters/kneel/naegwan-gwak-gotgan.webp"
+  },
+  {
+   "id": "sagwan-mun-jeogeum",
+   "title": "사관",
+   "name": "문적음",
+   "home": "mojoco",
+   "x": 1458,
+   "y": 990,
+   "face": "left",
+   "sheet": "assets/characters/sagwan-mun-jeogeum.webp",
+   "kneel": "assets/characters/kneel/sagwan-mun-jeogeum.webp"
+  },
+  {
+   "id": "sanggung-jeong-sallim",
+   "title": "상궁",
+   "name": "정살림",
+   "home": "hanyang",
+   "x": 553,
+   "y": 1140,
+   "face": "right",
+   "sheet": "assets/characters/sanggung-jeong-sallim.webp",
+   "kneel": "assets/characters/kneel/sanggung-jeong-sallim.webp"
+  },
+  {
+   "id": "cheonmungwan-nam-byeol",
+   "title": "천문관",
+   "name": "남별",
+   "home": "hanyang",
+   "x": 1490,
+   "y": 1140,
+   "face": "left",
+   "sheet": "assets/characters/cheonmungwan-nam-byeol.webp",
+   "kneel": "assets/characters/kneel/cheonmungwan-nam-byeol.webp"
+  },
+  {
+   "id": "seonbi-seo-mureum",
+   "title": "선비",
+   "name": "서물음",
+   "home": "hanyang",
+   "x": 521,
+   "y": 1290,
+   "face": "right",
+   "sheet": "assets/characters/seonbi-seo-mureum.webp",
+   "kneel": "assets/characters/kneel/seonbi-seo-mureum.webp"
+  },
+  {
+   "id": "daejangjangi-soedori",
+   "title": "대장장이",
+   "name": "쇠돌이",
+   "home": "hanyang",
+   "x": 1523,
+   "y": 1290,
+   "face": "left",
+   "sheet": "assets/characters/daejangjangi-soedori.webp",
+   "kneel": "assets/characters/kneel/daejangjangi-soedori.webp"
+  },
+  {
+   "id": "munjangga-song-geulwol",
+   "title": "문장가",
+   "name": "송글월",
+   "home": "hanyang",
+   "x": 488,
+   "y": 1440,
+   "face": "right",
+   "sheet": "assets/characters/munjangga-song-geulwol.webp",
+   "kneel": "assets/characters/kneel/munjangga-song-geulwol.webp"
+  },
+  {
+   "id": "hwawon-i-but",
+   "title": "화원",
+   "name": "이붓",
+   "home": "hanyang",
+   "x": 1555,
+   "y": 1440,
+   "face": "left",
+   "sheet": "assets/characters/hwawon-i-but.webp",
+   "kneel": "assets/characters/kneel/hwawon-i-but.webp"
+  },
+  {
+   "id": "yeokgwan-han-dari",
+   "title": "역관",
+   "name": "한다리",
+   "home": "hanyang",
+   "x": 456,
+   "y": 1590,
+   "face": "right",
+   "sheet": "assets/characters/yeokgwan-han-dari.webp",
+   "kneel": "assets/characters/kneel/yeokgwan-han-dari.webp"
+  },
+  {
+   "id": "moksu-jang-ieum",
+   "title": "목수",
+   "name": "장이음",
+   "home": "hanyang",
+   "x": 1588,
+   "y": 1590,
+   "face": "left",
+   "sheet": "assets/characters/moksu-jang-ieum.webp",
+   "kneel": "assets/characters/kneel/moksu-jang-ieum.webp"
+  }
+ ]
+}

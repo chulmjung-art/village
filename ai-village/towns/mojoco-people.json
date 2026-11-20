@@ -49,6 +49,27 @@
      "y": 1000
     }
    ]
+  },
+  {
+   "id": "ibang-kim-charye",
+   "title": "이방",
+   "name": "김차례",
+   "sheet": "assets/characters/ibang-kim-charye.webp",
+   "house": "hyeongbang"
+  },
+  {
+   "id": "yebang-i-sosik",
+   "title": "예방",
+   "name": "이소식",
+   "sheet": "assets/characters/yebang-i-sosik.webp",
+   "house": "munjangga"
+  },
+  {
+   "id": "sagwan-mun-jeogeum",
+   "title": "사관",
+   "name": "문적음",
+   "sheet": "assets/characters/sagwan-mun-jeogeum.webp",
+   "house": "sagwan"
   }
  ]
 }

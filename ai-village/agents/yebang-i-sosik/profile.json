@@ -14,5 +14,8 @@
  ],
  "model": "Sonnet 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/yebang-i-sosik.webp",
+ "portrait": "assets/characters/portraits/yebang-i-sosik.webp",
+ "role": "Handles Mojoco's email, messages and calendar.",
+ "boss": "사또 박정도"
 }

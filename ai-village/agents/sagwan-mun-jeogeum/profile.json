@@ -14,5 +14,8 @@
  ],
  "model": "Sonnet 5.5",
  "status": "appointed; not running yet",
- "sheet": null
+ "sheet": "assets/characters/sagwan-mun-jeogeum.webp",
+ "portrait": "assets/characters/portraits/sagwan-mun-jeogeum.webp",
+ "role": "Writes Mojoco's 실록, the work log of every agent in Mojoco.",
+ "boss": "사또 박정도"
 }
