@@ -11,7 +11,7 @@ Every character in the village is a real agent. Each one has a folder here:
 Rules for every agent (from TEAM.md):
 - Title and name are always shown together (e.g. 사또 박정도).
 - A town's memory (규장각) stays in that town. An agent never copies another town's notes or context.
-- Workers take tasks only from their own 사또, and the 사또 checks their work before it counts as done.
+- Workers take tasks only from their lead (their house's 행수, else their town's 사또; the palace household from the 상선), and that lead checks their work before it counts as done.
 - Characters may move around as they like (director's update).
 - None of these agents runs by itself yet. Before any agent runs on its own, Claude must confirm to the director that it uses only the director's subscriptions (no API keys, no pay-per-use).
 
