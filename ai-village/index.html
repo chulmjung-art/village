@@ -113,6 +113,10 @@
   #hirebar span { flex: 1; }
   #hirebar button { padding: 4px 10px; font-size: 0.78rem; border-radius: 6px; }
   #hirebar .yes { border: 1px solid #6f9a5b; color: #b8dca6; background: rgba(111,154,91,0.18); }
+  body.focus-mode .hint { display: none; }
+  #exitfs { position: absolute; top: 12px; right: 12px; z-index: 45; padding: 6px 10px; font-size: 0.78rem; background: var(--bar); color: var(--paper); border: 1px solid var(--line); border-radius: 8px; opacity: 0.55; }
+  #exitfs:hover { opacity: 1; }
+  #exitfs[hidden] { display: none; }
   #todotip { position: fixed; z-index: 30; width: min(420px, calc(100vw - 32px)); max-height: 70vh; overflow-y: auto; background: var(--bar); border: 1px solid var(--line);
              border-left: 3px solid #6f9a5b; border-radius: 10px; padding: 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.45); color: var(--paper); font-size: 0.82rem; line-height: 1.45; }
   #todotip .th { font: 600 0.95rem/1.3 var(--display); margin-bottom: 6px; }
@@ -200,11 +204,12 @@
     <button id="edit-map" aria-pressed="false" title="Mark grid squares as walkable, blocked or roof">Edit map</button>
     <div class="spacer"></div>
     <span id="clock" aria-live="off"></span>
+    <button id="fullscreen" aria-pressed="false" title="Full screen (F)">Full screen</button>
     <button id="sound" aria-pressed="false" title="The odd bird">Sound off</button>
   </header>
   <main>
     <canvas id="scene" aria-label="Painted map of the village with living effects. Walk the King with the arrow keys or WASD."></canvas>
-    <div class="hint">Arrow keys or WASD to walk · hold Shift to run · drag your King anywhere · drag the map to look around · scroll to zoom · T = talk to someone nearby · double-tap M = 영의정 이균 · double-tap N = 상선 김모심 · in chat: "[name], come here" / "get back to work" · C = village talk · J = try "everyone at work"</div>
+    <div class="hint">Arrow keys or WASD to walk · hold Shift to run · drag your King anywhere · drag the map to look around · scroll to zoom · T = talk to someone nearby · double-tap M = 영의정 이균 · double-tap N = 상선 김모심 · in chat: "[name], come here" / "get back to work" · C = village talk · F = full screen · J = try "everyone at work"</div>
     <div class="zoom">
       <button id="zoom-in" aria-label="Zoom in">+</button>
       <button id="zoom-out" aria-label="Zoom out">−</button>
@@ -223,6 +228,7 @@
     </aside>
     <div id="todotip" hidden role="tooltip"></div>
     <div id="toast" hidden role="status"></div>
+    <button id="exitfs" hidden title="Leave full screen (F or Esc)">Exit full screen</button>
     <aside id="talklog" hidden aria-label="Village talk">
       <div class="head"><div class="htext"><div class="title">Village talk</div><div class="sub"></div></div>
         <button class="clear" title="Clear the log">Clear</button><button class="close" aria-label="Close village talk">×</button></div>

@@ -2930,6 +2930,38 @@ No spaces, no brackets, no notes, no English. Reply with ONLY JSON: {"title": ".
     });
   }
 
+  // ---------- full screen (F or the button) ----------
+  // Real full screen when the browser allows it; otherwise "focus mode": the header and hints hide and the map fills the frame.
+  const fsBtn = document.getElementById("fullscreen"), exitFs = document.getElementById("exitfs");
+  const isFs = () => !!(document.fullscreenElement || document.webkitFullscreenElement) || document.body.classList.contains("focus-mode");
+  function syncFs() {
+    const on = isFs();
+    fsBtn.setAttribute("aria-pressed", String(on)); fsBtn.textContent = on ? "Exit full screen" : "Full screen";
+    exitFs.hidden = true;   // the header (with its own Exit full screen button) stays visible
+    requestAnimationFrame(resize);
+  }
+  async function toggleFs() {
+    if (isFs()) {
+      document.body.classList.remove("focus-mode");
+      if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
+      else if (document.webkitFullscreenElement) document.webkitExitFullscreen();
+    } else {
+      const el = document.documentElement;
+      document.body.classList.add("focus-mode");   // the map fills the frame either way
+      try { if (el.requestFullscreen) await el.requestFullscreen(); else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen(); } catch (e) { /* the frame doesn't allow it: focus mode only */ }
+    }
+    syncFs();
+  }
+  fsBtn.addEventListener("click", toggleFs);
+  exitFs.addEventListener("click", toggleFs);
+  document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) document.body.classList.remove("focus-mode"); syncFs(); });
+  document.addEventListener("webkitfullscreenchange", () => { if (!document.webkitFullscreenElement) document.body.classList.remove("focus-mode"); syncFs(); });
+  window.addEventListener("keydown", (e) => {
+    if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || (e.target && /INPUT|TEXTAREA|SELECT/.test(e.target.tagName))) return;
+    if (e.code === "KeyF") { e.preventDefault(); toggleFs(); }
+    else if (e.code === "Escape" && document.body.classList.contains("focus-mode") && !document.fullscreenElement) { document.body.classList.remove("focus-mode"); syncFs(); }
+  });
+
   window.addEventListener("resize", resize);
   resize();
   loadTown("mojoco");
