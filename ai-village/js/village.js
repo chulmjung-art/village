@@ -437,8 +437,11 @@
     if (r.emergeT > 0) { r.emergeT -= dt; r.visible = false; r.hidden = true; return; }   // still walking out of the throne hall
     r.hidden = false;
     const house = r.houseObj, ps = playerSpace();
-    r.h = r.space === "in" ? roomH(r.y) : town.P * 1.02;
     const here = sameSpace(r, ps);
+    r.h = r.space === "in" ? (here && inside ? roomHeightAt(r.y) : roomH(r.y)) : town.P * 1.02;   // indoors: the same size as the 임금 at that depth
+    // bowing: everyone near the 임금 bows (eased in and out); the pose is drawn in drawSprite
+    const nearK = here && !r.seated && !r.candidate && Math.hypot(player.x - r.x, (player.y - r.y) * 1.3) < player.h * 2.1 && !(player.seated && court.active);
+    r.bow = (r.bow || 0) + ((nearK && !r.dodge ? 1 : 0) - (r.bow || 0)) * Math.min(1, dt * 5);
     r.visible = here && !(r.candidate && court.active);
     if (r.candidate) {        // waiting in the town hall for the 임금's interview
       const dx = player.x - r.x, dy = player.y - r.y;
@@ -455,7 +458,29 @@
       return;
     }
     const wantWork = working.has(r.id) && !!house;
-    // stop and look at the King when he comes near (not while seated at work)
+    // about to be walked into: step aside out of the 임금's path (then bow)
+    if (here && !r.seated) {
+      if (r.dodge) {
+        const dx = r.dodge.x - r.x, dy = r.dodge.y - r.y, d = Math.hypot(dx, dy);
+        r.dodgeT -= dt;
+        if (d < 2 || r.dodgeT <= 0) r.dodge = null;
+        else {
+          const st = Math.min(d, r.h * 3.2 * dt), nx = r.x + dx / d * st, ny = r.y + dy / d * st;
+          if (r.space === "in" || footFree(nx, ny, r.h * 0.12)) { r.x = nx; r.y = ny; } else r.dodge = null;
+          r.moving = true; return;
+        }
+      } else if (player.moving) {
+        const v = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[player.dir] || [0, 0];
+        const rx = r.x - player.x, ry = r.y - player.y, along = rx * v[0] + ry * v[1], lat = rx * -v[1] + ry * v[0];
+        if (along > 0 && along < player.h * 1.7 && Math.abs(lat) < player.h * 0.55) {
+          const side = lat >= 0 ? 1 : -1, push = player.h * 0.95 - Math.abs(lat);
+          let tx = r.x + -v[1] * side * push, ty = r.y + v[0] * side * push;
+          if (r.space !== "in" && !footFree(tx, ty, r.h * 0.12)) { tx = r.x + v[1] * side * (player.h * 0.95 + Math.abs(lat)); ty = r.y - v[0] * side * (player.h * 0.95 + Math.abs(lat)); }
+          if (r.space === "in" || footFree(tx, ty, r.h * 0.12)) { r.dodge = { x: tx, y: ty }; r.dodgeT = 0.8; r.plan = null; r.path = null; return; }
+        }
+      }
+    }
+    // stop and look at the King when he comes near (not while seated at work), and bow
     if (here && !r.seated && Math.hypot(player.x - r.x, player.y - r.y) < player.h * (r.space === "in" ? 1.6 : 2.0)) {
       const dx = player.x - r.x, dy = player.y - r.y;
       r.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? "right" : "left") : (dy > 0 ? "down" : "up");
@@ -630,6 +655,8 @@
 
   function updateAide(dt) {
     if (!aide.img) return;
+    // the 상선's bow and joined hands are drawn into his sheet itself (no extra lean needed)
+    aide.bow = 0;
     if (player.seated && court.data && inThroneHall()) { // stand beside the throne
       const sp = court.data.sangseon; aide.h = roomHeightAt(sp.y) * 0.97;
       const dx = sp.x - aide.x, dy = sp.y - aide.y, d = Math.hypot(dx, dy);
@@ -849,6 +876,13 @@
     ctx.fillStyle = "rgba(40,25,10,0.28)";
     if (!noShadow) { ctx.beginPath(); ctx.ellipse(a.x, a.y - a.h * 0.01, a.h * 0.2, a.h * 0.06, 0, 0, Math.PI * 2); ctx.fill(); }
     if (a.dir === "up") drawHopae(a, col); // seen from behind, the tag is partly hidden by the body
+    if (a.bow > 0.02) {
+      const side = a.dir === "right" ? 1 : a.dir === "left" ? -1 : 0;
+      ctx.translate(a.x, a.y);
+      if (side) ctx.rotate(side * 0.24 * a.bow);
+      ctx.scale(1, 1 - (side ? 0.04 : 0.12) * a.bow);
+      ctx.translate(-a.x, -a.y);
+    }
     if (a.ghost) ctx.filter = "grayscale(1) brightness(1.08) contrast(0.85)";
     ctx.drawImage(a.img, col * FRAME, ROW[a.dir] * FRAME, FRAME, FRAME, a.x - dw / 2, a.y - FEET * k, dw, dw);
     if (a.dir !== "up") drawHopae(a, col);
@@ -1283,6 +1317,7 @@
 
   // the throne: walk up onto it to sit; any arrow key stands you up again
   function updateThrone() {
+    if (inside && inside.house.id === "throne-hall" && !court.data && !court.loading) { court.loading = true; loadCourt().catch((e) => console.warn(e)).finally(() => { court.loading = false; }); }
     if (!inThroneHall() || !court.data) { player.seated = false; return; }
     const t = court.data.throne;
     if (!player.seated && Math.abs(player.x - t.x) < 150 && player.y < t.y + 110) { // a generous zone in front of the throne
@@ -2200,10 +2235,10 @@ ${dirs.map((d) => `  - id "${d.id}": ${d.display} of ${d.townId === "mojoco" ? "
   });
   const hintEl = document.querySelector(".hint");
   let hintT = null;
-  function flashHint(msg) {
-    if (!hintEl) return; const old = hintEl.dataset.base || (hintEl.dataset.base = hintEl.textContent);
-    hintEl.textContent = msg; clearTimeout(hintT); hintT = setTimeout(() => (hintEl.textContent = old), 2200);
+  function flashHint(msg) {   // the bottom hint line is gone: short tips show as a brief toast instead
+    showToast(msg, "", null); clearTimeout(hintT); hintT = setTimeout(() => { toastEl.hidden = true; }, 2200);
   }
+
 
   // ---------- meeting chat: talk to the whole room, or to one person in it ----------
   // Shown on the left while a court meeting is on in the throne hall. "Everyone" is picked first: the room hears
