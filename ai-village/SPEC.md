@@ -5,7 +5,7 @@
 > a town is a whole project or company (one 사또 each), houses are workstreams inside a town (workplaces, not homes),
 > 행수 lead houses, the palace has a household under the 상선 and its own 규장각, and Fable is never used.
 
-A visual "village" where the user can watch their AI agents live and work. The world is styled as a **Joseon-era Korean province**: a capital (한양) at the center with a palace, surrounded by towns (고을). Each town represents one company or area of the user's life. Agents are characters who work in buildings, walk between them, and travel to the capital to report.
+A visual "village" where the user can watch their AI agents live and work. The world is styled as a **Joseon-era Korean province**: a capital (Jung City) at the center with a palace, surrounded by towns (고을). Each town represents one company or area of the user's life. Agents are characters who work in buildings, walk between them, and travel to the capital to report.
 
 The visuals are not decoration: **every animation reflects real agent state or a real event.** If nothing is happening, characters stay put. Looking at the map should tell the user what's going on.
 
@@ -16,8 +16,8 @@ The visuals are not decoration: **every animation reflects real agent state or a
 | Concept | In the world | In the system |
 |---|---|---|
 | 임금 (King) | The player | The user. Sets priorities, approves decisions. |
-| 한양 (Capital) | Center of the map | Global layer: cross-town coordination + shared specialists |
-| 궁궐 (Palace) | Building in 한양 | Where the user "is"; briefings and decision requests arrive here |
+| Jung City (Capital) | Center of the map | Global layer: cross-town coordination + shared specialists |
+| 궁궐 (Palace) | Building in Jung City | Where the user "is"; briefings and decision requests arrive here |
 | 영의정 (Chief State Councillor) | Lives in the palace | Cross-town coordinator agent. Merges all town reports into one briefing. Does not do task work itself. |
 | 고을 (Town) | A cluster of buildings around the capital | One workspace = one company/area (e.g. "Mojoco", "New Company", "Personal") |
 | 사또 (Magistrate) | Head of a town, sits in the 관아 | Town lead agent. Receives requests, plans, assigns, confirms completion. |
@@ -26,7 +26,7 @@ The visuals are not decoration: **every animation reflects real agent state or a
 ### Isolation rule (important)
 - **Each town has its own memory/context (its own 규장각).** Agents in one town never read another town's memory.
 - **Only leaders travel between towns and the capital** (사또 to the palace). Workers stay in their town.
-- **Shared specialists** live in 한양 and can be dispatched to any town, but a job carries **only that town's context**. They keep no memory across towns.
+- **Shared specialists** live in Jung City and can be dispatched to any town, but a job carries **only that town's context**. They keep no memory across towns.
 - Rationale: keeps context clean and keeps confidential data separated (e.g. an employer's data never mixes with the user's own company).
 
 ---
@@ -36,12 +36,12 @@ The visuals are not decoration: **every animation reflects real agent state or a
 ```
                 [Town: Personal]
                        |
-[Town: Mojoco] —— [ 한양 / 궁궐 ] —— [Town: New Company]
+[Town: Mojoco] —— [ Jung City / 궁궐 ] —— [Town: New Company]
                        |
                 [Town: (future)]
 ```
 
-- 한양 sits in the center. Towns are arranged around it, connected by roads.
+- Jung City sits in the center. Towns are arranged around it, connected by roads.
 - New towns can be added at any time ("founding a town"). The layout should accommodate N towns (e.g. radial placement, or predefined slots).
 - Each town starts small (사또 + a few buildings) and grows as agents are added.
 
@@ -54,11 +54,11 @@ The visuals are not decoration: **every animation reflects real agent state or a
 
 ## 3. Roles
 
-### 3.1 Capital (한양), global
+### 3.1 Capital (Jung City), global
 | Role | Job |
 |---|---|
 | 영의정 | Receives every 사또's report, produces one combined daily briefing for the user, flags conflicts across towns, helps prioritize. |
-| Shared specialists | Live in 한양, get dispatched to towns for jobs (see 3.4). |
+| Shared specialists | Live in Jung City, get dispatched to towns for jobs (see 3.4). |
 
 ### 3.2 Town government (관아): one set per town
 | Role | Job |
@@ -88,7 +88,7 @@ Not every town needs all six 방 at the start. Town government roles are added a
 | **화원** (도화서 painter) | Design and visuals. |
 | **목수** (carpenter) | Automations and workflows connecting tools. |
 
-Scholars and craftsmen may be **town-local** or **shared specialists from 한양**. Configurable per agent.
+Scholars and craftsmen may be **town-local** or **shared specialists from Jung City**. Configurable per agent.
 
 ### 3.5 Records and oversight
 | Role | Job |
@@ -156,8 +156,8 @@ The visual layer subscribes to an event stream. Suggested event types:
 | `task.failed` | Beacon lights; task moves to 옥 |
 | `approval.requested` | Agent goes to 신문고; if urgent, 사또 rides to palace with 상소 |
 | `approval.resolved` | Drum indicator clears; agent resumes |
-| `specialist.dispatched` | Specialist walks from 한양 to the town |
-| `specialist.returned` | Specialist walks back to 한양 |
+| `specialist.dispatched` | Specialist walks from Jung City to the town |
+| `specialist.returned` | Specialist walks back to Jung City |
 | `report.daily` | Every 사또 rides to the palace (조회); 영의정 produces briefing |
 | `tool.broken` / `tool.repaired` | Scaffolding on / off the related building |
 | `schedule.started` / `schedule.finished` | 포졸 patrol starts / stops |
@@ -191,7 +191,7 @@ type Agent = {
   name: string;
   role: Role;              // "satto" | "ibang" | "hobang" | "yebang" | "byeongbang" | "hyeongbang" | "gongbang" | "seonbi" | "munjangga" | "yeokgwan" | "cheonmungwan" | "daejangjangi" | "hwawon" | "moksu" | "sagwan" | "amhaengeosa" | "yeonguijeong" | "household"
   homeTownId: string | "capital";
-  shared: boolean;         // shared specialist from 한양
+  shared: boolean;         // shared specialist from Jung City
   state: AgentState;
   currentTaskId?: string;
   location: { townId: string | "capital"; buildingId?: string; path?: Point[] };
@@ -217,14 +217,14 @@ Constraint: a task's `townId` determines which memory an agent may access while 
 
 ## 9. UI requirements
 
-- Province map with 한양 in the center and towns around it; roads connecting each town to the capital.
+- Province map with Jung City in the center and towns around it; roads connecting each town to the capital.
 - Click a town to zoom to the town view; a back button returns to the province.
 - Click an agent to open a panel: name, role, state, current task, 실록 (scrollable log).
 - Palace panel: the 영의정's latest briefing + list of pending decisions (from all towns).
 - Town notice board (방) panel: today's summary.
 - Jail (옥) panel: quarantined tasks with "retry", "dismiss", or "inspect".
 - "Found a town" action: add a new town in the next free slot.
-- "Hire" action: add an agent to a town (or as a shared specialist in 한양).
+- "Hire" action: add an agent to a town (or as a shared specialist in Jung City).
 
 ---
 
@@ -232,14 +232,14 @@ Constraint: a task's `townId` determines which memory an agent may access while 
 
 - Joseon-era: hanok buildings with giwa (tiled) roofs, 초가 (thatched) for smaller buildings, stone walls, a 성문 gate on each town, pine trees, hills.
 - Characters are distinguishable by role through clothing/hats: 사또 in official robes (관복), 선비 with a 갓, craftsmen in work clothes, 포졸 with spears, 파발 on horseback, 암행어사 in plain clothes (only revealed when flagging).
-- Palace in 한양 is clearly the largest, most ornate building.
+- Palace in Jung City is clearly the largest, most ornate building.
 - Style (pixel art / illustrated / 3D) is open; keep it consistent.
 
 ---
 
 ## 11. Build phases
 
-1. **Static province map:** 한양 + palace, 2–3 towns, roads, zoom in/out.
+1. **Static province map:** Jung City + palace, 2–3 towns, roads, zoom in/out.
 2. **Agents and states:** place agents, drive position/animation from state; agent detail panel with log.
 3. **Event stream:** hook into real agent events (or a mock event generator first), map events to visuals per section 6.
 4. **Signals:** 신문고, 봉수대, 옥, 주막, 방, scaffolding.

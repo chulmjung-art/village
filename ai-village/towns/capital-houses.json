@@ -1,10 +1,10 @@
 {
- "town": "hanyang",
- "note": "Walkable houses in 한양. door.y = the doorway itself (where you walk in); door.stairs_bottom = the foot of its steps (where you come back out). seats = desk spots inside the room (2048 px room coordinates) where people sit to work; route = optional waypoints from the room's door to the seats, around furniture.",
- "player_height": 56,
+ "town": "jung-city",
+ "note": "Walkable houses in Jung City. door.y = the doorway itself (where you walk in); door.stairs_bottom = the foot of its steps (where you come back out). seats = desk spots inside the room (2048 px room coordinates) where people sit to work; route = optional waypoints from the room's door to the seats, around furniture. Map: the palace district of Jung City (4K, Higgsfield job 72fd01c6). player_height = half of the 광화문 middle archway (about 98 px).",
+ "player_height": 49,
  "spawn": {
-  "x": 1637,
-  "y": 1000
+  "x": 1656,
+  "y": 1820
  },
  "houses": [
   {
@@ -12,23 +12,23 @@
    "name": "Throne hall (근정전)",
    "interior": "assets/interiors/capital-throne-hall.webp",
    "door": {
-    "x": 1637,
-    "y": 770,
+    "x": 1656,
+    "y": 1112,
     "w": 110,
-    "stairs_bottom": 867
+    "stairs_bottom": 1225
    },
    "room_scale": 0.55,
    "room_top": 0.16
   },
   {
    "id": "kings-office",
-   "name": "편전 (King's office): where 영의정 이균 works",
+   "name": "사정전 (King's office): where 영의정 이균 works",
    "interior": "assets/interiors/capital-kings-office.webp",
    "door": {
-    "x": 1164,
-    "y": 530,
+    "x": 1658,
+    "y": 790,
     "w": 70,
-    "stairs_bottom": 626
+    "stairs_bottom": 815
    },
    "seats": [
     [
@@ -48,14 +48,25 @@
    ]
   },
   {
+   "id": "chimjeon",
+   "name": "강녕전 (the 임금's quarters): where 상선 김모심 waits",
+   "interior": "assets/interiors/personal-steward.webp",
+   "door": {
+    "x": 1658,
+    "y": 572,
+    "w": 60,
+    "stairs_bottom": 612
+   }
+  },
+  {
    "id": "library",
-   "name": "Jibokjae library: shared specialists' study (선비 서물음)",
+   "name": "집옥재 library: shared specialists' study (선비 서물음)",
    "interior": "assets/interiors/capital-library.webp",
    "door": {
-    "x": 2143,
-    "y": 530,
+    "x": 2632,
+    "y": 652,
     "w": 70,
-    "stairs_bottom": 626
+    "stairs_bottom": 690
    },
    "seats": [
     [
@@ -77,36 +88,48 @@
    ]
   },
   {
-   "id": "yeonguijeong",
-   "name": "Residence west of the lake (empty for now)",
-   "interior": "assets/interiors/capital-yeonguijeong.webp",
+   "id": "p-sagwan",
+   "name": "Palace archive: 사관 오남김 and the palace 규장각 (east compound)",
+   "interior": "assets/interiors/personal-sagwan.webp",
    "door": {
-    "x": 220,
-    "y": 897,
+    "x": 2680,
+    "y": 1078,
     "w": 60,
-    "stairs_bottom": 965
-   }
+    "stairs_bottom": 1110
+   },
+   "seats": [
+    [
+     1012,
+     1250
+    ]
+   ]
   },
   {
-   "id": "chimjeon",
-   "name": "침전 (the 임금's quarters): where 상선 김모심 waits",
-   "interior": "assets/interiors/personal-steward.webp",
+   "id": "household-inbox",
+   "name": "Palace household office (내관 윤편지), south-west compound",
+   "interior": "assets/interiors/personal-munjangga.webp",
    "door": {
-    "x": 1642,
-    "y": 1477,
+    "x": 736,
+    "y": 1812,
     "w": 60,
-    "stairs_bottom": 1545
-   }
+    "stairs_bottom": 1850
+   },
+   "seats": [
+    [
+     1010,
+     1370
+    ]
+   ]
   },
   {
    "id": "p-helper",
-   "name": "Household kitchen (상궁 정살림)",
+   "name": "Household kitchen (상궁 정살림), south-west compound",
    "interior": "assets/interiors/personal-helper.webp",
    "door": {
-    "x": 2289,
-    "y": 1452,
-    "w": 60,
-    "stairs_bottom": 1503
+    "x": 564,
+    "y": 1958,
+    "w": 50,
+    "stairs_bottom": 1980
    },
    "seats": [
     [
@@ -116,14 +139,31 @@
    ]
   },
   {
+   "id": "household-finance",
+   "name": "Palace household office (내관 곽곳간), south-east compound",
+   "interior": "assets/interiors/personal-hyeongbang.webp",
+   "door": {
+    "x": 2580,
+    "y": 1815,
+    "w": 60,
+    "stairs_bottom": 1850
+   },
+   "seats": [
+    [
+     620,
+     1470
+    ]
+   ]
+  },
+  {
    "id": "p-seonbi",
-   "name": "Shared specialists' workshop (화원 이붓, 목수 장이음)",
+   "name": "Shared specialists' workshop (화원 이붓, 목수 장이음), south-east compound",
    "interior": "assets/interiors/personal-seonbi.webp",
    "door": {
-    "x": 2339,
-    "y": 2020,
-    "w": 60,
-    "stairs_bottom": 2057
+    "x": 2400,
+    "y": 1958,
+    "w": 50,
+    "stairs_bottom": 1980
    },
    "seats": [
     [
@@ -137,57 +177,6 @@
     [
      1400,
      1500
-    ]
-   ]
-  },
-  {
-   "id": "household-inbox",
-   "name": "Palace household office (내관 윤편지)",
-   "interior": "assets/interiors/personal-munjangga.webp",
-   "door": {
-    "x": 1000,
-    "y": 1430,
-    "w": 60,
-    "stairs_bottom": 1498
-   },
-   "seats": [
-    [
-     1010,
-     1370
-    ]
-   ]
-  },
-  {
-   "id": "p-sagwan",
-   "name": "Palace archive: 사관 오남김 and the palace 규장각",
-   "interior": "assets/interiors/personal-sagwan.webp",
-   "door": {
-    "x": 267,
-    "y": 1608,
-    "w": 60,
-    "stairs_bottom": 1648
-   },
-   "seats": [
-    [
-     1012,
-     1250
-    ]
-   ]
-  },
-  {
-   "id": "household-finance",
-   "name": "Palace household office (내관 곽곳간)",
-   "interior": "assets/interiors/personal-hyeongbang.webp",
-   "door": {
-    "x": 1617,
-    "y": 2102,
-    "w": 60,
-    "stairs_bottom": 2148
-   },
-   "seats": [
-    [
-     620,
-     1470
     ]
    ]
   }

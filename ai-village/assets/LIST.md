@@ -7,7 +7,7 @@ is in `../NOTES.md`.
 ## maps/ — full-map overviews (the base ground for each town)
 | File | What | Size |
 |---|---|---|
-| `capital-personal-map.webp` | Palace (capital, 한양) on top; Personal town ring below | 3312 × 2480 |
+| `capital-personal-map.webp` | Palace (capital, Jung City) on top; Personal town ring below | 3312 × 2480 |
 | `mojoco-map.webp` | Mojoco walled town, with the south-wall strip and spaced east side | 3840 × 2160 |
 
 ## houses/ — building exteriors (placed on the town ground as pieces)
@@ -71,3 +71,6 @@ Columns: left foot, standing, right foot. Feet sit on y = 390 in every frame. Se
 - kim-mosim.webp: 김모심, the 상선 (chief of staff), K-drama look: green robe, wingless black cap, gold belt.
 - kim-mosim-myeongpae.webp: 김모심 walking while holding the red 명패 summons tablet (for when they're calling someone).
 - satto-bak-jeongdo.webp: 사또 박정도, Mojoco's director. Deep indigo robe, double-crane 흉배, winged 사모, short beard.
+
+## New world (2026-11-25): assets/new-world/
+- Final overview, region and walkable maps for the new seamless world (not wired into the game yet). See the NOTES.md HANDOFF section.

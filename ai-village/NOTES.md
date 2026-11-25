@@ -637,3 +637,170 @@ A running record of every decision we make, so nothing gets lost between session
   - Bowing: everyone near the 임금 stops, faces him and bows (eased in and out; side views lean toward him, front/back views lower the head). Anyone about to be walked into steps aside out of his path first, then bows.
   - 상선 김모심 always carries himself slightly bowed (deeper when standing). His hands gathered in front like a eunuch needs a new Higgsfield sheet (from his current sheet as reference); awaiting the director's OK on the cost.
 - 상선 HUMBLE SHEET (director approved, 2 credits; balance 23.25 → about 21.25): 9b3200d0-2314-43f1-a761-c79243da1aa4 (gpt_image_2_6, 2K high), redrawn from his K-drama sheet a31785e5 as the same person, walking slightly bowed with his hands joined inside his sleeves in front (gongsu), arms not swinging. Cut out to assets/characters/kim-mosim.webp (old sheet backed up in scratchpad mosim2/kim-mosim.before-bow.webp). The in-code lean on him is turned off since the bow is in the art. His 명패 calling sheet is unchanged (upright, holding the tablet). (version 54)
+- Map editor Outline & fill (director): new Brush / Outline & fill switch in the edit bar. In Outline & fill, drag around an area with the current tool (can walk, can't walk, roof, no roof); a dashed outline in the tool's colour shows while drawing; on letting go, every square inside it (and under the line) is set at once, at the chosen square size. Saved and undone as one stroke like brush strokes. Tested: a 200x160 rectangle fills exactly 13x11 medium squares. (version 55)
+- Tiny tiles (director): the editor has a new "tiny" square size (4 px) besides small (8), medium (16) and large (32), for brush and outline & fill. The walk grid is now kept in 4 px squares (upsampled from the 8 px files at load); routes are planned on an 8 px copy rebuilt after edits, so pathfinding stays fast. Tested on the Mojoco map: grid 960x540 built in 26 ms, a route in 37 ms, rebuild after an edit 10 ms, and a 4 px-thin wall is respected (the route goes around through its gap). Roof squares were already 4 px. (version 56)
+- Efficiency pass (director, version 57):
+  1. Each agent's brief lists only the people of their own town; a 사또 also knows 영의정 이균 and 상선 김모심; 영의정 also knows every 사또.
+  2. Routing (영의정 choosing the 사또) and the 사또's "who does it" step run on Sonnet 5.5; the actual work and the checks keep each agent's own model.
+  3. No routing call when the owner is obvious: the task names a 사또 or their town, or there's only one 사또 (personal matters still go through the 영의정). The 영의정 still phones the 사또 (scripted call).
+  4. Chats send the last 10 lines (was 30); the meeting transcript the last 20 (was 40).
+  - Productivity: agents keep notes: when the 임금 approves a task, the worker writes one or two sentences worth remembering (Sonnet, one short reply), saved in the artifact database (collection "agentnotes", last 30 per agent) and included in their brief from then on ("What you've learned on the job"). The repo NOTES.md files stay as the base memory; Claude can copy learned notes into them on request.
+  - Productivity: a "Briefing" button: 영의정 sums up, in his chat, what needs the 임금 (approvals, stuck, candidates), what's done in the last day, and what's in progress, from the to-do list only (Sonnet).
+  - The director declined sending anything to Cowork: everything stays inside the village.
+- Director's decision: no combined fast path for simple tasks. Every task keeps the full handoff (the 사또 hands it to a worker, the worker does it, the lead checks it); "we will trust the workers to do the work."
+- MEGA MAP DECISIONS (director, approved):
+  - Rebuild as one expandable world map, Stardew-style grid: ground tiles (grass, curved paths, water, forest) painted in our style + current buildings cut out of the old maps as separate pieces (footprint blocked, roof fades, door). Editing on the tiny (4 px) grid; Claude can edit grid data directly on request.
+  - World holds 한양 (capital), Mojoco, one empty town slot (director's next town), extra clearings for future towns, woods all around so the world can grow; roads connect everything.
+  - Travel: the 임금 and 영의정 anywhere; 사또 may visit other towns; workers stay in their own town.
+  - Royal Library (the Jibokjae library building): shared knowledge for 영의정, 상선, every 사또, the 암행어사 and the shared specialists. Each town's own memory (규장각) still stays in that town; workers use only their town's records.
+  - Houses: keep 12, remove 5. 한양 keeps throne hall, 편전, 침전, library (= Royal Library), specialists' workshop, household kitchen, palace archive, and ONE merged 내관 office (윤편지 + 곽곳간); removes the empty residence west of the lake and the second 내관 office. Mojoco keeps 관아, records house, and the 육방 office as the town office (질청) for every 방 (이방 + 예방 + future 호방/병방/형방/공방); removes the 예방 office (merged), the empty scholar's house and the empty forge.
+  - Rule from now on: no house without a person or a job; empty buildings go; houses are added on empty plots only when a specific job needs one. Plots: 한양 2-3, Mojoco 3-4, new town slot laid out later.
+  - Interiors repainted with more floor space (about 2 credits each), at least the merged offices and the throne hall. Director: Higgsfield credits are fine, he'll top up if needed.
+  - Local version files (local/server.js, js/local-claude.js, night behaviour) kept; moving to the Mac comes after the remake.
+- WORLD MAP CONCEPTS (director approved 2.25 credits): 3 low 1K tests for an original dreamy Joseon-inspired world (two levels: a painted world map you travel across + detailed walkable town maps). 1) 4ac834cc-66aa-43c1-bf58-2285d1a183ac golden painted game-map, palace by a lake, river town, islands; 2) 88092f17-187b-4681-a350-de2fbddbad68 dramatic misty karst peaks, waterfalls, turquoise sea (most like the dreamy reference); 3) 6838b682-ffed-40e9-9d38-d79f096db9e5 storybook watercolour, autumn colours, ringed capital, rice terraces, lotus pond. Director decided on 2D (no 3D). Waiting for his pick; final is one 4K high (3.25 credits).
+- FINAL WORLD MAP (director approved 3.25 credits): 76cf3840-017b-4947-9b92-3e4013ad34a9 (gpt_image_2_6 4K high, 3312x2480), concept 1 layout + concept 2 vibrancy, made distinctly Joseon (rounded granite pine mountains, Gyeongbokgung-style palace with ridge wall and gates, Gyeonghoeru-style lake pavilion, thatched and tiled hanok, jangseung, stone pagoda temple, bamboo grove, rice terraces, islands with a sailboat). Saved as assets/world/world-map.webp (3.4 MB; the 19 MB source PNG stays in the scratchpad: world/world4k.png). Empty spots: the big sunny meadow in the south-east (Town 3), the meadow with a pavilion and white tree in the north-west and the meadow east of the rice terraces (future towns). Credits used today: 2.25 + 3.25 = 5.5; balance about 15.75.
+- Director scrapped the 4K world map 76cf3840 (too Chinese: vibrancy, colours, clouds, bamboo). New direction: strictly Korean, Joseon like the K-dramas, with explicit negative Chinese keywords. assets/world removed.
+- KOREAN TESTS (director approved 1.5 credits; balance about 14.25): A 8d731d98-e52f-46ea-a9ab-b23617809de5 painted game map in K-drama colours (concept 1 layout); B 44a45bd9-8ba0-4699-94e9-a13f70fcf357 Joseon folk-painting style on hanji (walled capital on the hill, magistrate town on the river, onggi jars, persimmon trees, jangseung, ferry boats). Both read clearly Korean. Waiting for the director's pick; final 4K is 3.25 credits.
+- 4K of test A: d2803fb4-ddd3-48d4-9637-58d0128dd5c6 (3.25 credits; balance about 11). Submitted before the director's follow-up "combine A and B but keep A's style". Issue spotted: the red gate in front of the palace came out looking like a Japanese torii, not a Korean hongsalmun (which has a row of red vertical slats and a taegeuk centre). Waiting on the director's OK for a combined version (A's style + B's details: wall along the ridges, magistrate compound, jangdokdae, persimmon trees, jangseung, a correct hongsalmun) at 3.25 credits.
+- FINAL WORLD MAP v2 (director approved 3.25 credits; balance about 7.75): 148e2931-7a36-495e-a7d7-a57f9f79e365 (gpt_image_2_6 4K high, 3312x2480): test A's style + test B's details. The red gate is removed; the capital's wall climbs the ridges (Hanyang Doseong style) with gate towers; Mojoco has a walled magistrate's compound (gwana) east of the river; onggi jar terraces, persimmon trees and a pair of jangseung by the bay. Saved as assets/world/world-map.webp (source PNG in scratchpad world/worldAB4k.png). Empty land: large meadow by the bay (south-east) for Town 3, the meadow with a pavilion in the north-west, the meadow north-east of the magistrate's compound.
+- WORLD MAP IN THE GAME (version 58): a "World" tab and a "World map" button. The world map (assets/world/world-map.webp) is a walkable map like a town: the 임금 (and 상선 following) walk on it at a small scale (player height 30 px). Towns are marked with gold rings and name tags; walking into 한양 or Mojoco enters that town; leaving a town by the World map button puts you back at that town's ring. Town 3 and two future town sites are dashed rings ("nothing built here yet"). The town tabs are fast travel (post horse / palanquin). Walk grid towns/world-walk.json: sea found by colour + smoothness, the river traced by hand, the three stone bridges kept walkable; the far sky/mountain strip at the top blocked; fine-tune with the map editor (it saves per map, so world edits are separate). World files: towns/world-houses.json (rings + spawn by the capital's south gate), world-props/effects/people/roofs.json, assets/world/world-roofs.webp (empty). Agents travelling between towns on the world map is the next step.
+- World map walking fixed (director spotted people could walk over houses): travel now follows the roads, the three bridges and the open meadows the roads reach; buildings, walls, trees, forests, mountains and water are blocked (11% of the map walkable). Roads traced by hand: palace courtyard → south gate → north bridge → river town; town → east bridge → Mojoco's magistrate's compound → north-east site; town → south bridge → rice fields → Town 3 meadow; down to the jangseung; west road from the south gate to the north-west site. Meadows found by colour, kept only where a road reaches them. No roof areas needed on the world map since nobody walks behind buildings there. (version 59)
+- TILE-WORLD STYLE TESTS (no credits; drawn in code with scratchpad tiles/pix.py): director likes moving to a tile/pixel world (like Stardew/Pokemon, upgraded). Test 1: close-up town street (grass, dirt paths, river with wooden bridge, tiled-roof hanok and straw choga houses, doldam walls, onggi jars, jangseung, red pines, persimmon trees, the King converted from his own sheet to pixel art). Test 2: separate island world map like the director's 3rd image (palace, Mojoco, Town 3 sign, flags for future sites, mountains, lake, river, roads, bridges). Test 3: the same seamless world zoomed out, with a dashed box showing the screen while walking. Waiting for the director's pick.
+- Template idea (village.config.json so others can plug in their own maps/characters) paused by the director: focus on our own world first. The started config file was removed; nothing in the code had been changed for it. New style references from the director: (1) detailed 16-bit RPG pixel art (waterfalls, river, bridges, big leafy trees, flowers), (2) cozy hand-painted top-down (inn with gardens, stone paths, fences, pond), (3) a Pokemon-style illustrated world map with several regions/islands joined by roads.
+- TOWN STYLE TESTS (director approved 2.25 credits; balance about 5.5): A 70ec112c-f0ef-4dad-bb45-b91bba8868f0 16-bit pixel Joseon street; B 56fa802a-df7b-4faf-88ae-dbb63a857526 cozy hand-painted Joseon street; C 176ac2f5-0f6e-4d4d-a94d-7b53cd53e15c dreamy pixel landscape (cliffs, waterfalls) with a Joseon village. All three read clearly Korean. Waiting for the director's pick.
+- GRID-LOCKED TESTS (director approved 1.5 credits; balance about 4): A 87230206-6292-423d-a980-c582949095de and C 1f49585a-7544-412c-8987-e3e287bbe03b. Both truly top-down and grid-aligned like Stardew / RPG Maker: straight paths, walls, riverbanks and cliff ledges, right-angle turns, every building facing south. A = village blocks with tiled walls, gates, jar platforms, a straight river and a bridge, jangseung; C = granite cliff ledges with twin waterfalls into a square pool, a stepped stream with bridges, village houses, a vegetable plot. Waiting for the director's pick.
+- RENAME (director): 한양 is now **Jung City**, everywhere people see it: the town tab ("Jung City · Capital"), the world map ring, every agent's instructions and profile, TEAM.md, HOUSES.md, SPEC.md, STYLE_GUIDE.md, assets/LIST.md, town notes and the in-game roster line. Internal ids stay ("capital", home "hanyang") so nothing breaks; NOTES.md history keeps the old name.
+- FIVE TOWNS (director): the world holds five towns; Jung City and Mojoco are locked in and Joseon-themed; Towns 3, 4, 5 are reserved spots, each may get its own theme later. World map rings renamed accordingly (Town 3 by the bay, Town 4 in the north-west meadow, Town 5 in the north-east meadow). Saved in TEAM.md.
+- Grid-locked style approved in principle (tests A and C both liked): Joseon towns from test A's style; test C's cliffs/waterfalls for countryside.
+- JUNG CITY v1: 2bfd4187-582a-444e-9e18-d46ead65d960 (4K high, 3.25 credits; submitted just before the director asked for low-quality drafts first; balance about 200.75). Grid-locked: square city wall with a gate on each side and roads leaving all four edges (Jung City is the centre of the world); palace compound with a two-tiered throne hall on a stone courtyard behind its own wall and gate, two halls behind it; east and west compounds (library / archive candidates); a main east-west market street and a north-south avenue; workshop with a forge, kitchen with jar platforms, tiled and thatched homes in walled plots, three empty fenced plots (bottom left and right); a straight stream with two wooden bridges and a stone bridge; fields and pines outside the wall. Saved in scratchpad jung/jung_v1.png. Rule from now on: low-quality drafts (0.75) until the director locks a version in, then 4K.
+- JUNG CITY draft 2 (low, 0.75; balance about 200): 5ef1f8c9-3bc4-4097-9bf2-50bf6383f5ed, laid out like the real Gyeongbokgung: Gwanghwamun with three arches and haetae; the Geumcheon stream with the Yeongjegyo stone bridge; Heungnyemun; Geunjeongjeon (two-tiered) in a stone courtyard with rank stones inside covered corridors; Sajeongjeon and Gangnyeongjeon behind; Gyeonghoeru on a square pond with two islands (west); Hyangwonjeong hexagonal pavilion on an island pond (north-west); east compound (crown prince / Jibokjae area); palace wall with gates on all four sides; outside Gwanghwamun: government compounds, market street, workshop with forge, kitchen with jars, homes, three empty plots (bottom right). Bugaksan mountain missing (forest instead).
+- JUNG CITY draft 3 (low, 0.75; balance about 199): 2bb492dc-4794-4938-a207-cc6c6d4eea50, zoomed out to the whole capital: Bugaksan behind, the palace (same layout as draft 2) in the upper middle, Yukjo street, the Cheonggyecheon-style stream crossing east-west with stone bridges, Jongno market street with a bell pavilion, walled hanok blocks, craft quarters, empty plots, a square city wall with gates on all four sides (the south gate like Sungnyemun with its round outer wall), farms and woods outside. Note: at this zoom one 4K image makes buildings tiny compared with walking characters, so the real map would be built in pieces (or the final image enlarged) to keep a walkable scale.
+- Jung City master plan = draft 3 (2bb492dc), approved by the director. PIECE 1 draft (low, 0.75; balance about 198): palace district 47ad6a52-4ccb-43f0-8830-03d004c078e3 at walking scale: pine slope (Bugaksan) at the top, north gate, Hyangwonjeong pavilion pond (north-west), residence halls and Amisan garden terraces, Jibokjae library + small pavilion (north-east), Geunjeongjeon courtyard with rank stones inside corridors, Gyeonghoeru on its pond with islands (west), east compound, Geumcheon stream + Yeongjegyo, Heungnyemun, Gwanghwamun with haetae; straight streets on the left, right and bottom edges for joining the next pieces. Plan: each piece ends on a road or wall so joins fall on straight edges.
+
+## Jung City palace district: 4K locked in (2026-11-24)
+- 4K final: Higgsfield job 72fd01c6-b809-4cd9-aad2-3917b79dc0bf (gpt_image_2_6, 4:3, high, 4k; 3.25 credits, approved by the director). Image is 3312x2480 and keeps the layout of draft 47ad6a52.
+- Local copy: scratchpad jung/palace_4k.png (not in the repo yet).
+- Gwanghwamun middle archway is about 98px tall in the 4K image, so the character should be about 49px (half the archway, the director's rule). Zoom is available in game.
+- Next, once the director says go: put it in the game as the capital, with doors, walk grid, roofs and the house-to-hall mapping.
+- **Version 62 (published): Jung City is now the palace district.** The 4K palace map replaced the old capital map (director: "totally overwrite any old map files"). Same file names, so the tab is unchanged:
+  - assets/maps/capital-personal-map.webp: the new map, 3312x2480.
+  - assets/maps/capital-roofs.webp: roof tiles of every hall and gate, traced from the art (scratchpad jung/build/write.py).
+  - towns/capital-walk.json: 8px grid traced from the ground colours, plus hand-traced walls, buildings, ponds, the stream, statues and rank stones. Passages are opened: the 3 광화문 arches, 흥례문, the 영제교 bridge, 근정문, the side gates, paths around the courtyard, and paths into each compound (scratchpad jung/build/walk.py). Only ground connected to the spawn is kept.
+  - towns/capital-houses.json: player_height 49 (half of the 광화문 middle arch). You arrive just inside 광화문 at (1656,1820). Doors:
+    - throne-hall → 근정전
+    - kings-office → 사정전
+    - chimjeon → 강녕전
+    - library → 집옥재
+    - p-sagwan → east compound main hall
+    - household-inbox → south-west main hall
+    - p-helper → south-west small hall
+    - household-finance → south-east main hall
+    - p-seonbi → south-east small hall
+    - The empty "yeonguijeong" residence was dropped (no unused houses).
+  - towns/capital-props.json: emptied. The old props belonged to the old map.
+  - towns/capital-effects.json: water shimmer on 경회루 / 향원정 / 금천, and night window glows on the halls.
+  - Map paint for this map is now saved under "capital-palace" (TOWNS.capital.edits), so the director's paint from the old map doesn't land on the new one. The old strokes are still in the db under mapedits/capital.
+  - towns/capital-blockers.json is unused by the engine (left as is).
+
+## New world (2026-11-24): Joseon maps deleted, starting from scratch
+- The director: "forget and delete the whole joseon map… only the maps". Deleted locally:
+  - Map images: capital, Mojoco and world, plus their roofs, and the walkmaps/ tracing images.
+  - Map data: walk / roof / prop / effect / blocker files for capital, Mojoco and world, plus world-houses and world-people.
+  - Kept: the people (*-people.json), houses (*-houses.json: ids, interiors, seats; door positions get redone), court.json, interiors, characters and props.
+  - The published page (version 62) still has the old maps until the new world is published.
+- The new world plan, from the director:
+  - A main island for the capital and personal projects, plus one island per project. For now: Mojoco's island and one other project island. Every other island stays empty until we build on it.
+  - The capital island sits in the centre of the map, with Mojoco's island to the west / north-west. The layout idea comes from the director's reference: a world map of several islands in a sea, ringed by clouds.
+  - The world map is drawn first, as the zoomed-out blueprint. Walkable pieces come later, at the palace scale (character 49px), with fade transitions between pieces (cheapest).
+  - Long scenic journeys with waterfalls and no buildings unless approved. Not Joseon-specific any more: each town gets its own theme.
+- World map drafts (low, 0.75 each, approved): A = job 91a73a07-8f6b-4c1b-8e1b-c16824fb3271, B = job d79308e0-2d70-4b05-8944-ac04b48473b1. Copies in scratchpad world2/. Waiting for the director to pick one.
+- Grid world map drafts (low, 0.75 each, approved): grid A = job 95f30d94-bf85-4f37-ad7e-1491cc1af738 (from draft A), grid B = job 9b6d3c75-2382-4e1d-a9f6-afab30326df1 (from draft B). Scratchpad world2/.
+- The director rejected both grid drafts ("make it as close to the pokemon one as possible"). I declined to copy the Pokémon map, its regions are theirs, and drew original maps with its qualities instead: many packed islands, dense detail, glossy painted style, regions with clear personalities, connecting roads and routes. Painted drafts (0.75 each, approved): P-A = job 148d1d96-89dc-403b-bd67-abd56bfb6f09, P-B = job 8e747425-ceff-431a-bd98-0607b68d6820.
+- Combined draft (B base + A's top-left mountains, 0.75, approved): job 399c23a4-90a7-4a5c-91ee-c21a0a7801b1.
+- Strict grid pixel version of the combined map (0.75, approved): job 6f2a89ca-5857-4ea6-9064-57b238e60015.
+- The director liked the pixel world map (6f2a89ca) and moved to the zoomed-in version, Joseon styled. Capital piece 1 draft (palace + royal plaza, 0.75, approved): job 4b720c36-ef6e-4d7d-99c7-35d7526d9f55, using the old palace 4K for style only.
+- The director scrapped capital piece 1 and wants a rectangular, expandable world like a classic region map, with no round islands. Rect drafts (0.75 each, approved) from pixel map 6f2a89ca: R-A = job c7811ecd-1cf6-4f03-84f4-2870d96b2aab, R-B = job 46ef2e99-2b1e-43c8-af12-e12a5d0ca880.
+- New world rules from the director, plus the MOJOCO brand guide:
+  - Colours: navy #0E2A44, Prussian #1A4A6B, soft blue #BCD6EA, ivory #F6F1E9, white #FDFCFA, mist #F0EFF1. Fonts: Comfortaa / Inter. Tagline "Fresh care, anywhere". Website mojocohome.com.
+  - Ocean world with natural-shaped islands of different sizes.
+  - Capital = the main central island, Joseon style.
+  - Mojoco island to the west and slightly north of the capital, in Mojoco brand style.
+  - A big irregular landmass to the north-east = the director's next project (empty with trees).
+  - All other islands empty, with a moderate amount of trees.
+  - Ocean drafts (0.75 each, approved): O-A = job 4b6c7431-d1aa-43a1-a803-11f3fde309c9, O-B = job 6fd54234-5a84-4bcc-8a41-5f6d76194a90.
+- Revised ocean A, with fewer and bigger islands grouped closer (0.75, approved): job fce1de9d-2e92-4817-8da3-9b48c8a6ced2.
+- The director made their own world map (director_map.webp in scratchpad world2/, from upload 17.webp). This is now the base world map. Capital = the central island with the brown volcano. Mojoco = the region west of the centre. Next project = the big top-right landmass.
+- Capital town (outside the palace wall; walking through the main gate loads the separate palace map). Bright pixel-RPG town style with Joseon buildings, dirt and stone ground, grass only where chosen. Draft v1 (0.75, approved): job 9a6bbc77-3861-4483-b600-a1b28c45f964, scratchpad capital3/.
+- The capital is a whole region that fills its island (like a classic region map): capital city with palace (the palace map loads separately later), volcano hot-spring village, harbour, farming village, scholars' north island, south-west fishing hamlet and temple. Region draft v1 (0.75, approved): job e85d2ab5-6eb0-405d-bf7e-75928d211545. Note: upload.higgsfield.ai is blocked by this session's network, so the island shape was given in words, not as an image reference.
+- Added upload.higgsfield.ai to the environment's allowed hosts (approved), so uploads work now. Island cut-out media f372dd0c-c712-4e8c-88d1-f43cad346bac. Region v2 with the exact world-map island shape (0.75, approved): job 8677e5c8-12eb-4102-ba9b-21147b72ec1a.
+- The director loves region v2. Grid-locked version (0.75, approved): job 330b2395-b3dd-4be0-8de0-4e61f5e2d1f7.
+- Capital region 4K (3.25, approved): job 35ee116c-2689-4d69-b587-628496a93ba0, saved as capital3/region_4k.png. Pasted onto the director's world map at (560,330)-(1280,860) with soft edges to make world2/world_map_v2.png, so the world map matches the region. The director's original file is kept.
+- Mojoco region: hanok in brand colours (director's choice 1). Cut-out media e2c3a158-9550-4e90-be9f-bf8c8db790e7 from world_map_v2 (380,230)-(1000,700). Draft v1 (0.75): job d9d0848d-3ba9-4845-9910-4870f593f09d, scratchpad mojoco2/.
+- Mojoco fully grid-locked (0.75, approved): job 667df0dd-a57b-4d07-b13e-97fe6920ecd8.
+- Mojoco 4K (3.25, approved): job 648957ed-90ec-49e9-8095-f8ccb3d08487, mojoco2/region_4k.png. Pasted its left 70% (the Mojoco part) onto world_map_v2 at (380,230)-(1000,700) to make world2/world_map_v3.png. The capital paste is kept.
+- Capital city walkable map draft v1 (0.75, approved): job 0e88ebd8-f4fd-4181-8666-1aaa2cf3fa55. Layout guide = city crop media bc68a60c-84ed-45a4-933c-3f7f5279f2e4 (region 4K (1800,760)-(2950,1700)); style = town draft 9a6bbc77.
+- Capital city v2, true to the region map with no extras (0.75, approved): job 8d92deb0-774f-4cc9-af1d-4ada8b4ca524. The zelkova tree in v1 came from my prompt and the style reference; the director wants it accurate to the world map.
+- Capital city v3, spread out so every house is open with its own yard and path (0.75, approved): job b3ab3c77-75b8-4035-96bd-e6919c153d07. The director: once locked, adjust the world map to match.
+- Capital city 4K (3.25, approved): job 5e8075ef-16c0-4ffb-9d1b-4b3d6f9eb5df, capital3/city_4k.png. Matched the maps to it: pasted the city into region 4K at (1800,760)-(2950,1700) to make region_4k_v2.png, then pasted the region (right 70%, keeping the Mojoco paste) into the world map to make world2/world_map_v4.png.
+- The director: nothing goes into the game until the map is finished. Palace map (separate map behind the capital gate), as close to the real Gyeongbokgung as possible. Draft v1 (0.75, approved): job ca3c831e-db55-422d-b2bf-6a2da32cb930, scratchpad palace2/.
+- Palace v2, adding 집옥재, the Yeongjegyo bridge and a bigger square 경회루 pond (0.75, approved): job 719e27d2-488c-4e1a-9588-765b7dd6b77e.
+- Palace v3, wider with all additions (동궁, 소주방, 자경전, 수정전, archive, Amisan chimneys, 3 side gates, water channels, meeting courtyard, lawns) (0.75, approved): job 196b42ba-c0c2-4538-8778-d52d74f6d283.
+- Palace 4K (3.25, approved): job 6540c98f-3c53-47f7-85fe-207ba519bfed, palace2/palace_4k.png. Not in the game yet (the director: finish the map first).
+- Mojoco town walkable map draft v1 (0.75): job f6b667a0-a812-4416-859b-f7fcb79c9fcc. Layout guide = town crop media 3ece9ee3-6433-43fb-bdfb-8bebdf04bbf9 (Mojoco region 4K (960,1300)-(2160,2420)).
+- Mojoco town 4K (3.25, approved): job fcbd960b-cf9c-4961-8d8f-4d7590a04c74, mojoco2/town_4k.png. Pasted into the Mojoco region 4K at (960,1300)-(2160,2420) to make region_4k_v2.png, then into the world map (left 70% of the Mojoco box) to make world2/world_map_v5.png.
+- 2026-11-25: The director generated the forge village and wellness garden themselves from my prompts (uploads 21.webp forge, 22.webp garden; copies in mojoco2/user_imgs/). Pasted into the Mojoco region (garden (1020,700)-(1820,1340), forge (1740,680)-(2500,1320)) to make region_4k_v3.png, then into the world map to make world2/world_map_v6.png.
+- Prompts and reference crops handed to the director for the 3 capital-region towns (capital3/ref_hotspring_village.png (1300,900)-(2000,1420), ref_scholars_island.png (1700,130)-(2540,760), ref_temple_island.png (150,1640)-(880,2190), all cut from region_4k_v2). The director wants the map animated in the end (swaying trees, moving water, smoke): plan = the engine's existing effects layer plus marking positions, and optional tree sprites later.
+- The director generated the hot-spring village, scholars' island and temple island (uploads 23/24/25.webp, copies in capital3/user_imgs/). Pasted into the capital region at the reference crop boxes (city re-pasted on top where the hot-spring box overlaps) to make region_4k_v3.png, then into the world map (right 70% of the capital box) to make world2/world_map_v7.png. Note: the temple island is the left-most part of the capital box, so it got its own extra paste on the world map.
+- Fixed the temple island bridge by hand: tiled a straight bridge piece from the director's temple image across the gap at about (830-975, 1912) in region_4k_v3, and covered the leftover old bridge with water. Rebuilt world_map_v7 from v6.
+
+## HANDOFF (2026-11-25): start here in a new session
+**Where things stand**
+- The old Joseon maps were deleted (director's choice). The new world is designed but **nothing is in the game yet**; the director said finish the map first. The published page (version 62) still shows the old maps.
+- The final art is saved in `assets/new-world/`:
+  - `world-map.webp`: the director's world map, with the capital and Mojoco regions pasted in.
+  - `world-map-director-original.webp`: the director's untouched original.
+  - `capital-region.webp` and `mojoco-region.webp`: region overviews, grid-locked pixel art.
+  - `capital-city.webp`: walkable town outside the palace wall.
+  - `palace.webp`: Gyeongbokgung-style; the only area that loads separately, through the city gate.
+  - `mojoco-town.webp`: walkable, in Mojoco brand colours.
+  - `pieces/`: hot-spring village, scholars' island, temple island, forge village, wellness garden (all made by the director), plus `demo-world-blocks.png`.
+- Higgsfield job ids for every image are listed above in these notes.
+- The overview maps have visible paste seams (for example the temple-island bridge). That's one reason for the new plan below.
+
+**Decision: build ONE seamless world from tiles (building blocks)**
+- The director wants one huge walkable world: the capital, Mojoco, the islands and the roads, with no loading screens except the palace.
+- Image generation caps at about 4K and can't match edges, so the world is built from tiles, like a classic pixel RPG.
+- Layers:
+  1. Land and water (with autotiled coasts and cliffs).
+  2. Ground: grass, dirt, stone, sand.
+  3. Objects: trees, rocks, lanterns, fences, bridges.
+  4. Buildings: cut-out sprites.
+- Each tile knows whether it's walkable, so walk areas come automatically.
+- Tiles are about 32px; the character is 49px tall.
+- The engine only draws the tiles near the player.
+- The world map is the blueprint: code reads its colours into terrain blocks (`pieces/demo-world-blocks.png` shows this works; the clouds at the edges must be removed). A scale dial sets how many tiles each blueprint pixel becomes; the target is about 1–2 minutes of walking from the capital to Mojoco.
+- Towns are laid out from the existing walkable maps above, which act as blueprints.
+- Animation (water tiles, swaying tree sprites, smoke) comes later through the effects layer.
+
+**Work split:** the director generates the tile sheets in Higgsfield to save Claude usage. Claude cuts the sheets into tiles, builds the tile editor and the seamless world in `js/village.js`, and lays out a first version. The director fine-tunes in the editor.
+
+**Next steps**
+1. **The director makes Sheet 1 (ground and water) and drops it in.** Check that it's a usable grid: 8×8 equal tiles, seamless, with water and dirt edge sets.
+   - Settings: GPT Image 2.6, 1:1, low 1K then 4K.
+   - Style reference: capital city 4K (job 5e8075ef-16c0-4ffb-9d1b-4b3d6f9eb5df), with the line "Use the reference image ONLY for its art style...; do not copy its layout."
+2. Then Sheets 2–4, on solid magenta (#FF00FF) for easy cutting:
+   - Sheet 2: nature and decorations.
+   - Sheet 3: grey-roof buildings, walls, palace gate, temple, tower.
+   - Sheet 4: Mojoco brand-colour buildings.
+3. Cut the sheets. Build the tile engine (chunked rendering, autotiling, walkability per tile) and the tile-painting editor. Convert the world map into blocks and place the towns.
+4. Budget: about 20 Higgsfield credits for all sheets. After that, building costs no credits.
+
+**Standing rules that still apply**
+- The director only uses their own subscriptions: no API keys, no pay-per-use services.
+- Ask before spending Higgsfield credits, with a cost estimate first.
+- Draft at low quality (0.75), then 4K (3.25) once a version is locked in.
+- Show each piece before moving on.
+- Don't commit until the director says "commit".
+- Don't self-test; the director tests.
+- Never use Fable.
+- The agent safety rules (email is always a draft, no spending, no publishing, the director approves everything) are enforced in code.

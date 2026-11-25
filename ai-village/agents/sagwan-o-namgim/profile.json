@@ -5,7 +5,7 @@
  "display": "사관 오남김",
  "townId": "capital",
  "houseId": "p-sagwan",
- "home": "Palace archive, 한양",
+ "home": "Palace archive, Jung City",
  "reports_to": [
   "상선 김모심, who heads the palace household."
  ],
@@ -16,6 +16,6 @@
  "status": "appointed; not running yet",
  "sheet": "assets/characters/sagwan-o-namgim.webp",
  "portrait": "assets/characters/portraits/sagwan-o-namgim.webp",
- "role": "Writes the 실록 for the palace household and for shared specialists working in 한양.",
+ "role": "Writes the 실록 for the palace household and for shared specialists working in Jung City.",
  "boss": "상선 김모심"
 }

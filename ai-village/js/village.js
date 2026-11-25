@@ -7,7 +7,9 @@
 
   const TOWNS = {
     mojoco: { map: "assets/maps/mojoco-map.webp", props: "towns/mojoco-props.json", fx: "towns/mojoco-effects.json", houses: "towns/mojoco-houses.json", people: "towns/mojoco-people.json", walk: "towns/mojoco-walk.json", roofs: "towns/mojoco-roofs.json" },
-    capital: { map: "assets/maps/capital-personal-map.webp", props: "towns/capital-props.json", fx: "towns/capital-effects.json", houses: "towns/capital-houses.json", people: "towns/capital-people.json", walk: "towns/capital-walk.json", roofs: "towns/capital-roofs.json" },
+    world: { map: "assets/world/world-map.webp", props: "towns/world-props.json", fx: "towns/world-effects.json", houses: "towns/world-houses.json", people: "towns/world-people.json", walk: "towns/world-walk.json", roofs: "towns/world-roofs.json" },
+    // edits = where this map's grid paint is saved; a new name for the palace-district map so the old map's paint doesn't land on it
+    capital: { edits: "capital-palace", map: "assets/maps/capital-personal-map.webp", props: "towns/capital-props.json", fx: "towns/capital-effects.json", houses: "towns/capital-houses.json", people: "towns/capital-people.json", walk: "towns/capital-walk.json", roofs: "towns/capital-roofs.json" },
   };
 
   const canvas = document.getElementById("scene");
@@ -57,6 +59,7 @@
     return gust * (0.6 * Math.sin(t * 1.3 + x * 0.003) + 0.4 * Math.sin(t * 2.7 + x * 0.007) + 0.35);
   }
 
+  let arriveAt = null;   // where to put the 임금 when the next town loads (set when leaving a town for the world map)
   async function loadTown(key) {
     loadingEl.hidden = false;
     loadingEl.textContent = "Loading the town…";
@@ -102,10 +105,11 @@
       town.people = [];
       if (t.people) loadPeople(t.people).then((ppl) => { if (town && town.key === key) { town.people = ppl; placeHires(); } });
       inside = null;
-      { const sp = nearestFree(houses.spawn.x, houses.spawn.y); placePlayer(kingImg, sp.x, sp.y, 0); }
+      { const at = arriveAt && arriveAt.town === key ? arriveAt : houses.spawn; arriveAt = null;
+        const sp = nearestFree(at.x, at.y); placePlayer(kingImg, sp.x, sp.y, 0); }
       aide.img = aideImg; placeAide();
       fitCamera();
-      cam.s = Math.min(cam.max, Math.max(cam.min, 1.1)); follow = true; centerOnPlayer(1);
+      cam.s = Math.min(cam.max, Math.max(cam.min, key === "world" ? 1.7 : 1.1)); follow = true; centerOnPlayer(1);
       loadingEl.hidden = true;
     } catch (e) {
       loadingEl.textContent = "This town didn't load. Check your connection and reload the page.";
@@ -149,6 +153,7 @@
     canvas.setPointerCapture(e.pointerId);
     if (editor.on && !inside && town && e.button === 0 && pointers.size === 0 && !keys.has("pan")) {
       const w = toWorld(e), G = editor.size, gx = Math.floor(w.x / G), gy = Math.floor(w.y / G);
+      if (editor.shape === "outline") { editor.stroke = { id: e.pointerId, t: editor.tool, g: G, cells: new Set(), pts: [[w.x, w.y]], outline: true }; return; }
       editor.stroke = { id: e.pointerId, t: editor.tool, g: G, cells: new Set([gx + "," + gy]) };
       paintSquare(editor.tool, gx, gy, G); return;
     }
@@ -162,6 +167,11 @@
   });
   canvas.addEventListener("pointermove", (e) => {
     if (editor.on && town) editor.hover = toWorld(e);
+    if (editor.stroke && editor.stroke.outline && e.pointerId === editor.stroke.id) {   // drawing an outline: just record it
+      const w = toWorld(e), st = editor.stroke, last = st.pts[st.pts.length - 1];
+      if (Math.hypot(w.x - last[0], w.y - last[1]) > Math.max(2, st.g / 4)) st.pts.push([w.x, w.y]);
+      return;
+    }
     if (editor.stroke && e.pointerId === editor.stroke.id) {
       const w = toWorld(e), st = editor.stroke, key = Math.floor(w.x / st.g) + "," + Math.floor(w.y / st.g);
       if (!st.cells.has(key)) { st.cells.add(key); paintSquare(st.t, Math.floor(w.x / st.g), Math.floor(w.y / st.g), st.g); }
@@ -191,7 +201,11 @@
     }
   });
   const endPointer = (e) => {
-    if (editor.stroke && e.pointerId === editor.stroke.id) { saveStroke(editor.stroke); editor.stroke = null; return; }
+    if (editor.stroke && e.pointerId === editor.stroke.id) {
+      if (editor.stroke.outline) fillOutline(editor.stroke);
+      if (editor.stroke.cells.size) saveStroke(editor.stroke);
+      editor.stroke = null; return;
+    }
     if (grab && e.pointerId === grab.id) {
       grab = null; canvas.style.cursor = editor.on ? "crosshair" : "";
       if (!inside && town && town.nav && !footFree(player.x, player.y, player.h * 0.14)) { const p0 = nearestFree(player.x, player.y); player.x = p0.x; player.y = p0.y; }
@@ -258,40 +272,66 @@
         for (let x = Math.floor((p.x - rx) / C); x <= Math.floor((p.x + rx) / C); x++)
           if (x >= 0 && y >= 0 && x < gw && y < gh) g[y * gw + x] = 0;
     }
-    // a slightly narrower copy for planning routes, so people keep a step away from walls
-    const safe = new Uint8Array(g);
-    for (let y = 1; y < gh - 1; y++) for (let x = 1; x < gw - 1; x++) {
-      const i = y * gw + x;
-      if (g[i] && !(g[i - 1] && g[i + 1] && g[i - gw] && g[i + gw])) safe[i] = 0;
-    }
-    return { C, gw, gh, g, safe };
+    // the walk grid is kept in 4 px squares (so the editor can paint tiny squares); routes are planned on an 8 px copy
+    const k = Math.max(1, Math.round(C / 4)), fw = gw * k, fh = gh * k, fg = new Uint8Array(fw * fh);
+    for (let y = 0; y < fh; y++) for (let x = 0; x < fw; x++) fg[y * fw + x] = g[((y / k) | 0) * gw + ((x / k) | 0)];
+    const n = { C: C / k, gw: fw, gh: fh, g: fg, k, safe: null, coarse: null, navDirty: true };
+    rebuildNav(n);
+    return n;
   }
-  const navAt = (x, y, grid) => {
-    const n = town && town.nav; if (!n) return true;
+  // a slightly narrower copy (a step away from walls) and the coarse route grid, rebuilt after edits
+  function rebuildNav(n) {
+    const { gw, gh, g, k } = n;
+    let safe = new Uint8Array(g);
+    for (let it = 0; it < k; it++) {
+      const prev = safe.slice();
+      for (let y = 1; y < gh - 1; y++) for (let x = 1; x < gw - 1; x++) {
+        const i = y * gw + x;
+        if (prev[i] && !(prev[i - 1] && prev[i + 1] && prev[i - gw] && prev[i + gw])) safe[i] = 0;
+      }
+    }
+    n.safe = safe;
+    const cw = Math.ceil(gw / k), ch = Math.ceil(gh / k), cg = new Uint8Array(cw * ch), cs = new Uint8Array(cw * ch);
+    for (let cy = 0; cy < ch; cy++) for (let cx = 0; cx < cw; cx++) {
+      let any = 0, all = 1;
+      for (let dy = 0; dy < k; dy++) for (let dx = 0; dx < k; dx++) {
+        const x = cx * k + dx, y = cy * k + dy; if (x >= gw || y >= gh) continue;
+        const i = y * gw + x; if (g[i]) any = 1; if (!safe[i]) all = 0;
+      }
+      cg[cy * cw + cx] = any; cs[cy * cw + cx] = any && all ? 1 : 0;
+    }
+    n.coarse = { C: n.C * k, gw: cw, gh: ch, g: cg, safe: cs };
+    n.navDirty = false;
+  }
+  const navAt = (x, y, grid, N) => {
+    const n = N || (town && town.nav); if (!n) return true;
     const cx = Math.floor(x / n.C), cy = Math.floor(y / n.C);
     return cx >= 0 && cy >= 0 && cx < n.gw && cy < n.gh && (grid || n.g)[cy * n.gw + cx] === 1;
   };
   const footFree = (x, y, r) => navAt(x, y) && navAt(x - r, y) && navAt(x + r, y) && navAt(x, y - r * 0.6);
-  function nearestFree(x, y, grid) {
-    const n = town.nav; if (!n) return { x, y };
-    const G = grid || n.g, cx0 = Math.floor(x / n.C), cy0 = Math.floor(y / n.C);
-    for (let r = 0; r < 60; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
+  function nearestFree(x, y, grid, N) {
+    const n = N || town.nav; if (!n) return { x, y };
+    if (!N && n.navDirty) rebuildNav(n);
+    const G = grid || n.g, cx0 = Math.floor(x / n.C), cy0 = Math.floor(y / n.C), maxR = Math.ceil(480 / n.C);
+    for (let r = 0; r < maxR; r++) for (let dy = -r; dy <= r; dy++) for (let dx = -r; dx <= r; dx++) {
       if (Math.max(Math.abs(dx), Math.abs(dy)) !== r) continue;
       const cx = cx0 + dx, cy = cy0 + dy;
       if (cx >= 0 && cy >= 0 && cx < n.gw && cy < n.gh && G[cy * n.gw + cx]) return { x: (cx + 0.5) * n.C, y: (cy + 0.5) * n.C };
     }
     return { x, y };
   }
-  function lineFree(x0, y0, x1, y1, grid) {
-    const n = town.nav, d = Math.hypot(x1 - x0, y1 - y0), steps = Math.ceil(d / (n.C * 0.5));
-    for (let i = 1; i <= steps; i++) { const k = i / steps; if (!navAt(x0 + (x1 - x0) * k, y0 + (y1 - y0) * k, grid)) return false; }
+  function lineFree(x0, y0, x1, y1, grid, N) {
+    const n = N || town.nav, d = Math.hypot(x1 - x0, y1 - y0), steps = Math.ceil(d / (n.C * 0.5));
+    for (let i = 1; i <= steps; i++) { const k = i / steps; if (!navAt(x0 + (x1 - x0) * k, y0 + (y1 - y0) * k, grid, n)) return false; }
     return true;
   }
   // A* over the walk grid, then straightened, so routes follow the paths around walls and buildings
   function findPath(sx, sy, tx, ty, raw) {
-    const n = town.nav; if (!n) return [{ x: tx, y: ty }];
+    const nav = town.nav; if (!nav) return [{ x: tx, y: ty }];
+    if (nav.navDirty) rebuildNav(nav);
+    const n = nav.coarse || nav;                       // routes are planned on the coarse copy
     const G = raw ? n.g : n.safe, W = n.gw, H = n.gh;
-    const s0 = nearestFree(sx, sy, G), t0 = nearestFree(tx, ty, G);
+    const s0 = nearestFree(sx, sy, G, n), t0 = nearestFree(tx, ty, G, n);
     const s = Math.floor(s0.y / n.C) * W + Math.floor(s0.x / n.C), t = Math.floor(t0.y / n.C) * W + Math.floor(t0.x / n.C);
     const gs = new Float32Array(W * H).fill(Infinity), came = new Int32Array(W * H).fill(-1), shut = new Uint8Array(W * H);
     const heap = [], hf = []; const tx0 = t % W, ty0 = (t / W) | 0;
@@ -321,7 +361,7 @@
     const pts = []; for (let i = t; i !== -1; i = came[i]) pts.push({ x: (i % W + 0.5) * n.C, y: (((i / W) | 0) + 0.5) * n.C });
     pts.reverse();
     const out = []; let a = { x: sx, y: sy };
-    for (let k = 1; k < pts.length; k++) if (!lineFree(a.x, a.y, pts[k].x, pts[k].y, G)) { out.push(pts[k - 1]); a = pts[k - 1]; }
+    for (let k = 1; k < pts.length; k++) if (!lineFree(a.x, a.y, pts[k].x, pts[k].y, G, n)) { out.push(pts[k - 1]); a = pts[k - 1]; }
     out.push(footFree(tx, ty, 2) ? { x: tx, y: ty } : t0);
     return out;
   }
@@ -457,7 +497,7 @@
       if (stepAlong(r, dt, r.h * 1.9)) exitHouse(r);
       return;
     }
-    const wantWork = working.has(r.id) && !!house;
+    const wantWork = (working.has(r.id) || isNightNow()) && !!house;   // at night everyone goes home
     // about to be walked into: step aside out of the 임금's path (then bow)
     if (here && !r.seated) {
       if (r.dodge) {
@@ -631,6 +671,23 @@
     if (r.seat && r.seat[0] > ROOM / 2) ctx.scale(-1, 1);
     ctx.drawImage(img, -kw / 2, -kh, kw, kh); ctx.restore();
   }
+  function drawWorldMarkers() {
+    const fs = 14 / cam.s;
+    for (const h of town.houses) {
+      if (h.portal === undefined && !h.empty) continue;
+      const x = h.door.x, y = h.door.y;
+      ctx.save();
+      ctx.beginPath(); ctx.ellipse(x, y, h.door.w / 2, h.door.w / 5, 0, 0, Math.PI * 2);
+      ctx.fillStyle = h.portal ? "rgba(201,162,39,0.22)" : "rgba(255,255,255,0.12)"; ctx.fill();
+      ctx.strokeStyle = h.portal ? "rgba(201,162,39,0.85)" : "rgba(255,255,255,0.55)"; ctx.lineWidth = 2 / cam.s;
+      if (!h.portal) ctx.setLineDash([6 / cam.s, 4 / cam.s]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.font = `600 ${fs}px "Gowun Batang", serif`;
+      const w = ctx.measureText(h.name).width + fs, bh = fs * 1.5, by = y - h.door.w / 5 - bh - 4 / cam.s;
+      ctx.fillStyle = "rgba(28,22,16,0.75)"; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x - w / 2, by, w, bh, fs * 0.5) : ctx.rect(x - w / 2, by, w, bh); ctx.fill();
+      ctx.fillStyle = h.portal ? "#f3e6c8" : "#c9b99b"; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(h.name, x, by + bh / 2);
+      ctx.restore();
+    }
+  }
   function drawLabel(a) {
     // title + name, always shown together, at a steady size on screen
     const fs = 13 / cam.s;
@@ -774,6 +831,12 @@
     if (!inside) {
       const d = town.houses.find((h) => inDoor(h.door));
       if (!d) { player.armed = true; return; }
+      if (d.portal !== undefined || d.empty) {     // a town on the world map
+        if (!player.armed) return;
+        player.armed = false;
+        if (d.portal) travelTo(d.portal); else flashHint(d.name + ": nothing built here yet.");
+        return;
+      }
       if (player.armed && player.dir === "up") goInside(d);
     } else {
       const atExit = Math.abs(player.x - ROOM / 2) < ROOM * 0.09 && player.y > ROOM - player.h * 0.35;
@@ -851,8 +914,8 @@
     const list = all.filter((a) => a.img && !a.drawn && a.y <= beforeY).sort((a, b) => a.y - b.y);
     for (const a of list) { a === player ? drawPlayer() : a.seated ? drawSeated(a) : drawSprite(a); a.drawn = true; }
   }
-  // 호패 (wooden ID tag) on the belt, coloured by home: 한양 red, each town its own colour.
-  // Shared specialists keep the 한양 colour anywhere. The 암행어사 shows none while in disguise; the 임금 wears none.
+  // 호패 (wooden ID tag) on the belt, coloured by home: Jung City red, each town its own colour.
+  // Shared specialists keep the Jung City colour anywhere. The 암행어사 shows none while in disguise; the 임금 wears none.
   const HOPAE = { hanyang: "#b8342b", mojoco: "#2f5ea6" };
   function drawHopae(a, col) {
     const c = HOPAE[a.home]; if (!c) return;
@@ -1118,7 +1181,7 @@
       const v = t === "walk" ? 1 : 0;
       for (let cy = Math.floor(y0 / n.C); cy < Math.ceil((y0 + h) / n.C); cy++)
         for (let cx = Math.floor(x0 / n.C); cx < Math.ceil((x0 + w) / n.C); cx++)
-          if (cx >= 0 && cy >= 0 && cx < n.gw && cy < n.gh) { n.g[cy * n.gw + cx] = v; n.safe[cy * n.gw + cx] = v; n.dirty = true; }
+          if (cx >= 0 && cy >= 0 && cx < n.gw && cy < n.gh) { n.g[cy * n.gw + cx] = v; n.dirty = true; n.navDirty = true; }
     } else if ((t === "roof" || t === "unroof") && town.roof) {
       const R = town.roof;
       if (t === "roof") R.ctx.drawImage(town.img, x0, y0, w, h, x0, y0, w, h); else R.ctx.clearRect(x0, y0, w, h);
@@ -1137,7 +1200,7 @@
         for (let cx = Math.floor((x - r) / n.C); cx <= Math.floor((x + r) / n.C); cx++) {
           if (cx < 0 || cy < 0 || cx >= n.gw || cy >= n.gh) continue;
           if (Math.hypot((cx + 0.5) * n.C - x, (cy + 0.5) * n.C - y) > r) continue;
-          n.g[cy * n.gw + cx] = v; n.safe[cy * n.gw + cx] = v; n.dirty = true;
+          n.g[cy * n.gw + cx] = v; n.dirty = true; n.navDirty = true;
         }
     } else if ((t === "roof" || t === "unroof") && town.roof) {
       const R = town.roof, g = R.ctx;
@@ -1153,6 +1216,29 @@
       R.dirty = true; R.piecesDirty = true;
     }
   }
+  // outline & fill: every square inside the drawn outline (and under the outline itself) gets the tool, all at once
+  function fillOutline(st) {
+    const G = st.g, pts = st.pts;
+    const add = (gx, gy) => { if (gx >= 0 && gy >= 0 && gx * G < town.w && gy * G < town.h) st.cells.add(gx + "," + gy); };
+    for (let i = 0; i < pts.length; i++) {          // the outline line itself
+      const [x0, y0] = pts[i], [x1, y1] = pts[(i + 1) % pts.length], n = Math.max(1, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / (G / 3)));
+      if (i === pts.length - 1 && pts.length < 3) break;
+      for (let k = 0; k <= n; k++) add(Math.floor((x0 + (x1 - x0) * k / n) / G), Math.floor((y0 + (y1 - y0) * k / n) / G));
+    }
+    if (pts.length >= 3) {                          // everything inside (even-odd rule)
+      const xs = pts.map((p) => p[0]), ys = pts.map((p) => p[1]);
+      const gx0 = Math.floor(Math.min(...xs) / G), gx1 = Math.floor(Math.max(...xs) / G), gy0 = Math.floor(Math.min(...ys) / G), gy1 = Math.floor(Math.max(...ys) / G);
+      for (let gy = gy0; gy <= gy1; gy++) for (let gx = gx0; gx <= gx1; gx++) {
+        const cx = (gx + 0.5) * G, cy = (gy + 0.5) * G; let inside = false;
+        for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+          const [xi, yi] = pts[i], [xj, yj] = pts[j];
+          if ((yi > cy) !== (yj > cy) && cx < (xj - xi) * (cy - yi) / (yj - yi) + xi) inside = !inside;
+        }
+        if (inside) add(gx, gy);
+      }
+    }
+    for (const key of st.cells) { const [gx, gy] = key.split(",").map(Number); paintSquare(st.t, gx, gy, G); }
+  }
   function applyStroke(st) {
     if (st.cells) { for (const [gx, gy] of st.cells) paintSquare(st.t, gx, gy, st.g); return; }
     const pts = st.pts; let px = null, py = null;
@@ -1163,7 +1249,8 @@
       px = x; py = y;
     }
   }
-  const strokeKey = () => "mapedits/" + town.key + "/strokes";
+  const editsKey = () => (TOWNS[town.key] && TOWNS[town.key].edits) || town.key;
+  const strokeKey = () => "mapedits/" + editsKey() + "/strokes";
   async function loadEdits() {
     // saved edits (shared, so they show for everyone and Claude can read them); this browser's copy as a fallback
     let list = [];
@@ -1171,7 +1258,7 @@
     if (editor.db) {
       try { const snap = await editor.db.collection(strokeKey()).orderBy("seq").limit(1000).get();
         list = snap.docs.map((d) => ({ id: d.id, ...d.data() })); } catch (e) { console.warn("edits not readable", e); }
-    } else list = store.get("village.edits." + town.key, []);
+    } else list = store.get("village.edits." + editsKey(), []);
     for (const st of list) applyStroke(st.cells ? { t: st.t, g: st.g, cells: st.cells.split(";").map((p) => p.split(",").map(Number)) }
                                                 : { t: st.t, r: st.r, pts: st.pts.split(";").map((p) => p.split(",").map(Number)) });
     editor.mine = list.map((st) => st.id).filter(Boolean);
@@ -1182,12 +1269,12 @@
       try { const ref = await editor.db.collection(strokeKey()).add(body); editor.mine.push(ref.id); return; }
       catch (e) { console.warn("could not save edit", e); }
     }
-    const loc = store.get("village.edits." + town.key, []); loc.push(body); store.set("village.edits." + town.key, loc);
+    const loc = store.get("village.edits." + editsKey(), []); loc.push(body); store.set("village.edits." + editsKey(), loc);
   }
   async function undoStroke() {
     // undo = delete the last saved stroke, then rebuild this town's ground and roofs from scratch
     if (editor.db && editor.mine.length) { const id = editor.mine.pop(); try { await editor.db.collection(strokeKey()).doc(id).delete(); } catch (e) {} }
-    else { const loc = store.get("village.edits." + town.key, []); loc.pop(); store.set("village.edits." + town.key, loc); }
+    else { const loc = store.get("village.edits." + editsKey(), []); loc.pop(); store.set("village.edits." + editsKey(), loc); }
     const k = town.key; await loadTown(k); setEditing(true);
   }
   function setEditing(on) {
@@ -1195,6 +1282,10 @@
     canvas.style.cursor = on ? "crosshair" : "";
   }
   edBtn.addEventListener("click", () => setEditing(!editor.on));
+  editor.shape = "brush";
+  for (const b of document.querySelectorAll("[data-shape]")) b.addEventListener("click", () => {
+    editor.shape = b.dataset.shape; document.querySelectorAll("[data-shape]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+  });
   for (const b of document.querySelectorAll("[data-tool]")) b.addEventListener("click", () => {
     editor.tool = b.dataset.tool; document.querySelectorAll("[data-tool]").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
   });
@@ -1232,6 +1323,12 @@
       for (let x = vx0; x <= vx1; x += G) { ctx.moveTo(x, vy0); ctx.lineTo(x, vy1); }
       for (let y = vy0; y <= vy1; y += G) { ctx.moveTo(vx0, y); ctx.lineTo(vx1, y); }
       ctx.stroke(); ctx.restore();
+    }
+    if (editor.stroke && editor.stroke.outline && editor.stroke.pts.length > 1) {
+      const col = { walk: "60,208,112", block: "230,40,40", roof: "43,92,240", unroof: "170,187,204" }[editor.stroke.t] || "255,255,255";
+      ctx.save(); ctx.beginPath(); editor.stroke.pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.closePath();
+      ctx.fillStyle = `rgba(${col},0.22)`; ctx.fill();
+      ctx.strokeStyle = `rgba(${col},0.95)`; ctx.lineWidth = 2.5 / cam.s; ctx.setLineDash([8 / cam.s, 5 / cam.s]); ctx.stroke(); ctx.restore();
     }
     if (editor.hover) { const hx = Math.floor(editor.hover.x / G) * G, hy = Math.floor(editor.hover.y / G) * G;
       ctx.save(); ctx.strokeStyle = "#fff"; ctx.lineWidth = 2 / cam.s; ctx.strokeRect(hx, hy, G, G); ctx.restore(); }
@@ -1291,7 +1388,7 @@
   }
   function endMeeting() {
     const house = town.houses.find((h) => h.id === court.data.hall);
-    if (!house) { // not in 한양 right now: just close the meeting
+    if (!house) { // not in Jung City right now: just close the meeting
       court.active = false; player.seated = false;
       meetingBtn.textContent = "Call Meeting"; meetingBtn.setAttribute("aria-pressed", "false"); return;
     }
@@ -1365,6 +1462,12 @@
   }
 
   // ---------- light: real clock, with manual override ----------
+  // night on the director's own clock (10 pm to 6 am), or when the Night button is on
+  function isNightNow() {
+    if (lightMode === "night") return true;
+    if (lightMode === "day") return false;
+    const h = new Date().getHours(); return h >= 22 || h < 6;
+  }
   function lighting() {
     if (lightMode === "day") return { night: 0, dusk: 0 };
     if (lightMode === "night") return { night: 1, dusk: 0 };
@@ -1788,6 +1891,7 @@
       for (const p of town.props) { drawActors(p.y); drawProp(p, t); }
       drawActors(Infinity);
       drawRoofs(dt);
+      if (town.key === "world") drawWorldMarkers();
       drawOverRoofs(t);
       drawEditOverlay();
       for (const a of [aide, ...town.people.filter((r) => r.visible)]) if (a.img) drawLabel(a);
@@ -1918,9 +2022,42 @@
   const chatKey = (id) => "village.chat." + id;
   const ORDERS_KEY = "village.orders";
 
-  async function roster() {   // one line per agent, so everyone knows who's who
-    const ps = await Promise.all(ALL_AGENTS.map(profileOf));
-    return ps.filter(Boolean).map((p) => `- ${p.display} (${p.townId === "mojoco" ? "Mojoco" : "한양"}): ${p.role || ""} Reports to: ${p.boss || "?"}.`).join("\n");
+  async function roster(forId) {   // the people this agent needs: their own town; a 사또 also knows the 영의정 and the 상선
+    const ps = (await Promise.all(ALL_AGENTS.map(profileOf))).filter(Boolean), me = ps.find((p) => p.id === forId);
+    const keep = (p) => !me || p.townId === me.townId || (me.title === "사또" && (p.id === CHIEF || p.id === "sangseon-kim-mosim")) || (me.id === CHIEF && p.title === "사또");
+    return ps.filter(keep).map((p) => `- ${p.display} (${p.townId === "mojoco" ? "Mojoco" : "Jung City"}): ${p.role || ""} Reports to: ${p.boss || "?"}.`).join("\n");
+  }
+  // ---------- notes learned on the job (database collection "agentnotes", one document per agent) ----------
+  const learned = {};
+  async function notesDb() { return (window.claude && claude.use ? await claude.use("db").catch(() => null) : null); }
+  async function getLearned(id) {
+    if (learned[id]) return learned[id];
+    let list = [];
+    const db = await notesDb();
+    if (db) { try { const d = await db.collection("agentnotes").doc(id).get(); list = (d && d.data() && d.data().notes) || []; } catch (e) {} }
+    else list = store.get("village.agentnotes." + id, []);
+    return (learned[id] = list);
+  }
+  async function addLearned(id, text) {
+    const list = [...(await getLearned(id)), { t: Date.now(), text: plainText(text, 300) }].slice(-30);
+    learned[id] = list;
+    const db = await notesDb();
+    if (db) { try { await db.collection("agentnotes").doc(id).set({ notes: list }); return; } catch (e) { console.warn(e); } }
+    store.set("village.agentnotes." + id, list);
+  }
+  // after the 임금 approves, the worker writes down what's worth remembering (one short Sonnet reply)
+  async function learnFrom(t) {
+    const sample = await getSample(); if (!sample || !t.doerId) return;
+    const p = await profileOf(t.doerId); if (!p) return;
+    const fixes = t.steps.filter((s2) => /^Sent (it )?back/.test(s2.text)).map((s2) => s2.who + ": " + s2.text).join("\n");
+    try {
+      const { text } = await sample(`You are ${p.display} in "My AI Village" (${p.role}). The 임금 just approved your work.
+Task: "${t.text}"
+What you did: ${t.summary}
+${fixes ? "It was sent back along the way:\n" + fixes + "\n" : ""}Write ONE or TWO short sentences worth remembering for next time: how the 임금 likes things, or a lesson about this kind of work. Plain sentences only, no heading. If there's nothing worth keeping, reply NONE.`, { ...SONNET, cache: false });
+      const note = String(text || "").trim();
+      if (note && !/^none\b/i.test(note)) { await addLearned(t.doerId, note); step(t, p.display, "Noted for next time: " + note); }
+    } catch (e) { console.warn(e); }
   }
   async function characterBrief(id, extra) {
     const p = await profileOf(id);
@@ -1932,7 +2069,7 @@ Your personality: ${p.personality}
 Answer his interview questions honestly and in character: what you'd do, how you'd work, what you're good and not good at. Address him respectfully (e.g. 전하). Reply in the language he uses, 1-4 sentences. You are not hired yet; don't act as if you are. You can only talk.
 ${extra || ""}`;
     }
-    const [ins, notes, team] = await Promise.all([getText(`agents/${id}/INSTRUCTIONS.md`), getText(`agents/${id}/NOTES.md`), roster()]);
+    const [ins, notes, team, lessons] = await Promise.all([getText(`agents/${id}/INSTRUCTIONS.md`), getText(`agents/${id}/NOTES.md`), roster(id), getLearned(id)]);
     return `You are ${p.display}, a character in "My AI Village", a Joseon-era village where every character is an AI agent serving the 임금 (the King). The 임금 is the real person who owns this village.
 Stay fully in character: your own personality, voice and manners, addressing the 임금 respectfully (e.g. 전하).
 
@@ -1945,8 +2082,9 @@ Your own notes (your memory):
 <notes>
 ${notes.slice(0, 8000)}
 </notes>
+${lessons.length ? "\nWhat you've learned on the job (newest last):\n" + lessons.slice(-12).map((l) => "- " + l.text).join("\n") + "\n" : ""}
 
-Everyone in the village:
+The people you work with:
 ${team}
 
 Rules for this conversation:
@@ -1956,6 +2094,7 @@ Rules for this conversation:
 - ${SAFETY.rules} If something needs one of those, prepare it and leave the action to the 임금.
 ${extra || ""}`;
   }
+  const SONNET = Object.freeze({ model: "claude-sonnet-5-5", modelTier: "default" });
   function modelOpts(p) {
     const model = MODEL_ID[p && p.model];
     return model ? { model, modelTier: /opus/.test(model) ? "complex" : "default" } : { modelTier: "default" };
@@ -2123,7 +2262,7 @@ ${extra || ""}`;
     if (!sample) { bubble(chatLog, "", "Talking needs claude.ai: open the village from claude.ai to chat.", "note"); return; }
     const out = bubble(chatLog, p.display, "…", "");
     const ctl = new AbortController(); chatBusy = ctl; chatEl.classList.add("busy");
-    const turns = hist.filter((m) => !m.note).slice(-30).map((m) => ({ role: m.role, content: m.content }));
+    const turns = hist.filter((m) => !m.note).slice(-10).map((m) => ({ role: m.role, content: m.content }));
     while (turns.length && turns[0].role !== "user") turns.shift();
     try {
       if (id === CHIEF || id === "sangseon-kim-mosim") await chiefTurn(sample, p, turns, out, ctl, id);
@@ -2186,7 +2325,7 @@ ${dirs.map((d) => `  - id "${d.id}": ${d.display} of ${d.townId === "mojoco" ? "
     const brief = await characterBrief(id, "- You are answering 영의정 이균, not the 임금. Acknowledge the order in character and say how you'll handle it: who in your town you'd assign and what you'd check. You can't actually start the work yet.");
     const out = bubble(ordersLog, d.display + " → 영의정 이균", "…", "");
     try {
-      const { text } = await sample([{ role: "user", content: brief }, ...hist.slice(-20)], { ...modelOpts(d), cache: false, onText: ({ text: t }) => { out.textContent = t; ordersLog.scrollTop = ordersLog.scrollHeight; } });
+      const { text } = await sample([{ role: "user", content: brief }, ...hist.slice(-10)], { ...modelOpts(d), cache: false, onText: ({ text: t }) => { out.textContent = t; ordersLog.scrollTop = ordersLog.scrollHeight; } });
       hist.push({ role: "assistant", content: text }); store.set(key, hist.slice(-40));
       out.parentElement.remove(); addOrder({ from: d.display, to: "영의정 이균", text });
     } catch (e) { out.textContent = (e && e.text) || errText(e); }
@@ -2207,6 +2346,27 @@ ${dirs.map((d) => `  - id "${d.id}": ${d.display} of ${d.townId === "mojoco" ? "
   ordersEl.querySelector(".clear").addEventListener("click", () => { store.set(ORDERS_KEY, []); renderOrders(); });
   chatEl.querySelector(".clear").addEventListener("click", () => { if (chatWith) { store.set(chatKey(chatWith), []); renderChat(); } });
   const chatBtn = document.getElementById("chat-btn"), ordersBtn = document.getElementById("orders-btn");
+  // the briefing: 영의정 sums up what's done, what's waiting for the 임금, and what's stuck
+  document.getElementById("brief-btn").addEventListener("click", async (e) => {
+    if (!e.isTrusted) return;
+    await openChat(CHIEF);
+    const sample = await getSample();
+    if (!sample) { bubble(chatLog, "", "Talking needs claude.ai: open the village from claude.ai.", "note"); return; }
+    const all = todos(), day = Date.now() - 24 * 3600e3;
+    const line = (t) => `- ${t.text} [${t.status}${t.doer ? ", by " + t.doer : ""}${t.stage ? ", " + t.stage : ""}]`;
+    const facts = `Done in the last day:\n${all.filter((t) => t.status === "done" && t.doneAt > day).map(line).join("\n") || "(none)"}
+Waiting for the 임금's approval:\n${all.filter((t) => t.status === "review").map(line).join("\n") || "(none)"}
+In progress:\n${all.filter((t) => t.status === "working" || t.status === "new").map(line).join("\n") || "(none)"}
+Stuck or needing him:\n${all.filter((t) => t.status === "needs" || t.status === "failed").map(line).join("\n") || "(none)"}
+Candidates waiting in the town hall: ${Object.values(HIRES).filter((h) => h.status === "candidate").map((h) => h.display).join(", ") || "none"}`;
+    const out = bubble(chatLog, "영의정 이균", "…", "");
+    try {
+      const { text } = await sample(`You are 영의정 이균, the 임금's even-handed, calm chief of staff in "My AI Village". Give him his morning briefing from these facts only (don't invent anything):
+${facts}
+Start with what needs HIM (approvals, stuck items, candidates), then what's done, then what's in progress. Short, clear, in character, addressing him as 전하. Use the language of the task texts.`, { ...SONNET, cache: false, onText: ({ text: t2 }) => { out.textContent = t2; chatLog.scrollTop = chatLog.scrollHeight; } });
+      const h = store.get(chatKey(CHIEF), []); h.push({ role: "assistant", content: text }); store.set(chatKey(CHIEF), h);
+    } catch (err) { out.textContent = errText(err); }
+  });
   chatBtn.addEventListener("click", () => (chatEl.hidden ? openChat(chatWith || CHIEF) : closeChat()));
   ordersBtn.addEventListener("click", () => toggleOrders());
 
@@ -2283,7 +2443,7 @@ ${dirs.map((d) => `  - id "${d.id}": ${d.display} of ${d.townId === "mojoco" ? "
     addMeet({ from: "임금", to: tp ? tp.display : "everyone", text });
     renderMeetLog();
     if (!sample) { bubble(meetLog, "", "Talking needs claude.ai: open the village from claude.ai.", "note"); return; }
-    const transcript = store.get(MEET_KEY, []).slice(-40).map((m) => `${m.from}${m.to ? " → " + m.to : ""}: ${m.text}`).join("\n");
+    const transcript = store.get(MEET_KEY, []).slice(-20).map((m) => `${m.from}${m.to ? " → " + m.to : ""}: ${m.text}`).join("\n");
     const ctl = new AbortController(); meetBusy = ctl; meetEl.classList.add("busy");
     const wait = bubble(meetLog, "", "…", "note");
     try {
@@ -2401,7 +2561,7 @@ Reply with ONLY JSON: {"talk": true, "topic": "a few words", "lines": [{"who": "
     if (!talkEl.hidden) renderTalk();
   }
   const villagerTalk = {
-    ready: () => localState !== "none" && !talkBusy && performance.now() - talkLast > 25000,
+    ready: () => localState !== "none" && !talkBusy && !isNightNow() && performance.now() - talkLast > 25000,
     start(a, b) {     // only a real reason starts a conversation; the words are written in the background
       const rs = talkReason(a, b); if (!rs) return false;
       talkBusy = true; talkLast = performance.now();
@@ -2667,6 +2827,7 @@ ${notes ? `- ${dir === doer ? "영의정 이균" : dir.display} sent your last v
     t.status = "done"; t.stage = ""; t.doneAt = Date.now(); t.approvedBy = "임금";
     t.steps.push({ who: "임금", text: "Approved.", at: Date.now() });
     saveTodo(t); hideTip(); announceDone(t);
+    learnFrom(t);
   }
   function sendBackTask(id, notes) {
     const t = todos().find((x) => x.id === id); if (!t || t.status !== "review") return;
@@ -2710,6 +2871,18 @@ ${notes ? `- ${dir === doer ? "영의정 이균" : dir.display} sent your last v
         await new Promise((res) => queueCall(CHIEF, dir.id, t.chiefCall, /[가-힣]/.test(t.text), true).then(res));
         step(t, "영의정 이균", "Called " + dir.display + ": " + t.chiefCall.slice(0, 300));
       } else if (dir && t.promisedBy) step(t, "임금", "Asked " + t.promisedBy + ", who said: " + String(t.promise || "they'd do it").slice(0, 200));
+      const PERSONAL = /\b(personal|family|my (wife|husband|kids?|mom|dad|calendar|inbox|email|money|bills?)|birthday)\b|개인|가족|집안|생일/i;
+      if (!dir) {   // obvious owner: the 사또 the task names, or the only 사또 there is (personal matters still go to the 영의정)
+        const named = dirs.find((d) => t.text.includes(d.name) || (d.townId === "mojoco" && /mojoco|모조코/i.test(t.text)));
+        const only = dirs.length === 1 && !PERSONAL.test(t.text) ? dirs[0] : null;
+        dir = named || only || null;
+        if (dir) {
+          const call = /[가-힣]/.test(t.text) ? `${dir.display}, 전하께서 맡기신 일이오: ${t.text}` : `${dir.display}, a task from His Majesty: ${t.text}`;
+          t.stage = "영의정 이균 is calling " + dir.display; saveTodo(t);
+          await new Promise((res) => queueCall(CHIEF, dir.id, call, /[가-힣]/.test(t.text), true).then(res));
+          step(t, "영의정 이균", "Called " + dir.display + ": " + call.slice(0, 300));
+        }
+      }
       if (!dir) {
         // 1. the chief of staff picks the 사또 and phones them
         t.stage = "영의정 이균 is reading it"; saveTodo(t);
@@ -2718,7 +2891,7 @@ ${notes ? `- ${dir === doer ? "영의정 이균" : dir.display} sent your last v
 ${dirs.map((d) => `  - "${d.id}": ${d.display} (${d.townId === "mojoco" ? "Mojoco" : d.townId}). ${d.role}`).join("\n")}
 - If no 사또 fits (for example it's a personal matter for the 상선), say so.
 - Reply with ONLY JSON: {"to": "<사또 id, or null>", "call": "what you say to that 사또 on the phone, in character", "note": "one line for the 임금 if no 사또 fits"}`);
-        const r1 = await sample.json(b1, { ...modelOpts(chief), cache: false });
+        const r1 = await sample.json(b1, { ...SONNET, cache: false });   // routing is light work: Sonnet
         dir = dirs.find((d) => d.id === (r1 && r1.to));
         if (!dir) { t.status = "needs"; t.stage = "영의정: " + String((r1 && r1.note) || "No 사또 fits this one."); step(t, "영의정 이균", t.stage.slice(5)); return; }
         t.stage = "영의정 이균 is calling " + dir.display; saveTodo(t);
@@ -2738,7 +2911,7 @@ ${dirs.map((d) => `  - "${d.id}": ${d.display} (${d.townId === "mojoco" ? "Mojoc
 ${options.map((p) => `  - "${p.id}": ${p.display}. ${p.role}`).join("\n") || "  (none)"}
 - If you hand it off, write clear instructions: the goal, exactly what to deliver and in what form, any limits, and what you will check before you accept it.
 - Reply with ONLY JSON: {"assign": "self" or "<id>", "why": "one sentence", "instructions": "your clear instructions to the worker (or your own plan if self)", "need_help": "if none of your people really fits this kind of work, what kind of new worker would; else empty"}`);
-      r2 = await sample.json(b2, { ...modelOpts(dir), cache: false });
+      r2 = await sample.json(b2, { ...SONNET, cache: false });   // choosing who does it: Sonnet; the work and the check keep their own models
       doer = r2 && r2.assign !== "self" ? options.find((p) => p.id === r2.assign) : null;
       if (!doer && forceWorker && team.length) doer = team[0];
       doer = doer || dir;
@@ -2952,10 +3125,24 @@ No spaces, no brackets, no notes, no English. Reply with ONLY JSON: {"title": ".
   const HIRE_YES = /^(yes|yep|hire|hired|you'?re hired|welcome aboard|채용|합격|좋다|좋소|그래)\b/i, HIRE_NO = /^(no|nope|not hired|sorry|불합격|안 ?되겠|아니)\b/i;
 
   // ---------- town tabs and light toggle ----------
+  // ---------- travelling between the world map and the towns ----------
+  function selectTab(key) { document.querySelectorAll("[data-town]").forEach((x) => x.setAttribute("aria-selected", String(x.dataset.town === key))); }
+  function travelTo(key) {
+    if (!TOWNS[key] || (town && town.key === key) || court.active) return;
+    if (town && town.key !== "world" && key === "world") {        // leaving a town: come out at that town on the world map
+      const from = town.key;
+      return getJSON(TOWNS.world.houses).then((w) => {
+        const p = w.houses.find((h) => h.portal === from);
+        if (p) arriveAt = { town: "world", x: p.door.x, y: p.door.y + 45 };
+        selectTab("world"); loadTown("world");
+      });
+    }
+    selectTab(key); loadTown(key);
+  }
+  document.getElementById("world-btn").addEventListener("click", (e) => { if (town && town.key === "world") return; travelTo("world"); });
   for (const b of document.querySelectorAll("[data-town]")) {
     b.addEventListener("click", () => {
-      document.querySelectorAll("[data-town]").forEach((x) => x.setAttribute("aria-selected", String(x === b)));
-      loadTown(b.dataset.town);
+      travelTo(b.dataset.town);   // the tabs are fast travel (post horse / palanquin)
     });
   }
   for (const b of document.querySelectorAll("[data-light]")) {

@@ -187,8 +187,9 @@
   <header>
     <h1>My AI Village <span>마을</span></h1>
     <div class="group" role="tablist" aria-label="Town">
+      <button data-town="world" role="tab" aria-selected="false">World</button>
       <button data-town="mojoco" role="tab" aria-selected="true">Mojoco</button>
-      <button data-town="capital" role="tab" aria-selected="false">한양 · Capital</button>
+      <button data-town="capital" role="tab" aria-selected="false">Jung City · Capital</button>
     </div>
     <div class="group" aria-label="Light">
       <button data-light="auto" aria-pressed="true" title="Follow your real clock">Real time</button>
@@ -196,6 +197,8 @@
       <button data-light="night" aria-pressed="false">Night</button>
     </div>
     <button id="meeting" aria-pressed="false" title="Gather the court in the throne hall">Call Meeting</button>
+    <button id="world-btn" title="Leave this town for the world map">World map</button>
+    <button id="brief-btn" title="영의정 이균's briefing: what needs you, what's done, what's in progress">Briefing</button>
     <button id="todo-btn" aria-pressed="false" title="Your to-do list: 영의정 이균 passes each task to the right 사또">To-do</button>
     <button id="chat-btn" aria-pressed="false" title="Chat (T near someone · double-tap M for 영의정 이균 · double-tap N for 상선 김모심)">Chat</button>
     <button id="orders-btn" aria-pressed="false" title="What 영의정 이균 has passed to the 사또">Orders log</button>
@@ -257,12 +260,16 @@
       <button data-tool="block" aria-pressed="false"><i style="background:#e62828"></i>Can't walk</button>
       <button data-tool="roof" aria-pressed="false"><i style="background:#2b5cf0"></i>Roof</button>
       <button data-tool="unroof" aria-pressed="false"><i style="background:transparent;border:1px dashed #9ab"></i>No roof</button>
-      <label>Square <select id="brush"><option value="8">small</option><option value="16" selected>medium</option><option value="32">large</option></select></label>
+      <span class="edsep"></span>
+      <button data-shape="brush" aria-pressed="true" title="Paint squares as you drag">Brush</button>
+      <button data-shape="outline" aria-pressed="false" title="Draw around an area; everything inside fills when you let go">Outline &amp; fill</button>
+      <label>Square <select id="brush"><option value="4">tiny</option><option value="8">small</option><option value="16" selected>medium</option><option value="32">large</option></select></label>
       <button id="undo-edit">Undo</button>
       <button id="done-edit">Done</button>
-      <span class="edhint">Click or drag over squares · hold Space and drag to move the map · saves as you go</span>
+      <span class="edhint">Brush: drag over squares · Outline &amp; fill: draw around an area and let go · hold Space and drag to move the map · saves as you go</span>
     </div>
     <div id="loading">Loading the town…</div>
   </main>
 </div>
+<script src="js/local-claude.js"></script>
 <script src="js/village.js"></script>

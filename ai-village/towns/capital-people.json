@@ -1,6 +1,6 @@
 {
  "town": "hanyang",
- "note": "People who live or work in 한양. house = their building's id in capital-houses.json (yard spots are made around its doorway unless given). They move around their workplace as they like and go inside now and then. The 암행어사 roams in disguise. 상선 김모심 isn't listed: he follows the 임금.",
+ "note": "People who live or work in Jung City. house = their building's id in capital-houses.json (yard spots are made around its doorway unless given). They move around their workplace as they like and go inside now and then. The 암행어사 roams in disguise. 상선 김모심 isn't listed: he follows the 임금.",
  "people": [
   {
    "id": "yeonguijeong-i-gyun",

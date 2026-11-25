@@ -9,7 +9,7 @@ earlier version (the earlier TEAM.md, and any conflicting parts of SPEC.md, the 
 # 1. Structure
 
 ## Levels
-- Province: 한양 (capital) in the center, towns around it, connected by roads.
+- Province: Jung City (capital) in the center, towns around it, connected by roads.
 - Town (고을) = one whole project or company (e.g. Mojoco). One 사또 per town.
 - House = one workstream inside a town (e.g. YouTube, Products, Trading). Houses are workplaces, not homes.
 
@@ -19,7 +19,7 @@ earlier version (the earlier TEAM.md, and any conflicting parts of SPEC.md, the 
 - 임금 → 암행어사
 - 상선 and 영의정 both report directly to me. Neither manages the other.
 
-# 2. 한양 (capital)
+# 2. Jung City (capital)
 
 ## 궁궐 (palace)
 - 임금: me.
@@ -32,11 +32,11 @@ earlier version (the earlier TEAM.md, and any conflicting parts of SPEC.md, the 
 - 상궁 정살림: family and household matters
 
 ## Palace records and memory
-- 사관 오남김 (Sonnet 5.5): the palace 사관. Writes the 실록 for the palace household and for shared specialists while they work in 한양.
+- 사관 오남김 (Sonnet 5.5): the palace 사관. Writes the 실록 for the palace household and for shared specialists while they work in Jung City.
 - Palace 규장각: the capital's memory for my personal life, used by the 상선 and the palace household. The 영의정 does not read it.
 
 ## Shared specialists
-Live in 한양. Borrowed by a 사또, a 행수, or the 상선. Whoever borrows them assigns the task, gives only that town's (or the palace's) context, and checks the work. They keep no memory between towns.
+Live in Jung City. Borrowed by a 사또, a 행수, or the 상선. Whoever borrows them assigns the task, gives only that town's (or the palace's) context, and checks the work. They keep no memory between towns.
 - 선비 서물음 (Opus 5.5): research, web search, summaries. Recurring: daily AI news report, delivered to me by the 상선.
 - 대장장이 쇠돌이 (Opus 5.5): coding, scripts, tools
 - 문장가 송글월 (Sonnet 5.5): writing and editing
@@ -136,3 +136,10 @@ Town life: 파발 마날쌘 · 포졸 돌쇠 · 주모 막순이
 - No agent can spend money or Higgsfield credits.
 - No agent can publish, post or list anything.
 - Everything finished comes to the 임금 to approve. The 영의정 (or anyone else) can't approve for him.
+
+
+## The world: five towns (director, 2026-11-23)
+- The capital is now called **Jung City** (formerly 한양). Internal file names still say "capital".
+- The world holds five towns. **Jung City** (the capital) and **Mojoco** are locked in, and both are Joseon-themed.
+- **Towns 3, 4 and 5** are reserved spots on the world map. Each town may have its own theme; they'll be decided later.
+- Towns are built Stardew/RPG-Maker style: grid-locked, straight top-down, from separate pieces (houses, walls, trees, water, cliffs) so walking, depth and editing line up exactly.

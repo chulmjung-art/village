@@ -20,7 +20,7 @@ the period.
 
 ---
 
-## 한양 (Capital)
+## Jung City (Capital)
 
 ### 영의정 (Chief State Councillor) — grand residence hall in the palace
 - **Look:** largest home after the King's; double-eaved tile roof, painted eaves (단청), red
