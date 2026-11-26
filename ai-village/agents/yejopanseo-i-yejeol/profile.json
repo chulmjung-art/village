@@ -1,0 +1,21 @@
+{
+ "id": "yejopanseo-i-yejeol",
+ "title": "예조판서",
+ "name": "이예절",
+ "display": "예조판서 이예절",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "영의정 이균."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/yejopanseo-i-yejeol.webp",
+ "portrait": "assets/characters/portraits/yejopanseo-i-yejeol.webp",
+ "role": "Communications, announcements, events and ceremonies.",
+ "boss": "영의정 이균"
+}

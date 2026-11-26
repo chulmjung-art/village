@@ -30,6 +30,11 @@ Lush hand-painted 2D game character art for a cozy Joseon-era Korean village RPG
   and the same grid. Words only describe what changes (face, clothes, hat, props). That way the whole cast matches.
 - Dress each character for their role using COURT_DRESS.md.
 
+### Dress rule update (director, 2026-11-26; overrides the rank rule below where they differ)
+- **Court officials** (삼정승, 육조 판서, 도승지, 대사헌, 대사간): red 관복 (홍포, since all are 3rd rank or higher) with a 흉배 and a 사모, like the sea of red officials in court dramas. Civil officials have crane badges (a pair of cranes for high rank).
+- **House heads (행수)** are nobility (양반): they wear a 갓 (black horsehair hat) with a 도포 (scholar's coat). No 사모.
+- **Workers** are commoners: plain commoner clothes (저고리 and 바지 in undyed or muted cloth) and NO hat. Their role shows through props only.
+
 ### Rank rule: telling ranks apart (director's rule, 2026-11-20; applies to every sheet, existing and future)
 - **Leads** (영의정, 상선, every 사또, every 행수): official dress, a 관복 with a 흉배 (embroidered chest badge) and a 사모 (official hat). A 행수 may wear a simpler version (no 흉배, or a smaller one), since they rank below the 사또.
 - **Workers** (육방, scholars, craftsmen, palace household, 사관): plain clerk or commoner dress, with no 흉배 and no 사모. Their role reads through clothing and props: the 선비 with a 갓 and books, the 대장장이 with an apron and hammer, the 화원 with a brush, and so on.

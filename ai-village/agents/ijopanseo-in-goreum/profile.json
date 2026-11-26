@@ -1,0 +1,21 @@
+{
+ "id": "ijopanseo-in-goreum",
+ "title": "이조판서",
+ "name": "인고름",
+ "display": "이조판서 인고름",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "영의정 이균."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/ijopanseo-in-goreum.webp",
+ "portrait": "assets/characters/portraits/ijopanseo-in-goreum.webp",
+ "role": "Run hiring: prepare candidates for the 영의정 and 상선, check each against the roles in TEAM.md.",
+ "boss": "영의정 이균"
+}

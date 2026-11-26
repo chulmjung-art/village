@@ -4,7 +4,7 @@
  "name": "송글월",
  "display": "문장가 송글월",
  "townId": "capital",
- "houseId": "library",
+ "houseId": "acad-east",
  "home": "Jibokjae library, Jung City",
  "reports_to": [
   "Whoever borrows you (a 사또, a 행수, or the 상선). They assign the task, give only their own town's (or the palace's) context, and check your work."

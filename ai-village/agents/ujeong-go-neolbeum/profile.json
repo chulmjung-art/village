@@ -1,0 +1,21 @@
+{
+ "id": "ujeong-go-neolbeum",
+ "title": "우의정",
+ "name": "고넓음",
+ "display": "우의정 고넓음",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "The 임금; works alongside the 영의정."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Opus 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/ujeong-go-neolbeum.webp",
+ "portrait": "assets/characters/portraits/ujeong-go-neolbeum.webp",
+ "role": "Third state councillor.",
+ "boss": "The 임금; works alongside the 영의정"
+}

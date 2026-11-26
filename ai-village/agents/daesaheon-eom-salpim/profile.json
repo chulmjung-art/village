@@ -1,0 +1,21 @@
+{
+ "id": "daesaheon-eom-salpim",
+ "title": "대사헌",
+ "name": "엄살핌",
+ "display": "대사헌 엄살핌",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "The 임금, directly."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/daesaheon-eom-salpim.webp",
+ "portrait": "assets/characters/portraits/daesaheon-eom-salpim.webp",
+ "role": "Openly review officials' finished work and call out mistakes at the 상참.",
+ "boss": "The 임금, directly"
+}

@@ -8,18 +8,11 @@ is in `../NOTES.md`.
 | File | What | Size |
 |---|---|---|
 | `capital-personal-map.webp` | Palace (capital, Jung City) on top; Personal town ring below | 3312 × 2480 |
-| `mojoco-map.webp` | Mojoco walled town, with the south-wall strip and spaced east side | 3840 × 2160 |
 
 ## houses/ — building exteriors (placed on the town ground as pieces)
 | File | Who lives/works there |
 |---|---|
 | `capital-yeonguijeong.webp` | 영의정 (Chief State Councillor), inside the palace |
-| `mojoco-satto.webp` | Mojoco 사또 (magistrate), the town government office |
-| `mojoco-hyeongbang.webp` | Mojoco 형방 (rules and approvals), beside the jail |
-| `mojoco-forge.webp` | Mojoco 대장장이 (coding), the forge |
-| `mojoco-seonbi.webp` | Mojoco 선비 (research), the scholar's house |
-| `mojoco-munjangga.webp` | Mojoco 문장가 (writing), the writer's hall |
-| `mojoco-sagwan.webp` | Mojoco 사관 (work logs), the records house |
 | `personal-steward.webp` | Personal town 사또 (steward) |
 | `personal-helper.webp` | Personal town household helper |
 | `personal-seonbi.webp` | Personal town 선비 (research) |
@@ -37,12 +30,6 @@ centered at the bottom; no people; one desk and seat for the owner.
 | `capital-kings-office.webp` | King's office (사정전): daily briefings and decisions |
 | `capital-library.webp` | Jibokjae library: shared, non-confidential information |
 | `capital-yeonguijeong.webp` | 영의정's study |
-| `mojoco-satto.webp` | Mojoco magistrate's hall |
-| `mojoco-hyeongbang.webp` | Mojoco rules office |
-| `mojoco-forge.webp` | Mojoco forge workshop |
-| `mojoco-seonbi.webp` | Mojoco scholar's study |
-| `mojoco-munjangga.webp` | Mojoco writer's hall |
-| `mojoco-sagwan.webp` | Mojoco records room |
 | `personal-steward.webp` | Personal steward's office |
 | `personal-helper.webp` | Personal household helper's kitchen and planning room |
 | `personal-seonbi.webp` | Personal scholar's study |
@@ -70,7 +57,6 @@ Columns: left foot, standing, right foot. Feet sit on y = 390 in every frame. Se
 - king.webp: the director as the King (the Chief Human Officer). Red dragon robe, ikseongwan crown, glasses.
 - kim-mosim.webp: 김모심, the 상선 (chief of staff), K-drama look: green robe, wingless black cap, gold belt.
 - kim-mosim-myeongpae.webp: 김모심 walking while holding the red 명패 summons tablet (for when they're calling someone).
-- satto-bak-jeongdo.webp: 사또 박정도, Mojoco's director. Deep indigo robe, double-crane 흉배, winged 사모, short beard.
 
 ## New world (2026-11-25): assets/new-world/
 - Final overview, region and walkable maps for the new seamless world (not wired into the game yet). See the NOTES.md HANDOFF section.

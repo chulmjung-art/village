@@ -23,17 +23,6 @@
    "kneel": "assets/characters/kneel/yeonguijeong-i-gyun.webp"
   },
   {
-   "id": "satto-bak-jeongdo",
-   "title": "사또",
-   "name": "박정도",
-   "home": "mojoco",
-   "x": 1360,
-   "y": 540,
-   "face": "left",
-   "sheet": "assets/characters/satto-bak-jeongdo.webp",
-   "kneel": "assets/characters/kneel/satto-bak-jeongdo.webp"
-  },
-  {
    "id": "sagwan-o-namgim",
    "title": "사관",
    "name": "오남김",
@@ -43,17 +32,6 @@
    "face": "right",
    "sheet": "assets/characters/sagwan-o-namgim.webp",
    "kneel": "assets/characters/kneel/sagwan-o-namgim.webp"
-  },
-  {
-   "id": "ibang-kim-charye",
-   "title": "이방",
-   "name": "김차례",
-   "home": "mojoco",
-   "x": 1392,
-   "y": 690,
-   "face": "left",
-   "sheet": "assets/characters/ibang-kim-charye.webp",
-   "kneel": "assets/characters/kneel/ibang-kim-charye.webp"
   },
   {
    "id": "naegwan-yun-pyeonji",
@@ -67,17 +45,6 @@
    "kneel": "assets/characters/kneel/naegwan-yun-pyeonji.webp"
   },
   {
-   "id": "yebang-i-sosik",
-   "title": "예방",
-   "name": "이소식",
-   "home": "mojoco",
-   "x": 1425,
-   "y": 840,
-   "face": "left",
-   "sheet": "assets/characters/yebang-i-sosik.webp",
-   "kneel": "assets/characters/kneel/yebang-i-sosik.webp"
-  },
-  {
    "id": "naegwan-gwak-gotgan",
    "title": "내관",
    "name": "곽곳간",
@@ -87,17 +54,6 @@
    "face": "right",
    "sheet": "assets/characters/naegwan-gwak-gotgan.webp",
    "kneel": "assets/characters/kneel/naegwan-gwak-gotgan.webp"
-  },
-  {
-   "id": "sagwan-mun-jeogeum",
-   "title": "사관",
-   "name": "문적음",
-   "home": "mojoco",
-   "x": 1458,
-   "y": 990,
-   "face": "left",
-   "sheet": "assets/characters/sagwan-mun-jeogeum.webp",
-   "kneel": "assets/characters/kneel/sagwan-mun-jeogeum.webp"
   },
   {
    "id": "sanggung-jeong-sallim",

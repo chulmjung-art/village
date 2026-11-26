@@ -4,7 +4,7 @@
  "name": "이붓",
  "display": "화원 이붓",
  "townId": "capital",
- "houseId": "p-seonbi",
+ "houseId": "city-painter",
  "home": "Shared specialists' workshop, Jung City",
  "reports_to": [
   "Whoever borrows you (a 사또, a 행수, or the 상선). They assign the task, give only their own town's (or the palace's) context, and check your work."

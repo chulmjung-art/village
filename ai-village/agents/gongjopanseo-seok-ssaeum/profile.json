@@ -1,0 +1,21 @@
+{
+ "id": "gongjopanseo-seok-ssaeum",
+ "title": "공조판서",
+ "name": "석쌓음",
+ "display": "공조판서 석쌓음",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "영의정 이균."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/gongjopanseo-seok-ssaeum.webp",
+ "portrait": "assets/characters/portraits/gongjopanseo-seok-ssaeum.webp",
+ "role": "Building: maps, houses and tools for the village.",
+ "boss": "영의정 이균"
+}

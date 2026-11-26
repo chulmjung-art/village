@@ -1,0 +1,21 @@
+{
+ "id": "jwauijeong-han-salpim",
+ "title": "좌의정",
+ "name": "한살핌",
+ "display": "좌의정 한살핌",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "The 임금; works alongside the 영의정 (who leads the council)."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Opus 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/jwauijeong-han-salpim.webp",
+ "portrait": "assets/characters/portraits/jwauijeong-han-salpim.webp",
+ "role": "Second to the 영의정; stand in for him when he is away.",
+ "boss": "The 임금; works alongside the 영의정 (who leads the council)"
+}

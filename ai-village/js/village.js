@@ -6,10 +6,9 @@
   "use strict";
 
   const TOWNS = {
-    mojoco: { map: "assets/maps/mojoco-map.webp", props: "towns/mojoco-props.json", fx: "towns/mojoco-effects.json", houses: "towns/mojoco-houses.json", people: "towns/mojoco-people.json", walk: "towns/mojoco-walk.json", roofs: "towns/mojoco-roofs.json" },
     world: { map: "assets/world/world-map.webp", props: "towns/world-props.json", fx: "towns/world-effects.json", houses: "towns/world-houses.json", people: "towns/world-people.json", walk: "towns/world-walk.json", roofs: "towns/world-roofs.json" },
     // edits = where this map's grid paint is saved; a new name for the palace-district map so the old map's paint doesn't land on it
-    capital: { edits: "capital-palace", map: "assets/maps/capital-personal-map.webp", props: "towns/capital-props.json", fx: "towns/capital-effects.json", houses: "towns/capital-houses.json", people: "towns/capital-people.json", walk: "towns/capital-walk.json", roofs: "towns/capital-roofs.json" },
+    capital: { edits: "capital-island", map: "assets/maps/capital-island-map.webp", props: "towns/capital-props.json", fx: "towns/capital-effects.json", houses: "towns/capital-houses.json", people: "towns/capital-people.json", walk: "towns/capital-walk.json", roofs: "towns/capital-roofs.json" },
   };
 
   const canvas = document.getElementById("scene");
@@ -968,7 +967,7 @@
   // ---------- calls: who's talking ----------
   // When an agent is on a call, a card in the corner shows their portraits (made from their own sheets),
   // framed in their 호패 colour, with whoever is speaking lit up. 상선 김모심 lifts his red 명패 while he's on a call.
-  // Nothing places calls yet; the agents will once they run. Use: village.call(["sangseon-kim-mosim","satto-bak-jeongdo"], speakerId)
+  // Nothing places calls yet; the agents will once they run. Use: village.call(["sangseon-kim-mosim","yeonguijeong-i-gyun"], speakerId)
   const CALL_HOME = { king: "#c9a227", hanyang: "#b8342b", mojoco: "#2f5ea6" };
   const callEl = document.getElementById("call");
   let callState = null;
@@ -983,7 +982,7 @@
   // Point at any villager to see their title and name, one line on what they do, and who they report to.
   // The words come from each agent's profile.json ("role" and "boss").
   const cardEl = document.getElementById("vcard");
-  const PROFILE_ALIAS = { "bak-jeongdo": "satto-bak-jeongdo" };
+  const PROFILE_ALIAS = {};
   let hoverPt = null, hoverWho = null;
   canvas.addEventListener("pointermove", (e) => { hoverPt = { x: e.clientX, y: e.clientY }; });
   canvas.addEventListener("pointerleave", () => { hoverPt = null; });
@@ -1981,7 +1980,8 @@
   const MODEL_ID = { "Opus 5.5": "claude-opus-5-5", "Sonnet 5.5": "claude-sonnet-5-5" }; // never Fable
   const ALL_AGENTS = ["yeonguijeong-i-gyun", "sangseon-kim-mosim", "naegwan-yun-pyeonji", "naegwan-gwak-gotgan", "sanggung-jeong-sallim",
     "sagwan-o-namgim", "seonbi-seo-mureum", "daejangjangi-soedori", "munjangga-song-geulwol", "yeokgwan-han-dari", "cheonmungwan-nam-byeol",
-    "hwawon-i-but", "moksu-jang-ieum", "amhaengeosa-bak-moreum", "satto-bak-jeongdo", "ibang-kim-charye", "yebang-i-sosik", "sagwan-mun-jeogeum"];
+    "hwawon-i-but", "moksu-jang-ieum", "amhaengeosa-bak-moreum",
+    "jwauijeong-han-salpim", "ujeong-go-neolbeum", "ijopanseo-in-goreum", "hojopanseo-mun-semdol", "yejopanseo-i-yejeol", "byeongjopanseo-gang-bangpae", "hyeongjopanseo-gong-bareum", "gongjopanseo-seok-ssaeum", "doseungji-seo-batdeum", "daesaheon-eom-salpim", "daesagan-jeong-goteun"];
   const chatEl = document.getElementById("chat"), ordersEl = document.getElementById("orders");
   const chatLog = chatEl.querySelector(".log"), chatForm = chatEl.querySelector("form"), chatInput = chatEl.querySelector("textarea");
   const ordersLog = ordersEl.querySelector(".log");
@@ -3186,6 +3186,6 @@ No spaces, no brackets, no notes, no English. Reply with ONLY JSON: {"title": ".
 
   window.addEventListener("resize", resize);
   resize();
-  loadTown("mojoco");
+  loadTown("capital");
   requestAnimationFrame(frame);
 })();

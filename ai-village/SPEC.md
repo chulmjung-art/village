@@ -19,7 +19,7 @@ The visuals are not decoration: **every animation reflects real agent state or a
 | Jung City (Capital) | Center of the map | Global layer: cross-town coordination + shared specialists |
 | 궁궐 (Palace) | Building in Jung City | Where the user "is"; briefings and decision requests arrive here |
 | 영의정 (Chief State Councillor) | Lives in the palace | Cross-town coordinator agent. Merges all town reports into one briefing. Does not do task work itself. |
-| 고을 (Town) | A cluster of buildings around the capital | One workspace = one company/area (e.g. "Mojoco", "New Company", "Personal") |
+| 고을 (Town) | A cluster of buildings around the capital | One workspace = one company/area (e.g. "New Company", "Personal") |
 | 사또 (Magistrate) | Head of a town, sits in the 관아 | Town lead agent. Receives requests, plans, assigns, confirms completion. |
 | 파발 (Relay rider) | Riders on roads | Visual representation of messages/handoffs between agents and towns |
 
@@ -36,7 +36,7 @@ The visuals are not decoration: **every animation reflects real agent state or a
 ```
                 [Town: Personal]
                        |
-[Town: Mojoco] —— [ Jung City / 궁궐 ] —— [Town: New Company]
+[Town: (future)] —— [ Jung City / 궁궐 ] —— [Town: New Company]
                        |
                 [Town: (future)]
 ```
@@ -179,7 +179,7 @@ The visual layer subscribes to an event stream. Suggested event types:
 ```ts
 type Town = {
   id: string;
-  name: string;            // "Mojoco", "Personal", ...
+  name: string;            // "Personal", ...
   slot: number;            // position around the capital
   memoryId: string;        // its own 규장각, never shared
   agentIds: string[];

@@ -1,0 +1,21 @@
+{
+ "id": "byeongjopanseo-gang-bangpae",
+ "title": "병조판서",
+ "name": "강방패",
+ "display": "병조판서 강방패",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "영의정 이균."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/byeongjopanseo-gang-bangpae.webp",
+ "portrait": "assets/characters/portraits/byeongjopanseo-gang-bangpae.webp",
+ "role": "Security: watch that every agent keeps the safety rules (email always a draft, no unapproved spending or publishing).",
+ "boss": "영의정 이균"
+}

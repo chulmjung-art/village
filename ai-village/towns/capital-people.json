@@ -49,21 +49,21 @@
    "title": "문장가",
    "name": "송글월",
    "sheet": "assets/characters/munjangga-song-geulwol.webp",
-   "house": "library"
+   "house": "acad-east"
   },
   {
    "id": "yeokgwan-han-dari",
    "title": "역관",
    "name": "한다리",
    "sheet": "assets/characters/yeokgwan-han-dari.webp",
-   "house": "library"
+   "house": "scholar-house"
   },
   {
    "id": "cheonmungwan-nam-byeol",
    "title": "천문관",
    "name": "남별",
    "sheet": "assets/characters/cheonmungwan-nam-byeol.webp",
-   "house": "library"
+   "house": "lighthouse-keeper"
   },
   {
    "id": "daejangjangi-soedori",
@@ -77,14 +77,14 @@
    "title": "화원",
    "name": "이붓",
    "sheet": "assets/characters/hwawon-i-but.webp",
-   "house": "p-seonbi"
+   "house": "city-painter"
   },
   {
    "id": "moksu-jang-ieum",
    "title": "목수",
    "name": "장이음",
    "sheet": "assets/characters/moksu-jang-ieum.webp",
-   "house": "p-seonbi"
+   "house": "city-workshop"
   },
   {
    "id": "amhaengeosa-bak-moreum",
@@ -95,34 +95,111 @@
    "disguise": "나그네",
    "roam": [
     {
-     "x": 1640,
-     "y": 1300
+     "x": 4818,
+     "y": 3640
     },
     {
-     "x": 1300,
-     "y": 1700
+     "x": 4300,
+     "y": 3650
     },
     {
-     "x": 2000,
-     "y": 1700
+     "x": 5300,
+     "y": 3650
     },
     {
-     "x": 1640,
-     "y": 1900
+     "x": 4818,
+     "y": 4180
     },
     {
-     "x": 900,
-     "y": 1750
+     "x": 4000,
+     "y": 3900
     },
     {
-     "x": 2500,
-     "y": 1850
+     "x": 5600,
+     "y": 3900
     },
     {
-     "x": 1640,
-     "y": 2250
+     "x": 4818,
+     "y": 3400
     }
    ]
+  },
+  {
+   "id": "jwauijeong-han-salpim",
+   "title": "좌의정",
+   "name": "한살핌",
+   "sheet": "assets/characters/jwauijeong-han-salpim.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "ujeong-go-neolbeum",
+   "title": "우의정",
+   "name": "고넓음",
+   "sheet": "assets/characters/ujeong-go-neolbeum.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "ijopanseo-in-goreum",
+   "title": "이조판서",
+   "name": "인고름",
+   "sheet": "assets/characters/ijopanseo-in-goreum.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "hojopanseo-mun-semdol",
+   "title": "호조판서",
+   "name": "문셈돌",
+   "sheet": "assets/characters/hojopanseo-mun-semdol.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "yejopanseo-i-yejeol",
+   "title": "예조판서",
+   "name": "이예절",
+   "sheet": "assets/characters/yejopanseo-i-yejeol.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "byeongjopanseo-gang-bangpae",
+   "title": "병조판서",
+   "name": "강방패",
+   "sheet": "assets/characters/byeongjopanseo-gang-bangpae.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "hyeongjopanseo-gong-bareum",
+   "title": "형조판서",
+   "name": "공바름",
+   "sheet": "assets/characters/hyeongjopanseo-gong-bareum.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "gongjopanseo-seok-ssaeum",
+   "title": "공조판서",
+   "name": "석쌓음",
+   "sheet": "assets/characters/gongjopanseo-seok-ssaeum.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "doseungji-seo-batdeum",
+   "title": "도승지",
+   "name": "서받듦",
+   "sheet": "assets/characters/doseungji-seo-batdeum.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "daesaheon-eom-salpim",
+   "title": "대사헌",
+   "name": "엄살핌",
+   "sheet": "assets/characters/daesaheon-eom-salpim.webp",
+   "house": "throne-hall"
+  },
+  {
+   "id": "daesagan-jeong-goteun",
+   "title": "대사간",
+   "name": "정곧은",
+   "sheet": "assets/characters/daesagan-jeong-goteun.webp",
+   "house": "throne-hall"
   }
  ]
 }

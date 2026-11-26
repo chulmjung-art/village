@@ -804,3 +804,221 @@ A running record of every decision we make, so nothing gets lost between session
 - Don't self-test; the director tests.
 - Never use Fable.
 - The agent safety rules (email is always a draft, no spending, no publishing, the director approves everything) are enforced in code.
+- 2026-11-25: The director rejected the cut-out tile sheets from the other session and wants to rebuild from the ground up like Legos. New scale: 1 block = 16px, the character = 1 block (16px), path 3 blocks, main road 5, alley 2, houses 6-8 wide, trees 2-3. Scale diagram: scratchpad lego/grid_scale.png. Next idea, not started: seamless textures per material, chopped into 16px blocks, with edges drawn in code.
+- 2026-11-25 RESTART: the director gave a new master world map (scratchpad world3/world_master.webp, upload 26.webp). The world grows section by section into this map, as one seamless walkable world at the 16px Lego scale. Section 1 = the capital: the central volcano island, the small island above it, and the land to the bottom-left joined by the road (the small islands to the bottom-right are excluded). Mask: world3/capital_section_mask.npy (master-map pixels). Old new-world assets are kept as reference only. Mojoco = the land west of the capital.
+- Section 1 outline refined: east edge at the river bank, south edge at the coast, top-left strip from the Mojoco landmass removed. The mask is in world3/capital_section_mask.npy.
+- Section 1 (the capital island) LOCKED by the director: world3/capital_section_mask.npy and capital_section.png (the top tips of the island above restored). Next: the director makes the 9 ground textures in Higgsfield.
+- 5 ground textures received (cliff, sand, shallow, stone, wild grass: uploads 27-31, copies in scratchpad lego/tex/). Test scene: lego/test_scene_16_x3.png. The other 4 (deep sea, dirt, grass, planks) were shown mid-message but not saved to disk, so they need re-sending.
+- 2026-11-25: The director made all 9 ground textures (uploads 27-35; copies in scratchpad lego/tex/, with versions shrunk to the 16px scale as *_16.png). Test scene: lego/test_scene_all9.png. Sand (28, 33) and shallow water look smooth rather than crisp pixel art; the cliff is a pillar texture.
+- Beauty corner (free): scratchpad lego/beauty_corner_x2.png, script lego/beauty.py. It uses the director's 9 textures (colours tuned in code), organic edges with foam and fringe lines drawn in code, old props from assets/props as stand-in trees and objects, one house lot cut from the capital city 4K, and the King sheet as people (22px tall).
+- New approach (director): painted base land in classic pixel-RPG town style (upload 36 cherry-blossom town = style reference), themed per town. The director marks walk areas, roofs and doors by hand on a 16px grid (1 character = 1 square). The capital island takes several 4K pieces, with joins hidden in forest, cliffs or water, overlapped and snapped to the pixel grid. Test piece: the capital city area.
+- Capital test piece (low 1K, director-generated; upload 39, copy in lego/capital_test_low.webp). At native 1168x880 it already fits the 16px grid: a person is half an arch tall, 3 fit side by side, houses are about 6 squares wide. So one piece covers about 73x55 squares whatever the resolution. 4K only adds crispness and gets shrunk back down. Grid overlay: lego/capital_test_grid.png.
+- Capital island piece plan: world3/capital_plan_4x4.png. It is a 4x4 grid over the section's bounding box (master px x 607-1223, y 340-799), each cell about 154x115 master px = 1 piece of about 73x55 squares. 12 cells hold land (numbered 1-12); the empty grid cells are open sea. Proposal: piece 7 (south of the volcano, the road junction on the bay) = capital city / the test piece. Waiting on the director's 2K original file (the chat upload came through compressed to 1080x806).
+- Capital piece 7 (city), 2K original received (upload 13631.png). Saved to assets/new-world/pieces2/capital-07-city-2k.webp; game-scale copy lego/capital_piece_game.png (1168x872, an exact half).
+- Piece 4 prompt handed over. Guide image: lego/refs/ref_piece4_guide.png, which is master-map cell 4 blown up and blurred as a layout hint, with the city's top 22% (384px) pasted at the bottom as the overlap strip, split by a red line.
+- Piece 4 (director-generated 2K, upload 13634.png → lego/piece4_raw.png). The generator redrew the city strip and drew the red line. Fix: kept piece 4 above row 1376, put the REAL city underneath (city starts at y=1320, 56px blend) → lego/capital_4_7_stack.png (2336x3064). Remaining seam issues: the north-south trail dead-ends into the cliff; a couple of trees are cut and faded at the join; the city's stream starts out of nowhere.
+- Capital island layout plan v1 (our own roads, NOT the world map's roads; the director: the world map is only a reference): world3/capital_plan_v1.png. Places: capital city on the bay, palace north of it, volcano with hot-spring village, lake and waterfall, scholars' village (north), farm village (east), fishing hamlet and temple (south-west), stub of a bridge to Mojoco. Roads: city to hot spring to the Mojoco bridge; city to farm; farm loop up to the palace road and north to the scholars; city south-west to the hamlet and temple. Plan for art: approve the plan, then ONE 4K master of the whole island, then detailed per-piece redraws from overlapping master crops, colour-matched in code.
+- Plan v2: the north island is now separate (a strait carved around y≈486, mask world3/capital_section_mask_v2.npy) with a bridge on the scholars' road. South-east lobe: a lighthouse cove (lookout, beach, sea shrine) with a road from the farm village. Image: world3/capital_plan_v2.png.
+- The director approved plan v2. Master prompt handed over; refs: lego/refs/ref_island_plan.png (clean, no labels), ref_style_city_2k.png.
+- Master island picture (upload 40) rejected: not on a grid, two palaces, diagonal roads. Lesson: a whole-island picture won't come out gridded; only walking-scale pieces do.
+- Colour palette measured from the city piece (for prompts): sea #297CB8, grass #7CD376, dark trees #216534, teal trees #338A8B, pink blossom #FAB1BB, dirt road #E6CFB5, stone grey #B6B2B1, roof tiles #313337, wood and cliff brown #895736, light cliff #BB8167.
+- Piece 4 v2 (upload 42, arrived chat-compressed at 2000x1493 and upscaled to 2336 wide): good. Grid roads, matching colours, the stream joins the city's waterfall. Joined: the real city starts at y=1384 with a 70px blend → lego/capital_4_7_v2.png (2336x3128). The right-hand N-S road still dead-ends above the cliff. Need the original download file for full sharpness.
+- Piece 6 (west of the city: hot-spring village) guide: lego/refs/ref_piece6_guide.png = the plan crop for cell 6 (plan px 543-1005 x 748-1093, blurred) with the city's left 22% (513px) pasted on the right. No red line.
+- Piece 6 guide finalized: a road leaves the city's west edge at y≈1060 (the city has no road exit there, so paint one through the city's left forest later), runs west to x=1250, north into the hot-spring village (box 900-1600 x 240-700), and south to the bottom edge at x=900 (toward the fishing hamlet). Coast from mask v2.
+- Piece 6 draft generated by me (0.75, approved): job 1684e0e2-9d72-4ab8-848c-5fe2fc909fce; refs: guide media 4e48deef-3e10-4492-aae9-3bcd63609bb2, city media a9f84d9b-285e-4f9e-b536-9019a90c9d45.
+- Piece 6 redraw (0.75): job 5715e2a3-1491-41b7-8265-bd88dfe70c8b (guide v2 media f2eff25e-6426-48d4-b1ff-27b149311e77): narrower roads, the trail fades to gravel and grass before the city, grass matched.
+- Piece 6 final = the director's own image (upload 43, 2000x1493 compressed, upscaled). Joined left of the city: city col 0 = piece6 x 1828, 90px blend → lego/capital_4_6_7.png (pieces 4, 6, 7). Needs the downloaded original for full sharpness.
+- Piece 3 guide: crop of capital_4_6_7.png at (0,28)-(2336,1772). The right 508px is piece 4's left part, the bottom 384px is piece 6's top, the rest is flat sea (plan: mostly sea). The resent pieces 4 and 6 (uploads 44 and 45) still arrived compressed at 2000x1493, because chat pastes get compressed; a dropped file (like 13631.png) arrives full size.
+- Piece 3 draft (0.75): job 7f9e551e-fee7-4561-933b-f5e0fe3bd963 (guide media 8e8115b3-5d52-45df-9973-7524ffb5a44a). Upscaled 2x and blended into the canvas at (0,28), fading into piece 4 (x≥1828) and piece 6 (y≥1388) over 90px → lego/capital_3_4_6_7.png.
+- Piece 8 guide (farm village, east of the city): the city's right 513px on the left; a road from the city's east bridge (city y≈654) to the village (box 900-1700 x 700-1300); a N-S road at x=1380 (north loop and south to the lighthouse). Land from mask v2, cell row 2, col 3.
+
+### Piece 8 (farm village) — draft
+- Draft job 6ab2eadb-c5aa-4769-941c-303c58a041e7 (low 1K, 0.75). Guide media df7429cb-546d-46e5-ac02-36a9c27b341c.
+- Upscaled to 2336x1744 (scratchpad lego/piece8_draft_full.png). City strip matched at dx=512, dy=0.
+- Joined: lego/capital_3_4_6_7_8.png (5988x3128). Piece 8 at (3652,1384), 90px fade into the city.
+- Next: 5 / 12 (east side, lighthouse cove), then 1 / 2, then 9 / 10 / 11.
+- Piece 8 v2 (fix): guide refs/ref_piece8_guide_v2.png (media f6710517-bbe2-4a72-8a5d-fe0674cd562b): road moved onto the city's gravel-path rows, bay started at the city's cliff (y≈1250 at the join). Redraw job 3370c481-1cee-4842-9f82-7e5a216e44cd (0.75). Matched at dx=512, dy=-2; placed at (3652,1382). capital_3_4_6_7_8.png rebuilt with v2.
+- Piece 8 2K: job 84638d18-1b2b-42f0-b436-73670d2ff1ce (high 2K, 2 credits). The model redrew it about 6% smaller, so it was lined up to the v2 draft: scale 1.06, crop from (-8,8) → lego/piece8_2k_aligned.png. Joined at (3652,1382) with a 90px fade; the real city wins at the join. capital_3_4_6_7_8.png now uses the 2K.
+- Lesson: a 2K made "from the draft" can come back rescaled. Always register it to the draft before joining.
+
+### Piece 5 (east headland) — guide
+- Canvas position (3652,22): left strip is piece 4 (x<512), bottom strip is piece 8 (y≥1360).
+- Roads:
+  - Piece 4's short east branch (it dead-ended at a blossom tree, canvas y≈180-230, x≈4000) now carries on east.
+  - It turns south, then runs east to meet the farm village's north–south road.
+  - That road carries on north to a pavilion lookout (jeongja) on the headland.
+- Coast in grid steps, following mask v2. Guide refs/ref_piece5_guide.png, media a2142ac6-04f3-483c-bd5b-071852f62f19.
+- When joining: piece 4's branch ends at x≈348 local, so the fade may need to start nearer x≈300 on that row so the road links up.
+- Piece 5 draft: job 8b501826-e5ff-4e8b-a989-418b1dc6f181 (0.75). Aligned at scale 1.0, offset (-4,-4). Placed at (3652,22), with 90px fades on the left (piece 4 wins) and the bottom (piece 8 wins). The draft had a dark frame line in its top rows; canvas rows 0-28 for x≥4120 were refilled with flipped sea/land from just below. Joined map: lego/capital_3_4_5_6_7_8.png.
+- Fix for the 7→8 join: the 90px soft fade was causing ghosting (half-faded trees and a doubled road). It's replaced by a best-match seam: a dynamic-programming cut through the overlap where city and piece 8 agree most, with a 4px blur. Applied for canvas y 1450-3126, x 3692-4156; the seam runs x 3785-4070. Use this seam method for all future joins instead of wide fades.
+- Piece 5 v2 (redo): the v1 draft had its own hard line where it met the farm-village strip, plus a cliff ending flat against it.
+  - Guide refs/ref_piece5_guide_v2.png (media fa24ff30-7db8-4b4c-b8eb-905571b2f2db): inlet bottom moved up to y 1180, leaving a grass band above the farm strip. Both strips taken from the real neighbours (base canvas and piece8_2k_aligned).
+  - Prompt: "no visible line where the strips meet" and "no frame line".
+  - Job f204965c-a953-4fc2-9599-21492b8d3e3a (0.75). Aligned at scale 1.0, offset (0,-4) → piece5_v2_full.png.
+- Map rebuilt from capital_3_4_6_7.png using best-match seams only (lego/tools/seam.py: vseam/hseam/soften): 7|8 vertical, 5/8 horizontal, 4|5 vertical. The model's frame line in the top rows was mirrored out again.
+
+### All pieces at 2K (pieces 3, 4, 5, 6 upgraded — 8 credits)
+- Jobs:
+  - 5: 4e38dc54-64ad-4565-9a97-182d5024d908 (from draft f204965c)
+  - 3: a7f8741f-759e-4600-9b74-0d4f90d355d9 (from draft 7f9e551e)
+  - 4: 4ae11815-a57a-4bd3-a3f4-c88b3a76eb28 (from the director's piece 4, uploaded as media 8114087d-f581-45f2-9043-c88d5281e5ee)
+  - 6: 2c48b504-55a1-41a8-8df9-ba8837708a25 (from the director's piece 6, media c266ee4f-bb26-4dec-8df7-e1c76e6c2a3c)
+- Each 2K is registered to its spot on the map (lego/tools/register.py) → pieceN_2k_aligned.png. Offsets: 3 (s1.01, 0,-32), 4 (1.0, 0,0), 5 (1.01, 4,0), 6 (1.0, 0,0).
+- Piece 4's 2K redrew the city strip, and the redraw doesn't match the city. So piece 4 = 2K on top, cut over to the original piece 4 (which matches the city) between local rows 600-1384.
+- The whole map is now built by one script: lego/tools/build_capital.py → lego/capital_3_4_5_6_7_8.png (5988x3128).
+  - Only best-match cuts, no fades.
+  - Every cut ends pinned at a corner (seam.py start/end), so no piece's edge is left showing where four pieces meet.
+- Piece 7 (city) and piece 8 were already 2K. All six pieces are now final 2K.
+- Piece 8 paths edit: job ac4ab7b6-73ef-499b-9e9a-ca0e55a78bfb (2K, 2 credits), an edit of the 2K that keeps everything the same and only adds gates and gravel paths from every house to the road. Registered at s1.06, (-8,4) → piece8_2k_aligned.png (the old one is kept as piece8_2k_aligned_nopaths.png). Map rebuilt.
+- Rule for every future piece: each house needs a gate in its fence and a path from its front door to a road. Put it in every prompt.
+
+### Piece 12 (lighthouse cove) — 2K done
+- Guide refs/ref_piece12_guide.png (media bae07211-edab-48a0-a7e2-6f3102a2f5f6). The top strip is the farm village's bottom edge, with no cliff along the join.
+- Draft ec3677b7-cb9d-4b8f-bb1b-547de67106fe (0.75). 2K a6c732a9-5b44-4bd5-a4ef-e668a0d4a500 (2 credits).
+- Registered to the guide strip at s0.97, (-12,-4) → piece12_2k_aligned.png; black margins mirrored out in the build.
+- Placed at canvas (3652, 2742). Canvas is now 5988x4486. Horizontal best-match cut against piece 8, pinned at the bottom on the left end.
+- Contents:
+  - The farm road runs south and ends at the lighthouse (stone tower, Joseon cap, lamp) on a plaza at the tip.
+  - A side road runs west to a fishing dock with a boat.
+  - Lighthouse keeper's hanok. The 2K still didn't link the keeper's gate to the road, so a free code patch in build_capital.py tiles real road texture from the gate to the road.
+- The flat sea west of x 3652 below the city is a placeholder until pieces 11/10/9 are built.
+
+### Water colour fix (director: "the water color seems off")
+- The city's sea is the palette colour (43,127,187 ≈ #297CB8). The 2K pieces came out more saturated (≈15,115,196).
+- build_capital.py fix_sea() shifts water pixels in every piece (and the original piece 4) to the city's median. Weighted by a blue mask, so it covers the river and lake too.
+- The background is now tiled real sea from piece 3, not a flat fill.
+
+### Piece 10 (strait bridge + fishing hamlet) — 2K done
+- Guide refs/ref_piece10_guide.png (media 3f47bec2-c745-400a-8afe-683d32461014). Draft bb3aae3d-4ba2-42cb-8dd3-6a32f9091b6d (0.75). 2K 7ad155fc-25a0-4e3e-aa85-5876bb51061d (2 credits).
+- The 2K's prompt added gates and a lane so the bottom-row houses reach the road.
+- The 2K came back zoomed out by about 21%. Registered to the guide's top strip (piece 6's edge) at s1.21, (0,0) → piece10_2k_aligned.png.
+- Placed at canvas (0, 2748). Horizontal best-match cut with piece 6/city over rows 2748-3128, right end pinned at the bottom.
+- The road from piece 6 crosses the strait on a wooden bridge into the hamlet (6 houses, drying racks).
+- A west road exits the left edge toward the temple (piece 9, which needs the canvas extended to the left). A lane runs south to a dock.
+- Piece 10 fix: the 2K put the bridge about 190px west of the hamlet's main road. The bridge landed on a house roof, and the road ran up into the strait.
+  - Fix in build_capital.py: piece 10's south land (rows ≥700 local) slides 190px left so the main road lines up under the bridge.
+  - The right-edge gap is filled from the trees just left of it. The old road stub by the shore is painted over with grass.
+
+### Piece 11 (harbour bay + headland) — 2K done
+- Guide refs/ref_piece11_guide.png (media e8bbefd8-6872-4001-9cf4-6ff56ba46764). The left real strip is only 310px wide, so piece 11 redraws over piece 10's doubled tree column.
+- Draft 55ab41a0-05b4-40b9-ab31-433b4e641088 (0.75). 2K e75c8b5e-a297-4ff7-b43b-ca232f91e948 (2 credits). Registered at s0.98, (-4,0).
+- Placed at canvas (1828, 2744). Cuts: top hseam with the city harbour, left vseam with piece 10, right vseam with piece 12.
+- Harbour water below the docks stays open. Piece 10's land carries on east to a stepped forest headland (no roads or buildings, so no dead ends).
+- Style rule (director): north-facing coasts are a low shore (foam + sandy bumps + grass), like piece 10's, never a cliff wall. Cliff walls only on coasts that face south, east or west.
+  - Piece 11's two north-facing cliff bands are replaced in build_capital.py by tiling one period of piece 10's edge (canvas x1700-1737, rows 3428-3472). Bands: x2130-2712 to y3452, x2712-2926 to y3578.
+  - Put "north-facing shores are low sandy edges, not cliffs" in every future prompt.
+
+### Piece 9 (temple) — 2K done
+- Guide refs/ref_piece9_guide.png (media 955f8584-5734-46d8-be7a-008d12563081). The right real strip is canvas x0-512 (piece 10). Draft 92d851a6-bb2a-4b8c-a2c0-1f4c65c09b74 (0.75), 2K 6b8444b4-d26b-4efc-bf2c-d0b311a1622e (2 credits). Registered at s1.015, (32,-24).
+- The canvas is widened 1824px to the left (now 7812x4486). Every earlier canvas x in these notes is +1824 in the final image. The widening happens last in build_capital.py, so the earlier hard-coded coordinates still work.
+- The hamlet's west road ends at the temple's east gate (no dead end).
+- Temple: walled compound with a main hall, two side halls, a stone pagoda courtyard, a bell pavilion and lanterns, with a pine hill behind. North shores are low sandy edges; west and south are cliffs.
+- Piece 9 also redrew the hamlet's left houses that the piece 10 slide had cut off.
+- Piece 9/10 fix: the road was about 10px off and the join was a hard straight line. The cut region had included 40 columns where both sides were the same piece 9 pixels, so the best-match search took that free straight edge.
+  - Piece 9 re-registered at (32,-16), 8px higher.
+  - The cut now runs only over the true overlap (canvas x OX..OX+480).
+  - Lesson: never include identical pixels in a cut region.
+
+### North coast + scholars' island (pieces 1+2 as one piece) — 2K done
+- The real land along the old top edge only ran canvas x 4046-6344 (widened coords), so ONE 4:3 piece at x 4026 covers it all. The old "piece 2" area is open sea, which saved one piece.
+- Guide refs/ref_piece1_guide.png (media e13a6e4d-5f8c-446f-b232-1be4b96312fb). Draft 15cd3452-4e06-408c-9e7a-c0055ad4f979 (0.75). 2K a054c57d-c8f8-4bec-bc2b-be0c3b40930c (2 credits). Registered to the bottom strip at s1.005, (8,-112).
+- The canvas is extended 1360px upward; the final map is 7812x5846.
+- Roads:
+  - Piece 4's two roads that ran off the top edge (x≈4765 and ≈5560) now join a coastal road along the main island's north shore. No dead ends.
+  - A wooden bridge from the coastal road crosses the strait to the scholars' island; a road runs up to the academy gate.
+- Scholars' island:
+  - Seowon academy: walled, with a lecture hall, two dormitories and a ginkgo courtyard.
+  - 4 hanok houses, each with a gate and path to the village road.
+  - North shores are low sandy edges; south, east and west are cliffs.
+- The empty top rows of the 2K are filled with sea tile, not mirrored (mirroring had copied the island edge).
+
+### Auto-hiring rule (director, 2026-11-26) — recorded, NOT built yet
+- The director approved my suggested limits with one change: BOTH 영의정 이균 and 상선 김모심 have permission, up to 3 hires a day each. The director will connect Higgsfield for them. Full rule in TEAM.md "Auto-hiring rule".
+- This replaces "only the 임금's yes hires" and the PROCESS HIRES step "tell the director the cost first", for hires within the limits only.
+- UPDATE (director): "let them touch higgsfield, its okay". 영의정 and 상선 get the Higgsfield connector DIRECTLY and write their own prompts. Other agents stay text-only.
+- Build plan (revised):
+  - safeSample allows tools only for those two, and only Higgsfield image tools (generate_image, media_upload/confirm, jobs_wait).
+  - The page counts generations per hirer per day in the shared database and refuses past the cap.
+  - Every call is logged.
+- Superseded plan (fixed-prompt, code-only path), kept for reference. The page code itself:
+  - validates the hire (caps counted in the shared database, role, house);
+  - calls Higgsfield through the safeCallTool allowlist with a FIXED recipe prompt, so agent text never becomes the prompt;
+  - cuts out the sheet and writes the hire log.
+- UPDATE (director): "they can only hire as many house heads as there are houses, but workers per house doesn't matter". So: at most one 행수 per house (checked in code against the house list), unlimited workers per house, and the 3-a-day cap each still applies. TEAM.md updated.
+- UPDATE (director): house heads can request workers; 영의정 and 상선 review and allow or deny.
+  - Routing (my assumption, tell the director): palace household houses → 상선; town houses → 영의정, with the 사또 told.
+  - Allowed = a hire by the reviewer, counted in the reviewer's daily cap. Denied = reason sent back to the 행수.
+  - In the page: a "worker request" record in the database (requester, house, role, reason, status pending/allowed/denied). The reviewer decides in their next turn, and every decision is logged.
+- Open questions to the director: a weekly credit cap? Build now, or after the new map is in the game?
+
+### Mojoco closed down (director, 2026-11-26)
+- "lets get rid of everyone in mojoco town" → "mojoco town will cease to exist now" → "sounds good" to the full delete.
+- Deleted (git rm, all recoverable from history):
+  - the 4 agents' folders (satto-bak-jeongdo, ibang-kim-charye, yebang-i-sosik, sagwan-mun-jeogeum);
+  - their sheets, kneel poses and portraits;
+  - towns/mojoco-houses.json and towns/mojoco-people.json;
+  - the 6 Mojoco house pictures and 6 interiors;
+  - the Mojoco pictures in assets/new-world/.
+- Code:
+  - removed the Mojoco town config and tab; the game now starts in the capital;
+  - removed the 4 ids from ALL_AGENTS;
+  - PROFILE_ALIAS is now empty;
+  - court.json seats without them.
+  - The leftover generic `townId === "mojoco"` checks in village.js are harmless dead code.
+- Docs: TEAM.md (no towns right now; 영의정 routes town work to himself or the specialists), SPEC.md, agents/README.md, assets/LIST.md, and 영의정's instructions and profile.
+- Open: piece 3's pier was the start of the Mojoco bridge and is now a dead end. Fishing pier, or keep it for the next project's island?
+
+### Court assemblies decided (director, 2026-11-26)
+- Real agents, both meetings (상참 in the throne hall + 조회 in the courtyard), specialists along the walls.
+- Workers are commoners with no hat; 행수 are nobility in a 갓.
+- Written into TEAM.md "Court assemblies" and STYLE_GUIDE.md "Dress rule update".
+- Proposed 11 new officials (not hired yet; waiting for the director to approve the roster, models and cost):
+  - 좌의정, 우의정
+  - 이조/호조/예조/병조/형조/공조 판서
+  - 도승지
+  - 대사헌, 대사간
+- Open: should the existing specialists be re-dressed as commoners (the 선비 historically wears a 갓)?
+
+### 11 court officials hired (director: "yes, spend 30 on the 11 officials")
+- Reference: 영의정's sheet on a plain background (media a94eec6c-cd29-48ad-93f8-d9e60b9b0ab7).
+- One test draft (좌의정, d3e21534, 0.75). Then straight to 2K for all 11 (2 each), at most 4 running at once on Higgsfield.
+- Total spent: 22.75 credits.
+- Jobs:
+  - 좌의정 f98afbcd
+  - 우의정 6b44eacf
+  - 이조 464ac94e
+  - 호조 82434b2d
+  - 예조 639ee0fa
+  - 병조 a6449c01
+  - 형조 aa4d3995
+  - 공조 f5a7f8f0
+  - 도승지 2565d690
+  - 대사헌 763696cc
+  - 대사간 e4ae95c4
+- Everyone wears a red 홍포 with a 사모. Badges: cranes; 병조 has tigers; 대사헌 has a haetae (censorate).
+- Cut with scripts/cut_sheet.py into 400px frames (assets/characters/<id>.webp). Portraits are cropped from the front standing frame (256px, hanji square).
+- Agent folders and profiles made by scratchpad scripts/make_officials.py (models: 좌/우의정 Opus 5.5, the rest Sonnet 5.5).
+- Added to ALL_AGENTS and the TEAM.md roster.
+- NOT done yet: placing them in the meetings (throne-hall seats for the 상참, rank-stone spots for the courtyard 조회), and moving the specialists to the walls. That needs the new palace map in the game.
+
+### New island map in the game + everyone's homes (director: "replace the map, give everyone their home, and commit")
+- Jung City now loads assets/maps/capital-island-map.webp (7812x5846, the whole capital island). The editor key is now "capital-island", so old grid paint doesn't land on it.
+- The old map files were already gone (deleted in 122f0a4), so the World tab and "World map" button are hidden: their map doesn't exist any more. The island itself is now the walkable world.
+- towns/capital-walk.json is auto-made: 16px cells, water blocked, all land walkable. The director refines it (cliffs, roofs, fences) with the grid editor.
+- Empty props/effects files; the roofs image is transparent (no walk-behind roofs yet).
+- Spawn is the city plaza (4818,3700); player height 49 (tune if people look too big or small).
+- Homes (door positions on the new map, all checked on a marked copy):
+  - Palace gate, 3 arches: middle = throne hall (court + the 11 officials), west = 사정전 (영의정 이균), east = 강녕전 (상선 김모심). These stand in for the separate palace map until it exists.
+  - Inside the palace wall, west house: 내관 윤편지. East house: 내관 곽곳간.
+  - City house by the gate: 상궁 정살림.
+  - Scholars' island: lecture hall = 선비 서물음; west dormitory = 사관 오남김 (palace archive); east dormitory = 문장가 송글월; island house = 역관 한다리.
+  - Lighthouse keeper's house: 천문관 남별.
+  - City south-west large house = 대장장이 쇠돌이 (forge); south-east large house = 목수 장이음; west-row house = 화원 이붓.
+  - 암행어사 박모름: no house; roams the city.
+- New houses reuse existing interiors (acad-east, scholar-house, lighthouse-keeper, city-workshop, city-painter). Room seats were kept for the old houses only.
+- Map pieces saved as webp in assets/new-world/pieces2/; build tools in tools/map/ (README there).
+- Not done yet:
+  - meeting placement for the 11 officials (throne-hall seats, courtyard rank stones), and the specialists along the walls;
+  - the palace's own map;
+  - the auto-hiring build;
+  - the piece 3 pier (formerly the Mojoco bridge).

@@ -187,9 +187,8 @@
   <header>
     <h1>My AI Village <span>마을</span></h1>
     <div class="group" role="tablist" aria-label="Town">
-      <button data-town="world" role="tab" aria-selected="false">World</button>
-      <button data-town="mojoco" role="tab" aria-selected="true">Mojoco</button>
-      <button data-town="capital" role="tab" aria-selected="false">Jung City · Capital</button>
+      <button data-town="world" role="tab" aria-selected="false" hidden>World</button>
+      <button data-town="capital" role="tab" aria-selected="true">Jung City · Capital</button>
     </div>
     <div class="group" aria-label="Light">
       <button data-light="auto" aria-pressed="true" title="Follow your real clock">Real time</button>
@@ -197,7 +196,7 @@
       <button data-light="night" aria-pressed="false">Night</button>
     </div>
     <button id="meeting" aria-pressed="false" title="Gather the court in the throne hall">Call Meeting</button>
-    <button id="world-btn" title="Leave this town for the world map">World map</button>
+    <button id="world-btn" title="Leave this town for the world map" hidden>World map</button>
     <button id="brief-btn" title="영의정 이균's briefing: what needs you, what's done, what's in progress">Briefing</button>
     <button id="todo-btn" aria-pressed="false" title="Your to-do list: 영의정 이균 passes each task to the right 사또">To-do</button>
     <button id="chat-btn" aria-pressed="false" title="Chat (T near someone · double-tap M for 영의정 이균 · double-tap N for 상선 김모심)">Chat</button>

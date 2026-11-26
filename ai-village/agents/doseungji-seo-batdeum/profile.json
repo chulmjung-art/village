@@ -1,0 +1,21 @@
+{
+ "id": "doseungji-seo-batdeum",
+ "title": "도승지",
+ "name": "서받듦",
+ "display": "도승지 서받듦",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "The 임금, directly."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/doseungji-seo-batdeum.webp",
+ "portrait": "assets/characters/portraits/doseungji-seo-batdeum.webp",
+ "role": "Set the agenda for each 상참 and 조회.",
+ "boss": "The 임금, directly"
+}

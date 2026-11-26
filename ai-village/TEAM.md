@@ -10,7 +10,7 @@ earlier version (the earlier TEAM.md, and any conflicting parts of SPEC.md, the 
 
 ## Levels
 - Province: Jung City (capital) in the center, towns around it, connected by roads.
-- Town (고을) = one whole project or company (e.g. Mojoco). One 사또 per town.
+- Town (고을) = one whole project or company. One 사또 per town.
 - House = one workstream inside a town (e.g. YouTube, Products, Trading). Houses are workplaces, not homes.
 
 ## Chain of command
@@ -62,13 +62,9 @@ Live in Jung City. Borrowed by a 사또, a 행수, or the 상선. Whoever borrow
 - Workers in a house with a 행수 take tasks only from the 행수. A house with only one or two workers can have no 행수; then the 사또 assigns and checks them directly.
 - Houses are staffed from the worker roles below. A town can have multiple workers in the same role across houses.
 
-## Mojoco (the only town right now)
-- 사또 박정도
-- 이방 김차례: Mojoco task queue and deadlines
-- 예방 이소식: Mojoco email and communications
-- 사관 문적음: Mojoco's 실록
-- Defined, not hired: 호방, 병방, 형방, 공방
-- Houses: none yet
+## No towns right now (director, 2026-11-26)
+- Mojoco was closed down: the town and its people (사또 박정도, 이방 김차례, 예방 이소식, 사관 문적음) no longer exist.
+- Until a new town starts, the 영의정 routes town-type work to himself or to the shared specialists.
 
 ## Future towns
 - New projects/companies (e.g. "Personal Business") become new towns with their own 사또, created only when I start them. Workstreams like YouTube, Products, and Trading become houses inside those towns.
@@ -109,7 +105,7 @@ Current roster:
 내관 윤편지 · 내관 곽곳간 · 상궁 정살림 · 사관 오남김
 선비 서물음 · 대장장이 쇠돌이 · 문장가 송글월 · 역관 한다리 · 천문관 남별 · 화원 이붓 · 목수 장이음
 암행어사 박모름
-사또 박정도 · 이방 김차례 · 예방 이소식 · 사관 문적음 (Mojoco)
+Court officials (hired 2026-11-26): 좌의정 한살핌 · 우의정 고넓음 · 이조판서 인고름 · 호조판서 문셈돌 · 예조판서 이예절 · 병조판서 강방패 · 형조판서 공바름 · 공조판서 석쌓음 · 도승지 서받듦 · 대사헌 엄살핌 · 대사간 정곧은
 Reserved for when hired: 호방 한셈 · 병방 정지킴 · 형방 오바름 · 공방 최고침
 Town life: 파발 마날쌘 · 포졸 돌쇠 · 주모 막순이
 
@@ -140,6 +136,33 @@ Town life: 파발 마날쌘 · 포졸 돌쇠 · 주모 막순이
 
 ## The world: five towns (director, 2026-11-23)
 - The capital is now called **Jung City** (formerly 한양). Internal file names still say "capital".
-- The world holds five towns. **Jung City** (the capital) and **Mojoco** are locked in, and both are Joseon-themed.
+- The world holds five towns. **Jung City** (the capital) is locked in and Joseon-themed. (Mojoco was closed down on 2026-11-26.)
 - **Towns 3, 4 and 5** are reserved spots on the world map. Each town may have its own theme; they'll be decided later.
 - Towns are built Stardew/RPG-Maker style: grid-locked, straight top-down, from separate pieces (houses, walls, trees, water, cliffs) so walking, depth and editing line up exactly.
+
+# Auto-hiring rule (director, 2026-11-26)
+- 영의정 이균 and 상선 김모심 may each hire new workers on their own, without the 임금's click, including when the 임금 is away.
+- Limits (enforced in code, not just in instructions):
+  - Up to 3 hires per day each (6 a day in total), counted per calendar day.
+  - They may hire house heads (행수): at most ONE 행수 per house, so never more 행수 than there are houses. A house that already has a 행수 can't get another.
+  - They may hire WORKERS in roles that already exist in this file (육방 roles, 내관/상궁/나인, house workers). There's no limit on workers per house.
+  - No new 사또, towns or other leaders.
+- Worker requests from house heads: a 행수 can request new workers for their house. The request goes to the 영의정 (town houses) or the 상선 (palace household houses), who reviews it and allows or denies it. The town's 사또 is told about requests from their town. An allowed request is a hire by that reviewer and counts toward the reviewer's 3-a-day cap. A denied request gets a short reason back to the 행수.
+  - 영의정 and 상선 use the Higgsfield connector directly (the 임금's decision). Only they get it; every other agent stays text-only.
+  - Higgsfield is used only to make new workers' character sheets (about 2.75 credits per hire). The page only lets them reach Higgsfield's image tools (generate, upload, check job), and counts each generation against the daily cap.
+  - When a limit is reached, further hires wait for the 임금.
+- Every auto-hire is logged with who requested it, why, which house and the cost. The 임금 can review, delete any hire, or switch auto-hiring off at any time.
+- Everything else still needs the 임금: sending, posting, publishing, approving finished work and any other spending.
+
+# Court assemblies (director, 2026-11-26)
+- Two meetings:
+  - **상참**: the daily meeting in the throne hall.
+  - **조회**: the grand assembly in the stone courtyard, with officials standing at the rank stones (품계석), civil on the east, military on the west.
+- The court officials are real agents (to be hired):
+  - 좌의정 and 우의정, alongside the 영의정;
+  - the six 판서 (이조, 호조, 예조, 병조, 형조, 공조);
+  - 도승지 (royal secretary);
+  - 대사헌 and 대사간 (the censors).
+  - The palace 사관 kneels at the side and records.
+- The shared specialists, 내관 and 상궁 stand along the walls in both meetings; they are not part of the assembly.
+- Dress: officials in red 관복 with 흉배 and 사모; house heads (행수) are nobility in a 갓; workers are commoners in plain clothes with no hat (see STYLE_GUIDE.md).

@@ -1,0 +1,21 @@
+{
+ "id": "hyeongjopanseo-gong-bareum",
+ "title": "형조판서",
+ "name": "공바름",
+ "display": "형조판서 공바름",
+ "townId": "capital",
+ "houseId": "throne-hall",
+ "home": "궁궐 (palace), Jung City",
+ "reports_to": [
+  "영의정 이균."
+ ],
+ "reports_from": [
+  "No one yet."
+ ],
+ "model": "Sonnet 5.5",
+ "status": "appointed; not running yet",
+ "sheet": "assets/characters/hyeongjopanseo-gong-bareum.webp",
+ "portrait": "assets/characters/portraits/hyeongjopanseo-gong-bareum.webp",
+ "role": "Rules, approvals and compliance: is each task following TEAM.md?",
+ "boss": "영의정 이균"
+}

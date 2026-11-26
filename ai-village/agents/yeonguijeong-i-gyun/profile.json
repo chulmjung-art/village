@@ -10,7 +10,7 @@
   "The 임금, directly."
  ],
  "reports_from": [
-  "Every 사또 (now: 사또 박정도 of Mojoco). You send work only to 사또."
+  "Every 사또 (none right now: there are no towns yet). You send town work only to 사또; until a town exists, you hand work to the shared specialists or do the routing yourself."
  ],
  "model": "Opus 5.5",
  "status": "appointed; not running yet",
