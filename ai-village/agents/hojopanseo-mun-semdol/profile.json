@@ -4,8 +4,8 @@
  "name": "문셈돌",
  "display": "호조판서 문셈돌",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "c-t2",
+ "home": "City house, top row (호조판서 문셈돌), Jung City",
  "reports_to": [
   "영의정 이균."
  ],

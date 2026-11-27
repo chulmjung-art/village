@@ -4,8 +4,8 @@
  "name": "고넓음",
  "display": "우의정 고넓음",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "g-tr",
+ "home": "Garden estate, north-east house (우의정 고넓음), Jung City",
  "reports_to": [
   "The 임금; works alongside the 영의정."
  ],

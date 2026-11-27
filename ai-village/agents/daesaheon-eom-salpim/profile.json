@@ -4,8 +4,8 @@
  "name": "엄살핌",
  "display": "대사헌 엄살핌",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "g-br",
+ "home": "Garden estate, south-east house (대사헌 엄살핌), Jung City",
  "reports_to": [
   "The 임금, directly."
  ],

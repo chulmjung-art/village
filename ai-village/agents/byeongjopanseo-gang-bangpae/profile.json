@@ -4,8 +4,8 @@
  "name": "강방패",
  "display": "병조판서 강방패",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "c-t5",
+ "home": "City house, top row far east (병조판서 강방패), Jung City",
  "reports_to": [
   "영의정 이균."
  ],

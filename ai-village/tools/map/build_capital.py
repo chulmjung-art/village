@@ -42,6 +42,8 @@ if p10 is not None:
 # piece 3: rows the model's 2K didn't cover (shifted up 32px) -> mirror real rows
 dark = np.where(p3[:80].sum(-1).mean(1) < 30)[0]
 if len(dark): k = dark.max()+1; p3[:k] = p3[2*k:k:-1][:k]
+# piece 3 sat 14px low against piece 4 (west-east road step): shift it up, mirror the freed bottom rows
+SH3 = 14; p3[:-SH3] = p3[SH3:].copy(); p3[-SH3:] = p3[-SH3-1:-2*SH3-1:-1]
 SEA_TARGET = np.array([43., 127., 187.])   # the city's sea = palette #297CB8
 def fix_sea(p):
     """shift water pixels so their median matches the city's sea"""

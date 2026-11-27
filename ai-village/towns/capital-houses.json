@@ -234,6 +234,127 @@
     "w": 60,
     "stairs_bottom": 3804
    }
+  },
+  {
+   "id": "g-tl",
+   "name": "Garden estate, north-west house (좌의정 한살핌)",
+   "interior": "assets/interiors/personal-munjangga.webp",
+   "door": {
+    "x": 2838,
+    "y": 3108,
+    "w": 56,
+    "stairs_bottom": 3142
+   }
+  },
+  {
+   "id": "g-tr",
+   "name": "Garden estate, north-east house (우의정 고넓음)",
+   "interior": "assets/interiors/personal-hyeongbang.webp",
+   "door": {
+    "x": 3294,
+    "y": 3108,
+    "w": 56,
+    "stairs_bottom": 3142
+   }
+  },
+  {
+   "id": "g-bl",
+   "name": "Garden estate, south-west house (도승지 서받듦)",
+   "interior": "assets/interiors/personal-sagwan.webp",
+   "door": {
+    "x": 2784,
+    "y": 3408,
+    "w": 56,
+    "stairs_bottom": 3442
+   }
+  },
+  {
+   "id": "g-br",
+   "name": "Garden estate, south-east house (대사헌 엄살핌)",
+   "interior": "assets/interiors/personal-helper.webp",
+   "door": {
+    "x": 3338,
+    "y": 3408,
+    "w": 56,
+    "stairs_bottom": 3442
+   }
+  },
+  {
+   "id": "c-t1",
+   "name": "City house, top row west (이조판서 인고름)",
+   "interior": "assets/interiors/capital-yeonguijeong.webp",
+   "door": {
+    "x": 3892,
+    "y": 3504,
+    "w": 56,
+    "stairs_bottom": 3538
+   }
+  },
+  {
+   "id": "c-t2",
+   "name": "City house, top row (호조판서 문셈돌)",
+   "interior": "assets/interiors/capital-kings-office.webp",
+   "door": {
+    "x": 4222,
+    "y": 3504,
+    "w": 56,
+    "stairs_bottom": 3538
+   }
+  },
+  {
+   "id": "c-t4",
+   "name": "City house, top row east (예조판서 이예절)",
+   "interior": "assets/interiors/personal-munjangga.webp",
+   "door": {
+    "x": 5212,
+    "y": 3504,
+    "w": 56,
+    "stairs_bottom": 3538
+   }
+  },
+  {
+   "id": "c-t5",
+   "name": "City house, top row far east (병조판서 강방패)",
+   "interior": "assets/interiors/personal-hyeongbang.webp",
+   "door": {
+    "x": 5602,
+    "y": 3504,
+    "w": 56,
+    "stairs_bottom": 3538
+   }
+  },
+  {
+   "id": "c-m1",
+   "name": "City house, middle row west (형조판서 공바름)",
+   "interior": "assets/interiors/personal-sagwan.webp",
+   "door": {
+    "x": 3892,
+    "y": 3774,
+    "w": 56,
+    "stairs_bottom": 3808
+   }
+  },
+  {
+   "id": "c-m3",
+   "name": "City house, middle row (공조판서 석쌓음)",
+   "interior": "assets/interiors/personal-helper.webp",
+   "door": {
+    "x": 4482,
+    "y": 3774,
+    "w": 56,
+    "stairs_bottom": 3808
+   }
+  },
+  {
+   "id": "c-m4",
+   "name": "City house, middle row east (대사간 정곧은)",
+   "interior": "assets/interiors/capital-yeonguijeong.webp",
+   "door": {
+    "x": 5218,
+    "y": 3774,
+    "w": 56,
+    "stairs_bottom": 3808
+   }
   }
  ]
 }

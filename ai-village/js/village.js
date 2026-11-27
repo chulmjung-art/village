@@ -77,7 +77,8 @@
         if (p.prop === "stone-lantern") lamps.push({ x: p.x, y: p.y - p.h * 0.52, r: p.h * 1.5, ph: rand(0, 6) });
       }
       for (const l of fx.extra_lights || []) lamps.push({ x: l.x, y: l.y, r: 120, ph: rand(0, 6) });
-      for (const w of fx.windows) w.ph = rand(0, 6);
+      for (const w of (fx.windows = fx.windows || [])) w.ph = rand(0, 6);
+      fx.fire = fx.fire || [];
 
       const water = (fx.water || []).map((z) => makeWater(z));
       // butterflies live around flower beds and flowering bushes
@@ -99,7 +100,9 @@
         const [walk, roofs] = await Promise.all([getJSON(t.walk), getJSON(t.roofs)]);
         town.nav = makeNav(walk, placed);
         buildRoofs(await loadImg(roofs.image));
-        loadEdits().catch((e) => console.warn(e));   // saved grid edits are laid on top as soon as they arrive
+        // the director paints the walkable ground: wait for those edits (up to 5 s) so nobody is placed off it
+        await Promise.race([loadEdits(), new Promise((r) => setTimeout(r, 5000))]).catch((e) => console.warn(e));
+        if (town.nav && town.nav.navDirty) { rebuildNav(town.nav); town.nav.navDirty = false; }
       } catch (e) { console.warn("No walk map for", key, e); town.nav = null; town.roofs = []; }
       town.people = [];
       if (t.people) loadPeople(t.people).then((ppl) => { if (town && town.key === key) { town.people = ppl; placeHires(); } });
@@ -393,7 +396,7 @@
       const kneelImg = await loadImg(kneelSrc).catch(() => null);
       const house = d.house && town.houses.find((h) => h.id === d.house);
       let yard;
-      if (d.roam) yard = d.roam;
+      if (d.roam) yard = d.roam.map((p) => nearestFree(p.x, p.y, town.nav && town.nav.safe));
       else {
         const P = town.P, door = house.door, base = door.stairs_bottom || door.y;
         yard = [[-1.3, 0.7], [1.3, 0.8], [0, 1.2], [-0.7, 1.5], [0.8, 1.4]].map(([a, b]) => nearestFree(door.x + a * P, base + b * P, town.nav && town.nav.safe));
@@ -694,7 +697,7 @@
     ctx.save();
     ctx.font = `600 ${fs}px "Gowun Batang", serif`;
     const w = ctx.measureText(a.label).width + fs * 0.9;
-    if (a.face && player.seated && court.active) {
+    if (a.face && a.kneelImg && !a.wall && player.seated && court.active) {
       // kneeling courtier: the tag sits just behind them (away from the aisle), level with their head
       const kneelW = a.kneelImg ? a.kneelImg.width * (a.h * 0.66) / a.kneelImg.height : a.h * 0.4;
       const back = a.face === "right" ? -1 : 1;
@@ -990,7 +993,7 @@
   function updateHover() {
     if (!cardEl || !hoverPt || !town || grab || pointers.size || editor.on || fadeTo) return hideCard();
     const r = canvas.getBoundingClientRect(), wx = cam.x + (hoverPt.x - r.left) / cam.s, wy = cam.y + (hoverPt.y - r.top) / cam.s;
-    const kneeling = (a) => a.seated || (a.face && court.active && player.seated);
+    const kneeling = (a) => a.seated || (a.face && a.kneelImg && !a.wall && court.active && player.seated);
     const list = [];
     if (aide.img) list.push({ a: aide, id: "sangseon-kim-mosim" });
     for (const p of town.people) if (p.visible && !p.hidden && !p.inMeeting) list.push({ a: p, id: p.id });
@@ -1353,7 +1356,7 @@
     court.throneImg = await loadImg(KING_THRONE).catch(() => null);
     court.people = (await Promise.all(court.data.seats.map(async (s) => {
       try {
-        const [img, kneel] = await Promise.all([loadImg(s.sheet), loadImg(s.kneel)]);
+        const [img, kneel] = await Promise.all([loadImg(s.sheet), s.kneel ? loadImg(s.kneel).catch(() => null) : null]);
         return { ...s, sx: s.x, sy: s.y, img, kneelImg: kneel, h: 60, dir: s.face, phase: 0, moving: false, label: s.title + " " + s.name };
       } catch (e) { console.warn("Missing court art for", s.id); return null; }
     }))).filter(Boolean);
@@ -1439,7 +1442,7 @@
       c.drawn = true;
       c.h = roomHeightAt(c.y);
       if (c.arrived === false) { drawSprite(c); continue; }   // still walking to their place
-      if (player.seated) { // kneel, facing across the aisle
+      if (player.seated && c.kneelImg && !c.wall) { // kneel, facing across the aisle (wall standers and anyone without kneel art keep standing)
         const img = c.kneelImg, kh = c.h * 0.66, kw = img.width * kh / img.height;
         ctx.save();
         ctx.fillStyle = "rgba(40,25,10,0.25)";
@@ -1816,8 +1819,8 @@
       lctx.beginPath(); lctx.arc(x, y, r, 0, Math.PI * 2); lctx.fill();
     };
     for (const l of town.lamps) add(l.x, l.y, l.r * 1.4, 0.85 * n * lampFlick(t, l.ph));
-    for (const w of town.fx.windows) add(w.x, w.y, w.r * 1.3, 0.55 * n);
-    for (const f of town.fx.fire) add(f.x, f.y - f.h * 0.3, f.w * 3.5, 0.9 * n * flick(t, 2));
+    for (const w of town.fx.windows || []) add(w.x, w.y, w.r * 1.3, 0.55 * n);
+    for (const f of town.fx.fire || []) add(f.x, f.y - f.h * 0.3, f.w * 3.5, 0.9 * n * flick(t, 2));
     ctx.save();
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.globalCompositeOperation = "multiply";
@@ -1994,9 +1997,10 @@
   // Agents' answers are only text: every Claude call goes through safeSample, which refuses page tools outright; the only
   // connector tool the page may ever call is the free local model's chat, checked by safeCallTool.
   const SAFETY = Object.freeze({
-    allowedTools: Object.freeze(["host:ollama/ollama_chat"]),
+    allowedTools: Object.freeze(["host:ollama/ollama_chat", "Gmail/search_threads", "Gmail/get_thread", "Gmail/create_draft", "Google Calendar/list_events", "Google Drive/search_files", "Google Drive/read_file_content", "Google Sheets/get_values", "Notion/notion-search", "Notion/notion-fetch", "Notion/notion-create-pages", "ClickUp/clickup_search", "ClickUp/clickup_create_task", "Canva/search-designs", "Higgsfield AI/balance", "Higgsfield AI/transactions", "Higgsfield AI/generate_image", "Higgsfield AI/jobs_wait"]),
+    hireTools: Object.freeze(["Higgsfield AI/generate_image"]),   // the one spending tool: only through the capped hiring tool, only for 영의정 and 상선
     forbidden: /send|post|publish|tweet|share|upload|deploy|list_?(item|product)|create_?(listing|product|order|campaign|ad)|purchase|buy|pay|charge|checkout|refund|transfer|spend|credit|generate|upscale|invoice/i,
-    rules: "Village safety rules, enforced by the village itself: email is always only a draft and can never be sent; nobody can spend money or Higgsfield credits; nobody can publish, post or list anything; everything finished goes to the 임금 for his own approval, and nobody else, not even 영의정 이균, can approve it.",
+    rules: "Village safety rules, enforced by the village itself: email is always only a draft and can never be sent; nobody can spend money; Higgsfield credits are spent only by 영의정 이균 and 상선 김모심, only to make a new hire's character sheet, at most 3 a day each; nobody can publish, post or list anything; everything finished goes to the 임금 for his own approval, and nobody else, not even 영의정 이균, can approve it.",
   });
   // pictures only ever come from the village's own files: never an outside address a record could smuggle in
   const safeAsset = (u) => (typeof u === "string" && /^assets\/[A-Za-z0-9_\-\/.]+\.(webp|png|jpg|jpeg)$/.test(u) && !u.includes("..") ? u : "");
@@ -2004,19 +2008,99 @@
   const plainText = (x, max) => String(x == null ? "" : x).replace(/[\u0000-\u001f\u007f\u202a-\u202e\u2066-\u2069]/g, " ").replace(/https?:\/\/\S+|www\.\S+/gi, "").replace(/\s+/g, " ").trim().slice(0, max || 400);
   function safeCallTool(mcp, server, tool, input) {
     const key = server + "/" + tool;
-    if (!SAFETY.allowedTools.includes(key) || (SAFETY.forbidden.test(tool) && !/^.*draft.*$/i.test(tool)) || /send/i.test(tool))
+    if (!SAFETY.allowedTools.includes(key) || (SAFETY.forbidden.test(tool) && !/draft|create_pages|create_task/i.test(tool) && !SAFETY.hireTools.includes(key)) || /send/i.test(tool))
       return Promise.reject({ code: "blocked_by_village_rules", message: "Blocked by the village safety rules: " + key });
     return mcp.callTool(server, tool, input);
   }
   function safeSample(raw) {      // agents get words only: any call that tries to hand Claude tools is refused
     if (!raw) return null;
-    const guard = (o) => { if (o && o.tools) throw { code: "blocked_by_village_rules", message: "Agents can't be given tools." }; return o; };
+    const guard = (o) => { if (o && o.tools && !AGENT_TOOLSETS.has(o.tools)) throw { code: "blocked_by_village_rules", message: "Agents only get the tools the village gives them." }; return o; };
     const f = (input, opts) => { try { return raw(input, guard(opts)); } catch (e) { return Promise.reject(e); } };
     f.json = (input, opts) => { try { return raw.json(input, guard(opts)); } catch (e) { return Promise.reject(e); } };
     f.limits = () => raw.limits();
     return Object.freeze(f);
   }
   const getSample = () => (samplePromise ||= (window.claude && claude.use ? claude.use("sample").then(safeSample).catch(() => null) : Promise.resolve(null)));
+
+  // ---------- connectors (director, 2026-11-27): each agent gets only its own read and draft tools ----------
+  // Calls run on the 임금's own claude.ai connectors (he allows each one once). Nothing here can send, post or publish.
+  const AGENT_TOOLSETS = new WeakSet();
+  const CLIP = (x, n) => { const t = typeof x === "string" ? x : JSON.stringify(x); return t.length > (n || 12000) ? t.slice(0, n || 12000) + " …(cut)" : t; };
+  const OBJ = (props, req) => ({ type: "object", properties: props, required: req || [] });
+  const STR = { type: "string" };
+  const HIRE_REF = "a94eec6c-cd29-48ad-93f8-d9e60b9b0ab7";   // 영의정's sheet: every new character is drawn from it, same style and grid
+  const HIRE_CAP = 3;
+  const TOOLKIT = {
+    gmail_search: { server: "Gmail", tool: "search_threads", d: "Search the 임금's Gmail with Gmail search syntax (e.g. 'is:unread newer_than:2d'). Returns thread ids, senders, subjects and snippets.", s: OBJ({ query: STR }), map: (i) => ({ query: String(i.query || ""), pageSize: 10, view: "THREAD_VIEW_SUMMARY" }) },
+    gmail_read: { server: "Gmail", tool: "get_thread", d: "Read one Gmail thread in full by its thread id (from gmail_search).", s: OBJ({ threadId: STR }, ["threadId"]), map: (i) => ({ threadId: String(i.threadId || ""), messageFormat: "PLAIN_TEXT" }) },
+    gmail_draft: { server: "Gmail", tool: "create_draft", d: "Save an email DRAFT in the 임금's Gmail. It is never sent: he reviews and sends it himself. Returns the draft id.", s: OBJ({ to: { type: "array", items: STR }, subject: STR, body: STR, replyToMessageId: STR }, ["subject", "body"]),
+      map: (i) => { const o = { to: (Array.isArray(i.to) ? i.to : []).map(String).slice(0, 10), subject: String(i.subject || ""), body: String(i.body || "") }; if (i.replyToMessageId) o.replyToMessageId = String(i.replyToMessageId); return o; } },
+    calendar_events: { server: "Google Calendar", tool: "list_events", d: "List events on the 임금's calendar. Optional startTime/endTime as local ISO times without offset (e.g. 2026-11-27T09:00:00), optional fullText keywords.", s: OBJ({ startTime: STR, endTime: STR, fullText: STR }),
+      map: (i) => { const o = { pageSize: 20, orderBy: "startTime" }; for (const k of ["startTime", "endTime", "fullText"]) if (i[k]) o[k] = String(i[k]); return o; } },
+    drive_search: { server: "Google Drive", tool: "search_files", d: "Search the 임금's Google Drive. Query syntax like: fullText contains 'budget'  or  title contains 'plan'. Returns file ids, titles and short snippets.", s: OBJ({ query: STR }, ["query"]), map: (i) => ({ query: String(i.query || ""), pageSize: 10, snippetVerbosity: "BRIEF" }) },
+    drive_read: { server: "Google Drive", tool: "read_file_content", d: "Read a Google Drive file by its file id (from drive_search).", s: OBJ({ fileId: STR }, ["fileId"]), map: (i) => ({ fileId: String(i.fileId || "") }) },
+    sheet_read: { server: "Google Sheets", tool: "get_values", d: "Read a range from a Google Sheet: spreadsheetId (from drive_search) and an A1 range like 'Sheet1!A1:F40'.", s: OBJ({ spreadsheetId: STR, range: STR }, ["spreadsheetId", "range"]), map: (i) => ({ spreadsheetId: String(i.spreadsheetId || ""), range: String(i.range || "A1:Z100") }) },
+    notion_search: { server: "Notion", tool: "notion-search", d: "Search the 임금's Notion pages by keywords. Returns page titles, ids and highlights.", s: OBJ({ query: STR }, ["query"]), map: (i) => ({ query: String(i.query || ""), page_size: 8 }) },
+    notion_read: { server: "Notion", tool: "notion-fetch", d: "Read one Notion page by its id or URL (from notion_search).", s: OBJ({ id: STR }, ["id"]), map: (i) => ({ id: String(i.id || "") }) },
+    notion_draft: { server: "Notion", tool: "notion-create-pages", d: "Save a written draft as a new PRIVATE Notion page (only the 임금 sees it). Give a title and the content in Markdown.", s: OBJ({ title: STR, content: STR }, ["title", "content"]),
+      map: (i) => ({ creation_mode: "draft", pages: [{ properties: { title: String(i.title || "Draft").slice(0, 200) }, content: String(i.content || "").slice(0, 60000) }] }) },
+    tasks_search: { server: "ClickUp", tool: "clickup_search", d: "Search the 임금's ClickUp tasks by keywords. Returns tasks with their names, status and list.", s: OBJ({ keywords: STR }), map: (i) => ({ keywords: String(i.keywords || ""), count: 10, filters: { asset_types: ["task"] } }) },
+    tasks_create: { server: "ClickUp", tool: "clickup_create_task", d: "Add a task to a ClickUp list the 임금 uses (list_id from tasks_search results). Name, optional description and due date (YYYY-MM-DD).", s: OBJ({ list_id: STR, name: STR, description: STR, due_date: STR }, ["list_id", "name"]),
+      map: (i) => { const o = { list_id: String(i.list_id || ""), name: String(i.name || "").slice(0, 200) }; if (i.description) o.markdown_description = String(i.description).slice(0, 4000); if (/^\d{4}-\d{2}-\d{2}$/.test(String(i.due_date || ""))) o.due_date = String(i.due_date); return o; } },
+    canva_search: { server: "Canva", tool: "search-designs", d: "Find the 임금's existing Canva designs by keywords. Returns design ids and titles.", s: OBJ({ query: STR }), map: (i) => ({ query: String(i.query || ""), limit: 10, user_intent: "A village agent is looking for the 임금's existing designs" }) },
+    credits_balance: { server: "Higgsfield AI", tool: "balance", d: "Higgsfield credits left and the current plan (read only).", s: OBJ({}), map: () => ({}) },
+    credits_history: { server: "Higgsfield AI", tool: "transactions", d: "Recent Higgsfield credit spending, newest first (read only).", s: OBJ({}), map: () => ({ size: 20 }) },
+  };
+  const GRANTS = {
+    "naegwan-yun-pyeonji": ["gmail_search", "gmail_read", "gmail_draft", "calendar_events"],
+    "naegwan-gwak-gotgan": ["drive_search", "sheet_read"],
+    "hojopanseo-mun-semdol": ["drive_search", "sheet_read", "credits_balance", "credits_history"],
+    "seonbi-seo-mureum": ["drive_search", "drive_read", "notion_search", "notion_read"],
+    "munjangga-song-geulwol": ["drive_search", "drive_read", "notion_search", "notion_read", "notion_draft"],
+    "yeonguijeong-i-gyun": ["tasks_search", "tasks_create", "hire_character", "hire_check"],
+    "sangseon-kim-mosim": ["hire_character", "hire_check"],
+    "doseungji-seo-batdeum": ["tasks_search", "tasks_create", "calendar_events"],
+    "hwawon-i-but": ["canva_search"],
+    "gongjopanseo-seok-ssaeum": ["canva_search"],
+  };
+  const hireDay = () => new Date().toISOString().slice(0, 10);
+  async function hiresToday(db, who) {
+    const snap = await db.collection("hirelog").where("by", "==", who).where("day", "==", hireDay()).get();
+    return snap.docs.length;
+  }
+  async function callConnector(server, tool, input, signal) {
+    const mcp = await getMcp(); if (!mcp) throw new Error("Connectors aren't available here: open the village in claude.ai.");
+    try { const res = await safeCallTool(mcp, server, tool, input); return CLIP(res && res.payload !== undefined ? res.payload : res && res.content); }
+    catch (e) { throw new Error((e && (e.code || e.message)) || "The connector call failed"); }
+  }
+  function makeTool(agentId, name) {
+    if (name === "hire_character") return { name, description: `Make the character sheet (walking art) for a NEW hire, drawn in the village style. Costs about 2 Higgsfield credits; at most ${HIRE_CAP} a day for you. Give the person's look: title, age, face, hair, clothes (commoners: plain clothes, no hat; house heads: a gat and dopo; officials: red robe and samo). Returns a job id to check with hire_check.`,
+      inputSchema: OBJ({ title: STR, name: STR, look: STR }, ["title", "name", "look"]),
+      execute: async (i, ctx) => {
+        const db = window.claude && claude.use ? await claude.use("db") : null;
+        if (!db) throw new Error("The village record isn't available, so hiring is paused.");
+        if (await hiresToday(db, agentId) >= HIRE_CAP) throw new Error(`Daily limit reached: you've made ${HIRE_CAP} hires today. The rest waits for the 임금.`);
+        const title = plainText(i.title, 20), nm = plainText(i.name, 20), look = plainText(i.look, 600);
+        const prompt = `Redraw this character sheet as a DIFFERENT person in exactly the same style, the same cute toy proportions and the same grid: 4 rows x 3 columns, all frames the same size, on a plain light background. Row 1 walks toward the camera, row 2 walks right, row 3 walks left, row 4 walks away; in each row: left foot forward, standing, right foot forward. The new person: ${title}. ${look}. A small red wooden ID tag (hopae) at the belt. Lush hand-painted 2D game character art for a cozy Joseon-era Korean village RPG, soft brush texture, clean dark brown linework, light from the upper left. No text anywhere.`;
+        const out = await callConnector("Higgsfield AI", "generate_image", { params: { model: "gpt_image_2_6", aspect_ratio: "3:4", quality: "high", resolution: "2k", count: 1, use_unlim: false, medias: [{ value: HIRE_REF, role: "image_references" }], prompt } }, ctx && ctx.signal);
+        const m = out.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/); const job = m ? m[0] : "";
+        await db.collection("hirelog").add({ by: agentId, day: hireDay(), at: Date.now(), title, name: nm, job, cost: 2 });
+        return { job_id: job, note: "Started. Check it with hire_check; Claude cuts the sheet into the game the next time the 임금 says 'process hires'." };
+      } };
+    if (name === "hire_check") return { name, description: "Check a character-sheet job started with hire_character. Returns its status and picture link when done.", inputSchema: OBJ({ job_id: STR }, ["job_id"]),
+      execute: async (i, ctx) => callConnector("Higgsfield AI", "jobs_wait", { jobs: [{ index: 0, job_id: String(i.job_id || "") }], timeout_seconds: 10 }, ctx && ctx.signal) };
+    const t = TOOLKIT[name]; if (!t) return null;
+    return { name, description: t.d, inputSchema: t.s, execute: async (i, ctx) => callConnector(t.server, t.tool, t.map(i || {}), ctx && ctx.signal) };
+  }
+  const toolCache = new Map();
+  async function toolsFor(p) {   // {tools: [...]} for this agent, or {} when it has none or this view can't run tools
+    const names = p && GRANTS[p.id]; if (!names) return {};
+    const sample = await getSample(); let lim = null; try { lim = sample && await sample.limits(); } catch (e) {}
+    if (!lim || !lim.tools) return {};
+    if (!toolCache.has(p.id)) { const list = names.map((n) => makeTool(p.id, n)).filter(Boolean); AGENT_TOOLSETS.add(list); toolCache.set(p.id, list); }
+    return { tools: toolCache.get(p.id) };
+  }
+  const toolLine = (p) => GRANTS[p && p.id] ? `- You can use these tools on the 임금's own accounts: ${GRANTS[p.id].join(", ")}. Use them for real facts instead of guessing. Drafts stay drafts: you can never send, post or publish anything.` : "- You have no tools, no internet and no access to the 임금's accounts.";
   const textCache = new Map();
   const getText = (u) => { if (!textCache.has(u)) textCache.set(u, fetch(u).then((r) => (r.ok ? r.text() : "")).catch(() => "")); return textCache.get(u); };
   const chatKey = (id) => "village.chat." + id;
@@ -2268,7 +2352,7 @@ ${extra || ""}`;
       if (id === CHIEF || id === "sangseon-kim-mosim") await chiefTurn(sample, p, turns, out, ctl, id);
       else {
         const brief = await characterBrief(id, TASK_RULE);
-        const { text: raw } = await sample([{ role: "user", content: brief }, ...turns], { ...modelOpts(p), cache: false, signal: ctl.signal, onText: ({ text: t }) => { out.textContent = stripMark(t); chatLog.scrollTop = chatLog.scrollHeight; } });
+        const { text: raw } = await sample([{ role: "user", content: brief + "\n" + toolLine(p) }, ...turns], { ...modelOpts(p), ...(await toolsFor(p)), cache: false, signal: ctl.signal, onText: ({ text: t }) => { out.textContent = stripMark(t); chatLog.scrollTop = chatLog.scrollHeight; } });
         const mark = raw.match(TASK_MARK), reply = stripMark(raw) || raw;
         out.textContent = reply;
         hist.push({ role: "assistant", content: reply });
@@ -2296,7 +2380,7 @@ ${dirs.map((d) => `  - id "${d.id}": ${d.display} of ${d.townId === "mojoco" ? "
 - Reply with ONLY a JSON object, no other text: {"reply": "what you say to the 임금, in character", "orders": [{"to": "<사또 id from the list>", "message": "what you tell that 사또, in character"}], "summon": [{"to": "<id>", "message": "what you say on the call, in character"}]}. Use [] for orders or summon when there's nothing.`;
     const brief = await characterBrief(who, extra);
     out.textContent = "…";
-    const res = await sample.json([{ role: "user", content: brief }, ...turns], { ...modelOpts(p), cache: false, signal: ctl.signal });
+    const res = await sample.json([{ role: "user", content: brief + "\n" + toolLine(p) }, ...turns], { ...modelOpts(p), ...(await toolsFor(p)), cache: false, signal: ctl.signal });
     const reply = String((res && res.reply) || "").trim() || "전하, 분부 받들겠습니다.";
     out.textContent = reply;
     const hist = store.get(chatKey(who), []); hist.push({ role: "assistant", content: reply });
@@ -2790,6 +2874,23 @@ Reply with ONLY JSON: {"talk": true, "topic": "a few words", "lines": [{"who": "
   }
   // the "done" toast: a task just finished, here's its report
   const toastEl = document.getElementById("toast");
+  // one batched dialog for everything the villagers use (director: "have everyone connect right now so I can do it once")
+  function toastMsg(text, buttonText, onClick) {
+    toastEl.innerHTML = "";
+    const m = document.createElement("span"); m.textContent = text; toastEl.append(m);
+    if (buttonText) { const b = document.createElement("button"); b.type = "button"; b.textContent = buttonText; b.addEventListener("click", onClick); toastEl.append(b); }
+    const x = document.createElement("button"); x.type = "button"; x.className = "x"; x.textContent = "×"; x.setAttribute("aria-label", "Dismiss");
+    x.addEventListener("click", () => { toastEl.hidden = true; }); toastEl.append(x); toastEl.hidden = false;
+  }
+  document.getElementById("connect-btn").addEventListener("click", async () => {
+    const perms = window.claude && claude.use ? await claude.use("permissions").catch(() => null) : null;
+    if (!perms) { toastMsg("Connecting only works when the village is opened from claude.ai."); return; }
+    const st = await perms.request();
+    const vals = Object.entries(st || {});
+    const ok = vals.filter(([, v]) => v === "granted").length, no = vals.filter(([, v]) => v === "denied").map(([k]) => k);
+    if (!no.length) toastMsg(`All set: ${ok} permission${ok === 1 ? "" : "s"} allowed. The villagers can use their connectors now.`);
+    else toastMsg(`Allowed ${ok}; not allowed: ${no.join(", ")}.`, "Open Permissions", () => perms.manage().catch(() => toastMsg("Open the Permissions menu at the top of the page to switch them on.")));
+  });
   function announceDone(t) {
     toastEl.innerHTML = "";
     const m = document.createElement("span"); m.textContent = "✓ Done: " + t.text.slice(0, 60) + (t.text.length > 60 ? "…" : "");
@@ -2815,10 +2916,11 @@ ${t.work.slice(0, 12000)}
     const b = await characterBrief(doer.id, `- Task from the 임금's to-do list: "${t.text}"
 - ${t.doerId0 ? t.instructions : doer === dir ? "You took this on yourself." : dir.display + " handed it to you with these instructions:\n" + t.instructions}
 ${notes ? `- ${dir === doer ? "영의정 이균" : dir.display} sent your last version back. Their notes:\n${notes}\n- Your last version:\n${t.work.slice(0, 8000)}\n- Fix exactly what the notes ask and hand in the whole improved deliverable.\n` : ""}- Do the task as fully as you can in writing: the actual deliverable (the draft, the plan, the list, the answer), not a promise.
-- You have no tools, no internet and no access to the 임금's accounts. If part of it needs a real action (sending, buying, booking, posting) or facts you can't know, prepare everything and say exactly what's left for the 임금.
+${toolLine(doer)}
+- If part of it needs a real action (sending, buying, booking, posting) or facts you can't get, prepare everything and say exactly what's left for the 임금.
 - Write the deliverable in the language of the task.
 - Reply with ONLY JSON: {"summary": "one or two sentences on what you did", "work": "the full deliverable", "left": "what's left for the 임금, or empty"}`);
-    return sample.json(b, { ...modelOpts(doer), cache: false });
+    return sample.json(b, { ...modelOpts(doer), ...(await toolsFor(doer)), cache: false });
   }
   // only a real click by the 임금 approves: no agent reply, no message and no script can set a task to done
   function approveTask(e, id) {

@@ -4,8 +4,8 @@
  "name": "정곧은",
  "display": "대사간 정곧은",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "c-m4",
+ "home": "City house, middle row east (대사간 정곧은), Jung City",
  "reports_to": [
   "The 임금, directly."
  ],

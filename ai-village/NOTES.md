@@ -1022,3 +1022,65 @@ A running record of every decision we make, so nothing gets lost between session
   - the palace's own map;
   - the auto-hiring build;
   - the piece 3 pier (formerly the Mojoco bridge).
+- Path fixes (director: "section 7 no path to the side houses; section 9 no proper road into the temple"):
+  - City: the two houses inside the palace wall had front paths that ran into the wall, with no lane. Added gravel lanes along the inner side of the wall, from the gate building to each house.
+  - Temple: the hamlet road stopped about 80px above the side gate's opening. Added a gravel forecourt joining the road to the gate opening, kept clear of the gate's roof and pillar.
+  - Painted with real road texture by tools/map/patch_paths.py, run after the build. Free.
+- Palace side gates (director: "instead of that, make two open gates in the walls so the roads connect to the outside roads"):
+  - The inner lanes were removed.
+  - A 2K edit of the city piece (job 7e901886-c9cb-4d73-80be-ba14716d94ba, 2 credits) added two small roofed gates with open doors in the palace wall, below the two inner houses. Gravel paths run from each house through its gate to the town road.
+  - The edit aligned at scale 1.0, offset (0,0). Saved as assets/new-world/pieces2/capital-07-gates-edit.webp. patch_paths.py pastes only the two gate areas (local x480-760 and x1560-1840, y270-640, 24px feather).
+- 3/4 west-east road fix (director: "the west-east road on 3 and 4 don't align well"): piece 3's road ran about 14px lower than piece 4's (rows 2192-2254 vs 2177-2240, final coords). build_capital.py now shifts piece 3 up 14px (bottom rows mirrored). Both sides now sit at rows 2179-2240. The 3/6 join was checked and is still clean. Map rebuilt, path patches reapplied.
+- Walk grid (director: "make the whole map unwalkable and then I'll make things walkable"): towns/capital-walk.json is now all blocked. The director paints walkable areas with the grid editor; edits save under "capital-island" and are laid on top.
+- Day/night fix (director: "real time and day/night always look like day"): drawNight looped over town.fx.fire, but the new capital-effects.json had no "fire" list. So every frame threw before the night layer was drawn (the frame catch hid the error).
+  - village.js now defaults fx.windows/fx.fire to [] (load + drawNight).
+  - capital-effects.json now lists every key as empty.
+- Waiting for spend approval: 2K edits to fix the bottom-right big city house's broken right fence (an art flaw in the original city piece) and to run the temple road straight through the side gate (replacing my boxy forecourt patch). 2 credits each.
+- Fence + temple road fixed (director's OK; 2 credits each):
+  - City edit 78d2f3b9-475a-4212-a9c2-4c8b67084afe: completes the bottom-right big house's fence.
+  - Temple edit 675fa546-c63a-4d66-85ad-8fa95de4c778: road straight through the temple's side gate; the boxy forecourt patch is gone. A short gravel bend joins it to the hamlet road between the two house rows.
+  - Both saved in assets/new-world/pieces2/ (*-fence-edit, *-road-edit) and pasted by patch_paths.py.
+- Fires (director: "add some fire around"): 11 lantern flames + night glows in towns/capital-effects.json:
+  - 2 stone lanterns by the palace gate, 2 at the plaza's south end;
+  - 4 around the temple pagoda;
+  - 2 at the academy gate;
+  - the lantern post by the lighthouse keeper's house.
+- Cleanup (director): the temple road's leftover stub behind the lower hamlet house was removed, and the turn was rebuilt as a clean L: temple road east, north up a single bend, then east along the corridor between the house rows to the hamlet road. The bottom-right big city house's green seam was caused by my small paste window; the fence edit is now pasted over the whole yard and its road ring. All free, in patch_paths.py.
+- Director painted all walkable areas.
+  - Spawning fix: loadTown used to start the saved grid edits without waiting, so people and the player were placed on the blank (all-blocked) grid. It now awaits the edits (up to 5 s), rebuilds the walk grid, then places the player and every resident with nearestFree on the safe grid. The 암행어사's roam points are snapped the same way.
+- Officials' homes (director: "they just hang out in front of the palace"):
+  - Historically, Joseon officials lived in their own houses in the capital and went to the palace for court. So each now has a home and goes to the palace for the 상참/조회.
+  - Garden estate (west, 4 houses round the fountains): 좌의정 (NW), 우의정 (NE), 도승지 (SW), 대사헌 (SE).
+  - City houses: 이조 (top row west), 호조 (top row, 2nd), 예조 (top row east), 병조 (top row far east), 형조 (middle row west), 공조 (middle row 3rd), 대사간 (middle row east).
+  - Spare: the big middle house on the bottom row.
+  - New house ids g-tl/g-tr/g-bl/g-br and c-t1/c-t2/c-t4/c-t5/c-m1/c-m3/c-m4, reusing existing interiors; the profiles were updated to match.
+- Meeting attendance (director: "make it so the right people attend the meetings"): court.json rewritten (23 places) for the 상참 in the throne hall.
+  - Screen-left row (the 임금's right): 영의정, 우의정, 이조판서, 호조판서, 예조판서, 대사헌, then the 사관 recording.
+  - Screen-right row (the 임금's left): 좌의정, 병조판서, 형조판서, 공조판서, 대사간.
+  - The 도승지 stands left of the throne (the 상선 stays right).
+  - The 2 내관, the 상궁 and the 7 specialists stand along the side walls outside the rank stones ("wall": true) and never kneel.
+  - Code: kneel art is optional; anyone without it, or a wall stander, keeps standing when the 임금 sits. The 11 new officials have no kneel poses yet (≈1 credit each at 2K medium), so they stand while the rest kneel.
+  - The grand 조회 in the courtyard needs the palace's own map (not built yet).
+
+### Connectors for the agents (director: "ok let's do it"; Make left out, since it was for Mojoco)
+- Each agent gets only its own tools (GRANTS in village.js), as page functions wrapping the 임금's claude.ai connectors. Every call goes through safeCallTool's allowlist. "send" is always blocked; drafts, Notion private drafts and ClickUp tasks are allowed. Higgsfield generate_image is allowed only inside the capped hiring tool.
+- safeSample now accepts tools only when the village built that exact toolset (AGENT_TOOLSETS WeakSet); any other tools are refused.
+- Grants:
+  - 윤편지: Gmail search/read/draft, Calendar events.
+  - 곽곳간: Drive search, Sheets read.
+  - 호조판서: Drive search, Sheets read, Higgsfield balance + transactions.
+  - 서물음: Drive + Notion read.
+  - 송글월: Drive + Notion read, Notion private draft.
+  - 영의정: ClickUp search/create, hire_character + hire_check.
+  - 상선: hire_character + hire_check.
+  - 도승지: ClickUp search/create, Calendar events.
+  - 이붓, 공조판서: Canva search.
+- hire_character:
+  - Checks the db collection "hirelog" (≤3 per hirer per day) and builds the sheet prompt around the agent's description, with 영의정's sheet (media a94eec6c) as the reference.
+  - Calls Higgsfield generate_image (2K high ≈2 credits) and logs {by, day, at, title, name, job, cost}.
+  - Cutting the sheet into the game still happens when the director says "process hires".
+- Briefs now say which tools each agent has (toolLine); doWork no longer says "you have no tools" for those agents.
+- Not wired (honest gaps):
+  - Figma needs a file session flow first.
+  - Claude Code Remote (scheduled work) needs its own design: what runs, when, and how it reports.
+- Tool calls run only when this view supports page tools (sample.limits().tools); otherwise agents fall back to words only.

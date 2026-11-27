@@ -4,8 +4,8 @@
  "name": "이예절",
  "display": "예조판서 이예절",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "c-t4",
+ "home": "City house, top row east (예조판서 이예절), Jung City",
  "reports_to": [
   "영의정 이균."
  ],

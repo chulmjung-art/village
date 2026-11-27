@@ -129,77 +129,77 @@
    "title": "좌의정",
    "name": "한살핌",
    "sheet": "assets/characters/jwauijeong-han-salpim.webp",
-   "house": "throne-hall"
+   "house": "g-tl"
   },
   {
    "id": "ujeong-go-neolbeum",
    "title": "우의정",
    "name": "고넓음",
    "sheet": "assets/characters/ujeong-go-neolbeum.webp",
-   "house": "throne-hall"
+   "house": "g-tr"
   },
   {
    "id": "ijopanseo-in-goreum",
    "title": "이조판서",
    "name": "인고름",
    "sheet": "assets/characters/ijopanseo-in-goreum.webp",
-   "house": "throne-hall"
+   "house": "c-t1"
   },
   {
    "id": "hojopanseo-mun-semdol",
    "title": "호조판서",
    "name": "문셈돌",
    "sheet": "assets/characters/hojopanseo-mun-semdol.webp",
-   "house": "throne-hall"
+   "house": "c-t2"
   },
   {
    "id": "yejopanseo-i-yejeol",
    "title": "예조판서",
    "name": "이예절",
    "sheet": "assets/characters/yejopanseo-i-yejeol.webp",
-   "house": "throne-hall"
+   "house": "c-t4"
   },
   {
    "id": "byeongjopanseo-gang-bangpae",
    "title": "병조판서",
    "name": "강방패",
    "sheet": "assets/characters/byeongjopanseo-gang-bangpae.webp",
-   "house": "throne-hall"
+   "house": "c-t5"
   },
   {
    "id": "hyeongjopanseo-gong-bareum",
    "title": "형조판서",
    "name": "공바름",
    "sheet": "assets/characters/hyeongjopanseo-gong-bareum.webp",
-   "house": "throne-hall"
+   "house": "c-m1"
   },
   {
    "id": "gongjopanseo-seok-ssaeum",
    "title": "공조판서",
    "name": "석쌓음",
    "sheet": "assets/characters/gongjopanseo-seok-ssaeum.webp",
-   "house": "throne-hall"
+   "house": "c-m3"
   },
   {
    "id": "doseungji-seo-batdeum",
    "title": "도승지",
    "name": "서받듦",
    "sheet": "assets/characters/doseungji-seo-batdeum.webp",
-   "house": "throne-hall"
+   "house": "g-bl"
   },
   {
    "id": "daesaheon-eom-salpim",
    "title": "대사헌",
    "name": "엄살핌",
    "sheet": "assets/characters/daesaheon-eom-salpim.webp",
-   "house": "throne-hall"
+   "house": "g-br"
   },
   {
    "id": "daesagan-jeong-goteun",
    "title": "대사간",
    "name": "정곧은",
    "sheet": "assets/characters/daesagan-jeong-goteun.webp",
-   "house": "throne-hall"
+   "house": "c-m4"
   }
  ]
 }

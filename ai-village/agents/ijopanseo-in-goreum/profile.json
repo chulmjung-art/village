@@ -4,8 +4,8 @@
  "name": "인고름",
  "display": "이조판서 인고름",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "c-t1",
+ "home": "City house, top row west (이조판서 인고름), Jung City",
  "reports_to": [
   "영의정 이균."
  ],

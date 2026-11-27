@@ -4,8 +4,8 @@
  "name": "한살핌",
  "display": "좌의정 한살핌",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "g-tl",
+ "home": "Garden estate, north-west house (좌의정 한살핌), Jung City",
  "reports_to": [
   "The 임금; works alongside the 영의정 (who leads the council)."
  ],

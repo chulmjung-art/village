@@ -4,8 +4,8 @@
  "name": "석쌓음",
  "display": "공조판서 석쌓음",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "c-m3",
+ "home": "City house, middle row (공조판서 석쌓음), Jung City",
  "reports_to": [
   "영의정 이균."
  ],

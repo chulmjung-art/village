@@ -4,8 +4,8 @@
  "name": "서받듦",
  "display": "도승지 서받듦",
  "townId": "capital",
- "houseId": "throne-hall",
- "home": "궁궐 (palace), Jung City",
+ "houseId": "g-bl",
+ "home": "Garden estate, south-west house (도승지 서받듦), Jung City",
  "reports_to": [
   "The 임금, directly."
  ],
