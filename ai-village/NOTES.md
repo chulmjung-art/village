@@ -1084,3 +1084,43 @@ A running record of every decision we make, so nothing gets lost between session
   - Figma needs a file session flow first.
   - Claude Code Remote (scheduled work) needs its own design: what runs, when, and how it reports.
 - Tool calls run only when this view supports page tools (sample.limits().tools); otherwise agents fall back to words only.
+- Menu restyle (director: "change the menu and colors to match the page"): an RPG theme block at the end of index.html's styles, matching the island map.
+  - Wood-plank bars and panels, 3px dark outlines with a light wood inner edge, hard pixel drop shadows.
+  - Parchment button groups and chat bubbles; grass-green selected and Send buttons; sea-blue background and loading screen.
+  - "Jua" (rounded Korean game font) for titles and names.
+  - Old colour tokens are overridden, not deleted, so it's easy to undo.
+- Restyle v2 (director didn't like the wood colours or blockiness, then picked "Soft parchment"): the RPG block is replaced by a light hanji theme.
+  - Cream translucent panels with blur, 16px rounded corners, soft shadows, dark ink text.
+  - Pill-shaped buttons; selected = soft celadon (#d3eadb on #1f4a37); Send/Approve = celadon green.
+  - White chat bubbles (yours celadon), light sky background. The Jua font was dropped.
+- Restyle v3 (director: "too light, need aesthetic contrast; make the buttons more functional, just a bookmarked row"): "Ink & hanji".
+  - Dark roof-ink top bar (#22252a) with a vermilion underline, laid out as ONE row of bookmark tabs: no pill boxes, thin dividers between sections, scrolls sideways on narrow screens instead of wrapping.
+  - Each tab has a small monochrome glyph (data-ic). The active tab rises (lighter ink, vermilion top edge).
+  - Shorter labels: Jung City, Meeting, Connect, Orders.
+  - Panels: cream bodies with dark ink headers + a vermilion rule. Send/Approve are vermilion. Zoom buttons, hint and call card are ink.
+
+### Regency + routing fix (director: "a button to let the world run on its own… the 상선 secretly takes notes")
+- Routing: the "leads" are now 사또 OR 판서 (/사또|판서/), so with no towns the 영의정 routes each task to the right minister by subject. The 영의정's routing prompt lists the ministries.
+- All 25 INSTRUCTIONS.md: the "you don't run by yourself yet…" line is replaced by "you run inside the village on the 임금's own Claude plan…". Profile status is now "active". The in-page brief no longer says "you can only talk".
+- Regency (♚ Regency tab → panel: 1/3/6/8 hours + optional wishes → "Hand over the throne"; only a real click starts it):
+  - Every 8 min, if the court isn't busy and under the cap (4 tasks per hour), 영의정 (Opus, with his tools) returns {action: task|rest, task, why, journal}. A task enters the normal to-do pipeline flagged fromRegent.
+  - His private journal: localStorage village.regency.journal (he sees his last 6 entries each turn).
+  - Public record: village.regency.log, fed by step(), addOrder(), regent decrees and hires.
+  - 상선 김모심 (Sonnet) writes a private note every 3rd tick from the public record only, not the journal. A final note comes at the end.
+  - End (time runs out, "Take back the throne", or reopening the page after the end time):
+    - The 상선's notes go into his chat, marked secret.
+    - The 영의정 writes his account from the record plus his own journal, into his chat.
+    - A toast offers "Hear 영의정".
+  - Runs only while the tab is open. A regency survives a reload.
+  - Raw journal and log are kept in localStorage; Claude can show them on request.
+- Menu layout (director): the top bar keeps the working tools (town, Meeting, Regency, Briefing, To-do, Chat, Orders, Village talk). A new bottom ink bar (#setbar) holds the settings: Real time/Day/Night, clock, Connect, Edit map, Full screen, Sound. Zoom and hint sit inside the map area, so they stay above it.
+- Mojoco leftovers (director: "why are my people working on Mojoco stuff?"):
+  - The repo agent files were already clean. The source was this browser's saved history: old to-dos, orders, meeting and chat logs from the Mojoco days. The agents and the regent read their recent tasks and chats, so they picked the old Mojoco work back up.
+  - Fixes: every brief now says "Mojoco is closed… never work on it".
+  - A one-time load step moves any saved item mentioning Mojoco or its four people out of village.todos/orders/meeting/chatlog and village.chat.* into localStorage "village.archive.mojoco" (moved, not deleted; flag village.mojocoArchived).
+- Language (director: "speak in English, just titles and main stuff in Korean"): every brief (chat, meetings, briefing, tasks, regency reports, the 상선's notes, interviews) now says "speak mostly in English; keep titles, names and key Joseon terms in Korean (전하, 영의정 이균, 상소, 조회)". Deliverables are in English unless the task asks for Korean. The canned phone lines are English.
+- Bedtime (director: "people hang out in front of the palace at night; make them go home at 8pm"): isNightNow is now 20:00–06:00 (was 22:00). At night every resident with a house walks home and goes inside; the Night button forces it. Village talk pauses at night as before.
+- Regency: no duplicate orders (director).
+  - The regent's brief lists every order he's given this regency with its status; stuck ones show the reason.
+  - Before a new order is created, it's compared with his earlier ones (word overlap ≥60% of the shorter one). A duplicate is refused and logged as "dup", which the 상선 sees in his notes.
+- Time zone (director: Bentonville, Arkansas): every brief says the 임금 is on US Central Time (America/Chicago) and that UTC tool results must be converted. The page's clock and the 8 pm bedtime already use the browser's local time.

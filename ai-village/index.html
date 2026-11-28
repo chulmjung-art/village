@@ -179,6 +179,105 @@
   #editbar i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
   #editbar select { background: var(--ink); color: var(--paper); border: 1px solid var(--line); border-radius: 6px; padding: 2px 4px; }
   #editbar .edhint { color: var(--muted); font-size: 0.72rem; width: 100%; }
+
+  /* ---------- Ink & hanji theme (director, 2026-11-27): dark ink bar with a single bookmark row, cream panels with ink headers, vermilion + celadon accents ---------- */
+  :root {
+    --hdr: #22252a;          /* roof-tile ink */
+    --hdr-2: #2c3036;
+    --hdr-text: #efe6d2;
+    --hdr-muted: #a89d88;
+    --ink: #2b2219;
+    --bar: #fbf5e8f5;        /* cream hanji panel body */
+    --paper: #2b2219;        /* text on panels */
+    --muted: #7d6a52;
+    --vermilion: #d2553a;
+    --jade: #4f8f71;
+    --line: #e2d3b2;
+    --sel: #d6eadc; --sel-ink: #1f4a37;
+    --soft: 0 10px 28px rgba(20, 14, 8, .28), 0 1px 3px rgba(20, 14, 8, .18);
+    color-scheme: light;
+  }
+  body { background: var(--hdr); color: var(--ink); }
+  /* the bar: one row of bookmarks, scrolls sideways on small screens instead of wrapping */
+  header { background: var(--hdr); border-bottom: 2px solid var(--vermilion); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 2px; padding-block: calc(6px + env(safe-area-inset-top, 0px)) 0; align-items: stretch; }
+  header::-webkit-scrollbar { display: none; }
+  h1 { color: var(--hdr-text); align-self: center; margin-right: 10px; padding-bottom: 6px; }
+  h1 span { color: var(--vermilion); }
+  .group { background: none; border: 0; border-radius: 0; padding: 0 0 0 6px; margin-left: 4px; gap: 2px; border-left: 1px solid #ffffff1c; }
+  header button, .group button {
+    color: var(--hdr-muted); background: transparent; border: 0; border-radius: 6px 6px 0 0; padding: 8px 11px 9px; font-weight: 500; position: relative;
+  }
+  header button:hover { color: var(--hdr-text); background: #ffffff10; }
+  header button[aria-selected="true"], header button[aria-pressed="true"] { color: #fff; background: var(--hdr-2); box-shadow: inset 0 3px 0 var(--vermilion); font-weight: 600; }
+  header button[data-ic]::before { content: attr(data-ic); margin-right: 6px; opacity: .85; }
+  #meeting { margin-left: 10px; }
+  #clock { color: var(--hdr-muted); align-self: center; padding-bottom: 6px; }
+  #fullscreen { margin-left: 6px; }
+  button:focus-visible { outline: 2px solid var(--vermilion); outline-offset: -2px; }
+  /* panels: cream body, ink header strip for contrast */
+  #chat, #orders, #todo, #talklog, #meetchat, #toast, #vcard, #call, #editbar, #todotip, .hint, #exitfs, .zoom button {
+    background: var(--bar); border: 1px solid #00000026; border-radius: 12px; box-shadow: var(--soft); color: var(--ink);
+  }
+  #chat .head, #orders .head, #todo .head, #talklog .head, #meetchat .head { background: var(--hdr); border-bottom: 2px solid var(--vermilion); }
+  #chat .title, #orders .title, #todo .title, #talklog .title, #meetchat .title { color: var(--hdr-text); }
+  #chat .sub, #orders .sub, #todo .sub, #talklog .sub, #meetchat .sub, #meetchat .size { color: var(--hdr-muted); }
+  #chat .head button, #orders .head button, #todo .head button, #talklog .head button, #meetchat .head button { color: var(--hdr-text); background: #ffffff14; border: 0; border-radius: 6px; }
+  #chat .head .close, #orders .head .close, #todo .head .close, #talklog .head .close, #meetchat .head .close { background: none; }
+  #chat, #todo, #orders, #talklog, #meetchat { border-top: 1px solid #00000026; }
+  .zoom button { color: var(--hdr-text); background: var(--hdr); border-color: #00000040; border-radius: 10px; }
+  .hint, #exitfs { background: var(--hdr); color: var(--hdr-text); border-color: #00000040; }
+  #call { background: var(--hdr); }
+  #call .name { color: var(--hdr-text); }
+  #call .tag { color: var(--hdr-muted); }
+  #vcard { border-left: 3px solid var(--home, #b8342b); }
+  #vcard .vb { color: var(--muted); }
+  .msg .who { color: var(--muted); }
+  .msg .txt { background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 12px; }
+  .msg.me .txt { background: var(--sel); color: var(--sel-ink); border-color: #b5d6c1; }
+  .msg.note .txt { background: none; border: none; color: var(--muted); }
+  #chat textarea, #meetchat textarea, #todo input, #todo .approve input, #editbar select { background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; }
+  #chat textarea:focus, #meetchat textarea:focus, #todo input:focus { outline: 2px solid var(--jade); }
+  #chat form, #meetchat form, #todo form, #meetchat .people { border-color: var(--line); }
+  #chat .row button, #meetchat .row button, #toast button, #todo .pdf, #todo .approve button, #hirebar button { background: #efe5cf; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; }
+  #chat .row .send, #meetchat .row .send, #todo .approve .ok, #hirebar .yes { background: var(--vermilion); color: #fff; border-color: var(--vermilion); }
+  #toast { border-left: 4px solid var(--jade); }
+  #toast .x { background: none; border: none; color: var(--muted); }
+  #todo li.task:hover { background: #f3ead6; }
+  #todo li.done .ic { background: var(--jade); border-color: var(--jade); color: #fff; }
+  #todo li.working .ic, #todo li.review .ic { border-color: #c79a1e; color: #a87c0c; }
+  #todotip .tb { color: #3f7a5d; } #todotip .tl { color: #a8611f; } #todotip ol b { color: var(--ink); }
+  #hirebar { background: #f4ead2; color: var(--ink); }
+  #meetchat .person { color: var(--ink); }
+  #meetchat .person[aria-pressed="true"] { border-color: var(--jade); background: var(--sel); }
+  #meetchat .person .all { background: #efe5cf; color: var(--vermilion); }
+  #editbar { background: var(--hdr); color: var(--hdr-text); }
+  #editbar .edhint { color: var(--hdr-muted); }
+  #loading { background: var(--hdr); color: var(--hdr-text); }
+  @media (max-width: 560px) { h1 { width: auto; } }
+  #regpanel { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); z-index: 19; width: min(420px, calc(100% - 32px)); background: var(--bar); border: 1px solid #00000026; border-radius: 12px; box-shadow: var(--soft); overflow: hidden; color: var(--ink); }
+  #regpanel .head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--hdr); border-bottom: 2px solid var(--vermilion); }
+  #regpanel .title { font: 600 1rem/1.2 var(--display); color: var(--hdr-text); }
+  #regpanel .sub { font-size: 0.74rem; color: var(--hdr-muted); margin-top: 2px; }
+  #regpanel .close { background: none; color: var(--hdr-text); font-size: 1.1rem; }
+  #regpanel form, #regpanel .running { display: flex; flex-direction: column; gap: 8px; padding: 12px; }
+  #regpanel label { font-size: 0.82rem; display: flex; gap: 8px; align-items: center; }
+  #regpanel select, #regpanel input { font: 400 0.86rem/1.4 var(--body); background: #fff; color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 7px 9px; }
+  #regpanel .send { background: var(--vermilion); color: #fff; border-radius: 8px; padding: 9px 12px; font-weight: 600; }
+  #regpanel .status { margin: 0; font-size: 0.84rem; line-height: 1.45; }
+  #regpanel .running[hidden] { display: none; }
+  /* bottom settings bar (director, 2026-11-27): settings at the bottom, working tools at the top */
+  #setbar { display: flex; align-items: stretch; gap: 2px; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; background: var(--hdr); border-top: 2px solid var(--vermilion);
+            padding: 0 max(16px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(16px, env(safe-area-inset-left, 0px)); }
+  #setbar::-webkit-scrollbar { display: none; }
+  #setbar .group { border-left: 0; margin-left: 0; padding-left: 0; }
+  #setbar button { color: var(--hdr-muted); background: transparent; border: 0; border-radius: 0 0 6px 6px; padding: 9px 11px 8px; font-weight: 500; }
+  #setbar button:hover { color: var(--hdr-text); background: #ffffff10; }
+  #setbar button[aria-pressed="true"] { color: #fff; background: var(--hdr-2); box-shadow: inset 0 -3px 0 var(--vermilion); font-weight: 600; }
+  #setbar button[data-ic]::before { content: attr(data-ic); margin-right: 6px; opacity: .85; }
+  #setbar #clock { align-self: center; padding: 0 12px; color: var(--hdr-muted); }
+  #setbar .spacer { flex: 1; }
+  header .spacer { display: none; }
+  body.focus-mode #setbar { display: none; }
   [hidden], #loading[hidden] { display: none !important; }
   @media (max-width: 560px) { h1 { width: 100%; } .hint { display: none; } }
 </style>
@@ -188,27 +287,17 @@
     <h1>My AI Village <span>마을</span></h1>
     <div class="group" role="tablist" aria-label="Town">
       <button data-town="world" role="tab" aria-selected="false" hidden>World</button>
-      <button data-town="capital" role="tab" aria-selected="true">Jung City · Capital</button>
+      <button data-town="capital" data-ic="⌂︎" role="tab" aria-selected="true">Jung City</button>
     </div>
-    <div class="group" aria-label="Light">
-      <button data-light="auto" aria-pressed="true" title="Follow your real clock">Real time</button>
-      <button data-light="day" aria-pressed="false">Day</button>
-      <button data-light="night" aria-pressed="false">Night</button>
-    </div>
-    <button id="meeting" aria-pressed="false" title="Gather the court in the throne hall">Call Meeting</button>
-    <button id="connect-btn" title="Allow every connector the villagers use (Gmail, Calendar, Drive, Sheets, Notion, ClickUp, Canva, Higgsfield) in one go">Connect all</button>
+    <button id="meeting" data-ic="♛︎" aria-pressed="false" title="Gather the court in the throne hall">Meeting</button>
+    <button id="regency-btn" data-ic="♚︎" aria-pressed="false" title="Regency: hand your authority to 영의정 이균 so the village runs on its own (nothing leaves the village)">Regency</button>
     <button id="world-btn" title="Leave this town for the world map" hidden>World map</button>
-    <button id="brief-btn" title="영의정 이균's briefing: what needs you, what's done, what's in progress">Briefing</button>
-    <button id="todo-btn" aria-pressed="false" title="Your to-do list: 영의정 이균 passes each task to the right 사또">To-do</button>
-    <button id="chat-btn" aria-pressed="false" title="Chat (T near someone · double-tap M for 영의정 이균 · double-tap N for 상선 김모심)">Chat</button>
-    <button id="orders-btn" aria-pressed="false" title="What 영의정 이균 has passed to the 사또">Orders log</button>
-    <button id="talk-btn" aria-pressed="false" title="What the villagers say to each other (C)">Village talk</button>
+    <button id="brief-btn" data-ic="▤︎" title="영의정 이균's briefing: what needs you, what's done, what's in progress">Briefing</button>
+    <button id="todo-btn" data-ic="☑︎" aria-pressed="false" title="Your to-do list: 영의정 이균 passes each task to the right 사또">To-do</button>
+    <button id="chat-btn" data-ic="✎︎" aria-pressed="false" title="Chat (T near someone · double-tap M for 영의정 이균 · double-tap N for 상선 김모심)">Chat</button>
+    <button id="orders-btn" data-ic="☰︎" aria-pressed="false" title="What 영의정 이균 has passed to the 사또">Orders</button>
+    <button id="talk-btn" data-ic="❝︎" aria-pressed="false" title="What the villagers say to each other (C)">Village talk</button>
     <button id="meetchat-btn" hidden title="The meeting chat">Meeting chat</button>
-    <button id="edit-map" aria-pressed="false" title="Mark grid squares as walkable, blocked or roof">Edit map</button>
-    <div class="spacer"></div>
-    <span id="clock" aria-live="off"></span>
-    <button id="fullscreen" aria-pressed="false" title="Full screen (F)">Full screen</button>
-    <button id="sound" aria-pressed="false" title="The odd bird">Sound off</button>
   </header>
   <main>
     <canvas id="scene" aria-label="Painted map of the village with living effects. Walk the King with the arrow keys or WASD."></canvas>
@@ -221,6 +310,15 @@
       <div class="head"><div class="htext"><div class="title">Orders log</div><div class="sub">영의정 이균 and the 사또</div></div>
         <button class="clear" title="Clear the log">Clear</button><button class="close" aria-label="Close the orders log">×</button></div>
       <div class="log" aria-live="polite"></div>
+    </aside>
+    <aside id="regpanel" hidden aria-label="Regency">
+      <div class="head"><div class="htext"><div class="title">섭정 · Regency</div><div class="sub">Hand your authority to 영의정 이균. The court keeps working while this tab stays open; nothing leaves the village.</div></div><button type="button" class="close" aria-label="Close">×</button></div>
+      <form class="start">
+        <label>For <select name="h"><option value="1">1 hour</option><option value="3" selected>3 hours</option><option value="6">6 hours</option><option value="8">8 hours</option></select></label>
+        <input name="goal" maxlength="300" placeholder="Your wishes for him while you're away (optional)">
+        <button type="submit" class="send">Hand over the throne</button>
+      </form>
+      <div class="running" hidden><p class="status"></p><button type="button" class="send back">Take back the throne</button></div>
     </aside>
     <aside id="todo" hidden aria-label="To-do list">
       <div class="head"><div class="htext"><div class="title">To-do</div><div class="sub">영의정 이균 passes each task to the right 사또 · hover a task for details</div></div>
@@ -270,6 +368,19 @@
     </div>
     <div id="loading">Loading the town…</div>
   </main>
+  <footer id="setbar" aria-label="Settings">
+    <div class="group" aria-label="Light">
+      <button data-light="auto" data-ic="◷︎" aria-pressed="true" title="Follow your real clock">Real time</button>
+      <button data-light="day" data-ic="☼︎" aria-pressed="false">Day</button>
+      <button data-light="night" data-ic="☾︎" aria-pressed="false">Night</button>
+    </div>
+    <span id="clock" aria-live="off"></span>
+    <div class="spacer"></div>
+    <button id="connect-btn" data-ic="⇄︎" title="Allow every connector the villagers use (Gmail, Calendar, Drive, Sheets, Notion, ClickUp, Canva, Higgsfield) in one go">Connect</button>
+    <button id="edit-map" data-ic="▦︎" aria-pressed="false" title="Mark grid squares as walkable, blocked or roof">Edit map</button>
+    <button id="fullscreen" data-ic="⛶︎" aria-pressed="false" title="Full screen (F)">Full screen</button>
+    <button id="sound" data-ic="♪︎" aria-pressed="false" title="The odd bird">Sound off</button>
+  </footer>
 </div>
 <script src="js/local-claude.js"></script>
 <script src="js/village.js"></script>

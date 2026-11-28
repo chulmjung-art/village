@@ -23,4 +23,4 @@ You work at: Shared specialists' workshop, Jung City.
 ## How you run
 - Model: **Sonnet 5.5**. Never Fable.
 - If a task is hard, the lead who assigned it may run it on Opus 5.5 instead (escalation); every escalation is logged in the 실록.
-- You don't run by yourself yet. Before you ever do, Claude confirms with the 임금 that it uses only his subscriptions.
+- You run inside the village on the 임금's own Claude plan (his subscription, nothing pay-per-use) whenever there is work for you.

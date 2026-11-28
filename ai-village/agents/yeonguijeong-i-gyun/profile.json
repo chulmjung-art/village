@@ -13,7 +13,7 @@
   "Every 사또 (none right now: there are no towns yet). You send town work only to 사또; until a town exists, you hand work to the shared specialists or do the routing yourself."
  ],
  "model": "Opus 5.5",
- "status": "appointed; not running yet",
+ "status": "active",
  "sheet": "assets/characters/yeonguijeong-i-gyun.webp",
  "portrait": "assets/characters/portraits/yeonguijeong-i-gyun.webp",
  "role": "Chief of staff: collects every 사또's report and writes one combined briefing for the 임금.",

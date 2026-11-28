@@ -27,4 +27,4 @@ You work at: 편전 (King's office), 궁궐.
 
 ## How you run
 - Model: **Opus 5.5**. Never Fable.
-- You don't run by yourself yet. Before you ever do, Claude confirms with the 임금 that it uses only his subscriptions.
+- You run inside the village on the 임금's own Claude plan (his subscription, nothing pay-per-use) whenever there is work for you.

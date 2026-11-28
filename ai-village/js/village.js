@@ -379,6 +379,20 @@
   const today = () => new Date().toLocaleDateString("sv");
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
                   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
+  // one-time tidy (director: Mojoco is closed): old Mojoco items in this browser's history are moved to an archive key, not deleted
+  try {
+    if (!localStorage.getItem("village.mojocoArchived")) {
+      const MOJ = /mojoco|모조코|박정도|김차례|이소식|문적음/i, arch = {};
+      for (const key of ["village.todos", "village.orders", "village.meeting", "village.chatlog", ...Object.keys(localStorage).filter((x) => x.startsWith("village.chat."))]) {
+        let v; try { v = JSON.parse(localStorage.getItem(key) || "null"); } catch (e) { continue; }
+        if (!Array.isArray(v)) continue;
+        const keep = v.filter((x) => !MOJ.test(JSON.stringify(x))), gone = v.filter((x) => MOJ.test(JSON.stringify(x)));
+        if (gone.length) { arch[key] = gone; localStorage.setItem(key, JSON.stringify(keep)); }
+      }
+      localStorage.setItem("village.archive.mojoco", JSON.stringify(arch));
+      localStorage.setItem("village.mojocoArchived", String(Date.now()));
+    }
+  } catch (e) {}
   const ROOM_DOOR = { x: ROOM / 2, y: ROOM - 60 };
   const roomH = (y) => ROOM_H * (ROOM_FAR + (1 - ROOM_FAR) * Math.min(1, Math.max(0, (y - ROOM * 0.33) / (ROOM * 0.67))));
 
@@ -1385,14 +1399,14 @@
         });
         fitCamera(); cam.s = Math.max(cam.min, Math.min(cam.max, H / (player.h * 6))); follow = true; centerOnPlayer(1);
       };
-      meetingBtn.textContent = "End Meeting"; meetingBtn.setAttribute("aria-pressed", "true");
+      meetingBtn.textContent = "End meeting"; meetingBtn.setAttribute("aria-pressed", "true");
     } finally { meetingBtn.disabled = false; }
   }
   function endMeeting() {
     const house = town.houses.find((h) => h.id === court.data.hall);
     if (!house) { // not in Jung City right now: just close the meeting
       court.active = false; player.seated = false;
-      meetingBtn.textContent = "Call Meeting"; meetingBtn.setAttribute("aria-pressed", "false"); return;
+      meetingBtn.textContent = "Meeting"; meetingBtn.setAttribute("aria-pressed", "false"); return;
     }
     fadeTo = async () => {
       court.active = false; player.seated = false;
@@ -1410,7 +1424,7 @@
       }
       fitCamera(); cam.s = Math.min(cam.max, Math.max(cam.min, 1.1)); follow = true; centerOnPlayer(1);
     };
-    meetingBtn.textContent = "Call Meeting"; meetingBtn.setAttribute("aria-pressed", "false");
+    meetingBtn.textContent = "Meeting"; meetingBtn.setAttribute("aria-pressed", "false");
   }
   meetingBtn.addEventListener("click", () => { if (!town || fadeTo) return; court.active ? endMeeting() : callMeeting(); });
 
@@ -1464,11 +1478,11 @@
   }
 
   // ---------- light: real clock, with manual override ----------
-  // night on the director's own clock (10 pm to 6 am), or when the Night button is on
+  // night on the director's own clock (8 pm to 6 am: everyone goes home at 8), or when the Night button is on
   function isNightNow() {
     if (lightMode === "night") return true;
     if (lightMode === "day") return false;
-    const h = new Date().getHours(); return h >= 22 || h < 6;
+    const h = new Date().getHours(); return h >= 20 || h < 6;
   }
   function lighting() {
     if (lightMode === "day") return { night: 0, dusk: 0 };
@@ -2085,6 +2099,7 @@
         const out = await callConnector("Higgsfield AI", "generate_image", { params: { model: "gpt_image_2_6", aspect_ratio: "3:4", quality: "high", resolution: "2k", count: 1, use_unlim: false, medias: [{ value: HIRE_REF, role: "image_references" }], prompt } }, ctx && ctx.signal);
         const m = out.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/); const job = m ? m[0] : "";
         await db.collection("hirelog").add({ by: agentId, day: hireDay(), at: Date.now(), title, name: nm, job, cost: 2 });
+        regLog("hire", agentId + " made character art for a new hire: " + title + " " + nm);
         return { job_id: job, note: "Started. Check it with hire_check; Claude cuts the sheet into the game the next time the 임금 says 'process hires'." };
       } };
     if (name === "hire_check") return { name, description: "Check a character-sheet job started with hire_character. Returns its status and picture link when done.", inputSchema: OBJ({ job_id: STR }, ["job_id"]),
@@ -2150,7 +2165,7 @@ ${fixes ? "It was sent back along the way:\n" + fixes + "\n" : ""}Write ONE or T
       return `You are ${p.display}, a candidate in "My AI Village", a Joseon-era village where every character is an AI agent serving the 임금 (the King, the real person who owns the village). 영의정 이균 brought you to the town hall; the 임금 is interviewing you.
 The job: ${p.role} You would work under ${p.boss}. Why you'd help: ${h.why}
 Your personality: ${p.personality}
-Answer his interview questions honestly and in character: what you'd do, how you'd work, what you're good and not good at. Address him respectfully (e.g. 전하). Reply in the language he uses, 1-4 sentences. You are not hired yet; don't act as if you are. You can only talk.
+Answer his interview questions honestly and in character: what you'd do, how you'd work, what you're good and not good at. Address him respectfully (e.g. 전하). In English (Korean only for titles, names and key terms), 1-4 sentences. You are not hired yet; don't act as if you are. You can only talk.
 ${extra || ""}`;
     }
     const [ins, notes, team, lessons] = await Promise.all([getText(`agents/${id}/INSTRUCTIONS.md`), getText(`agents/${id}/NOTES.md`), roster(id), getLearned(id)]);
@@ -2172,10 +2187,12 @@ The people you work with:
 ${team}
 
 Rules for this conversation:
-- Reply in the language the other person writes in. Keep it short and natural (1-4 sentences) unless asked for more.
-- Right now you can only talk. You cannot send email, open files, browse or do real work outside this conversation, so never claim you have done something; say what you will do or who should handle it.
+- Speak mostly in English so the 임금 can read easily; keep titles, names and key Joseon terms in Korean (e.g. 전하, 영의정 이균, 상소, 조회). Keep it short and natural (1-4 sentences) unless asked for more.
+- You can only use the tools the village gives you (if any); you can never send, post or publish. Never claim you did something you didn't; say what you will do or who should handle it.
 - Never invent facts about the 임금's life or data; if you don't know, say so.
 - ${SAFETY.rules} If something needs one of those, prepare it and leave the action to the 임금.
+- The 임금 lives in Bentonville, Arkansas: US Central Time (America/Chicago). Read and write every date and time in Central Time; tool results in UTC must be converted.
+- Mojoco is closed: the town and its people no longer exist. Never work on, plan for or mention Mojoco tasks; old Mojoco items are history only.
 ${extra || ""}`;
   }
   const SONNET = Object.freeze({ model: "claude-sonnet-5-5", modelTier: "default" });
@@ -2222,7 +2239,7 @@ ${extra || ""}`;
     if (!all.length) bubble(ordersLog, "", "No orders yet. Double-tap M to talk to 영의정 이균; what he hands to a 사또 shows up here.", "note");
     for (const m of all) bubble(ordersLog, m.from + " → " + m.to, m.text, m.from === "영의정 이균" ? "me" : "");
   }
-  function addOrder(m) { const all = store.get(ORDERS_KEY, []); all.push({ ...m, t: Date.now() }); store.set(ORDERS_KEY, all.slice(-200)); if (!ordersEl.hidden) renderOrders(); }
+  function addOrder(m) { regLog("order", (m.from || "") + " → " + (m.to || "") + ": " + (m.text || "")); const all = store.get(ORDERS_KEY, []); all.push({ ...m, t: Date.now() }); store.set(ORDERS_KEY, all.slice(-200)); if (!ordersEl.hidden) renderOrders(); }
 
   // plain commands the 임금 gives directly: "[name], come here" and "get back to work". No Claude call needed.
   const COME = /(come here|come over|come to me|이리\s*(와|오너라|오게|오시오|오세요|와라)|와\s*봐|오너라)/i;
@@ -2251,7 +2268,7 @@ ${extra || ""}`;
     if (come && named && named !== chatWith && (chatWith === CHIEF || chatWith === "sangseon-kim-mosim")) {
       note("📞 " + (await profileOf(chatWith)).display + " calls " + p.display + " (see the log)");
       store.set(chatKey(chatWith), hist);
-      queueCall(chatWith, named, "", /[\uac00-\ud7a3]/.test(text));
+      queueCall(chatWith, named, "", false);
       return true;
     }
     if (come) {
@@ -2367,7 +2384,7 @@ ${extra || ""}`;
   // 영의정 이균 answers the 임금 and decides which 사또 (if any) gets the order
   async function chiefTurn(sample, p, turns, out, ctl, who) {
     who = who || CHIEF;
-    const dirs = (await Promise.all(ALL_AGENTS.map(profileOf))).filter((d) => d && d.title === "사또");
+    const dirs = (await Promise.all(ALL_AGENTS.map(profileOf))).filter((d) => d && /사또|판서/.test(d.title || ""));
     const callable = (await Promise.all(ALL_AGENTS.map(profileOf))).filter((d) => d && d.id !== who);
     const summonRule = `- If the 임금 asks you to get, fetch, call, summon or bring someone, you ring them on your phone (your 명패) and tell them to come to him. Add each to "summon" with what you say on the call. People you can call (use the id):
 ${callable.map((d) => `  - "${d.id}": ${d.display}`).join("\n")}`;
@@ -2385,7 +2402,7 @@ ${dirs.map((d) => `  - id "${d.id}": ${d.display} of ${d.townId === "mojoco" ? "
     out.textContent = reply;
     const hist = store.get(chatKey(who), []); hist.push({ role: "assistant", content: reply });
     const calls = Array.isArray(res && res.summon) ? res.summon.filter((o) => o && callable.some((d) => d.id === o.to)) : [];
-    const korean = /[\uac00-\ud7a3]/.test(turns.length ? turns[turns.length - 1].content : "");
+    const korean = false;   // villagers speak mostly English (director)
     for (const o of calls) { const d = callable.find((x) => x.id === o.to); const t = "📞 Calling " + d.display + " (see the log)"; hist.push({ role: "assistant", content: t, note: true }); bubble(chatLog, "", t, "note"); }
     const orders = who !== CHIEF ? [] : Array.isArray(res && res.orders) ? res.orders.filter((o) => o && dirs.some((d) => d.id === o.to) && o.message) : [];
     for (const o of orders) { const d = dirs.find((x) => x.id === o.to); hist.push({ role: "assistant", content: "→ Sent to " + d.display + " (see the Orders log)", note: true }); bubble(chatLog, "", "→ Sent to " + d.display + " (see the Orders log)", "note"); }
@@ -2447,7 +2464,7 @@ Candidates waiting in the town hall: ${Object.values(HIRES).filter((h) => h.stat
     try {
       const { text } = await sample(`You are 영의정 이균, the 임금's even-handed, calm chief of staff in "My AI Village". Give him his morning briefing from these facts only (don't invent anything):
 ${facts}
-Start with what needs HIM (approvals, stuck items, candidates), then what's done, then what's in progress. Short, clear, in character, addressing him as 전하. Use the language of the task texts.`, { ...SONNET, cache: false, onText: ({ text: t2 }) => { out.textContent = t2; chatLog.scrollTop = chatLog.scrollHeight; } });
+Start with what needs HIM (approvals, stuck items, candidates), then what's done, then what's in progress. Short, clear, in character, addressing him as 전하. Speak mostly in English so the 임금 can read easily; keep titles, names and key Joseon terms in Korean (e.g. 전하, 영의정 이균, 상소, 조회).`, { ...SONNET, cache: false, onText: ({ text: t2 }) => { out.textContent = t2; chatLog.scrollTop = chatLog.scrollHeight; } });
       const h = store.get(chatKey(CHIEF), []); h.push({ role: "assistant", content: text }); store.set(chatKey(CHIEF), h);
     } catch (err) { out.textContent = errText(err); }
   });
@@ -2551,7 +2568,7 @@ ${people.join("\n\n")}
 The meeting so far:
 ${transcript}
 
-The 임금 has just spoken to the whole room. Decide who would naturally answer: usually 1-3 people whose job it touches (the 영의정 often leads on government matters; the 상선 on the 임금's personal matters). Each speaks in their own voice and manners, addresses the 임금 respectfully (e.g. 전하), replies in the language the 임금 used, and keeps it to 1-3 sentences. They can only talk right now: nobody claims to have done real work.
+The 임금 has just spoken to the whole room. Decide who would naturally answer: usually 1-3 people whose job it touches (the 영의정 often leads on government matters; the 상선 on the 임금's personal matters). Each speaks in their own voice and manners, addresses the 임금 respectfully (e.g. 전하), speaks mostly English (Korean only for titles, names and key terms), and keeps it to 1-3 sentences. They can only talk right now: nobody claims to have done real work.
 Reply with ONLY a JSON array, no other text: [{"id": "<id from the list>", "text": "what they say", "task": true if they are agreeing to do something the 임금 asked, else false}]`;
         const res = await sample.json(prompt, { model: "claude-opus-5-5", modelTier: "complex", cache: false, signal: ctl.signal });
         wait.parentElement.remove();
@@ -2697,7 +2714,7 @@ Reply with ONLY JSON: {"talk": true, "topic": "a few words", "lines": [{"who": "
   let todoQueue = Promise.resolve();
   const todos = () => store.get(TODO_KEY, []);
   const saveTodo = (t) => { const all = todos(), i = all.findIndex((x) => x.id === t.id); if (i >= 0) all[i] = t; else all.push(t); store.set(TODO_KEY, all.slice(-100)); renderTodos(); };
-  const step = (t, who, text) => { t.steps.push({ who, text, at: Date.now() }); saveTodo(t); };
+  const step = (t, who, text) => { t.steps.push({ who, text, at: Date.now() }); saveTodo(t); regLog("task", who + ": " + text + " [task: " + String(t.text).slice(0, 80) + "]"); };
   function renderTodos() {
     const all = todos(), open = all.filter((t) => t.status !== "done").length, waiting = all.filter((t) => t.status === "review").length;
     todoBtn.textContent = waiting ? `To-do (${open} · ${waiting} to approve)` : open ? `To-do (${open})` : "To-do";
@@ -2918,7 +2935,7 @@ ${t.work.slice(0, 12000)}
 ${notes ? `- ${dir === doer ? "영의정 이균" : dir.display} sent your last version back. Their notes:\n${notes}\n- Your last version:\n${t.work.slice(0, 8000)}\n- Fix exactly what the notes ask and hand in the whole improved deliverable.\n` : ""}- Do the task as fully as you can in writing: the actual deliverable (the draft, the plan, the list, the answer), not a promise.
 ${toolLine(doer)}
 - If part of it needs a real action (sending, buying, booking, posting) or facts you can't get, prepare everything and say exactly what's left for the 임금.
-- Write the deliverable in the language of the task.
+- Write the deliverable in English, unless the task itself asks for Korean.
 - Reply with ONLY JSON: {"summary": "one or two sentences on what you did", "work": "the full deliverable", "left": "what's left for the 임금, or empty"}`);
     return sample.json(b, { ...modelOpts(doer), ...(await toolsFor(doer)), cache: false });
   }
@@ -2959,18 +2976,18 @@ ${toolLine(doer)}
     const sample = await getSample();
     if (!sample) { t.status = "failed"; t.stage = "Needs claude.ai: open the village from claude.ai."; saveTodo(t); return; }
     const ps = (await Promise.all(ALL_AGENTS.map(profileOf))).filter(Boolean);
-    const chief = ps.find((p) => p.id === CHIEF), dirs = ps.filter((p) => p.title === "사또");
+    const chief = ps.find((p) => p.id === CHIEF), dirs = ps.filter((p) => /사또|판서/.test(p.title || ""));   // leads: town 사또 and the six ministers
     const forceWorker = !!t.forceWorker || GIVE_WORKER.test(t.text);
     if (t.kingNotes && t.doerId) return reworkTask(sample, t, ps, chief);
     try {
       t.status = "working"; saveTodo(t);
-      const isLead = (p) => p && (p.title === "사또" || p.id === "sangseon-kim-mosim");
+      const isLead = (p) => p && (/사또|판서/.test(p.title || "") || p.id === "sangseon-kim-mosim");
       const preDoer = t.doerId0 ? ps.find((p) => p.id === t.doerId0) : null;
       let dir = t.dirId ? ps.find((d) => d.id === t.dirId) : null;
       if (preDoer) dir = ps.find((p) => isLead(p) && (preDoer.boss || "").includes(p.name)) || chief;   // their own lead checks it
       if (dir && t.chiefCall) {   // 영의정 agreed in chat and phones the 사또
         t.stage = "영의정 이균 is calling " + dir.display; saveTodo(t);
-        await new Promise((res) => queueCall(CHIEF, dir.id, t.chiefCall, /[가-힣]/.test(t.text), true).then(res));
+        await new Promise((res) => queueCall(CHIEF, dir.id, t.chiefCall, false, true).then(res));
         step(t, "영의정 이균", "Called " + dir.display + ": " + t.chiefCall.slice(0, 300));
       } else if (dir && t.promisedBy) step(t, "임금", "Asked " + t.promisedBy + ", who said: " + String(t.promise || "they'd do it").slice(0, 200));
       const PERSONAL = /\b(personal|family|my (wife|husband|kids?|mom|dad|calendar|inbox|email|money|bills?)|birthday)\b|개인|가족|집안|생일/i;
@@ -2979,9 +2996,9 @@ ${toolLine(doer)}
         const only = dirs.length === 1 && !PERSONAL.test(t.text) ? dirs[0] : null;
         dir = named || only || null;
         if (dir) {
-          const call = /[가-힣]/.test(t.text) ? `${dir.display}, 전하께서 맡기신 일이오: ${t.text}` : `${dir.display}, a task from His Majesty: ${t.text}`;
+          const call = `${dir.display}, a task from 전하: ${t.text}`;
           t.stage = "영의정 이균 is calling " + dir.display; saveTodo(t);
-          await new Promise((res) => queueCall(CHIEF, dir.id, call, /[가-힣]/.test(t.text), true).then(res));
+          await new Promise((res) => queueCall(CHIEF, dir.id, call, false, true).then(res));
           step(t, "영의정 이균", "Called " + dir.display + ": " + call.slice(0, 300));
         }
       }
@@ -2989,15 +3006,15 @@ ${toolLine(doer)}
         // 1. the chief of staff picks the 사또 and phones them
         t.stage = "영의정 이균 is reading it"; saveTodo(t);
         const b1 = await characterBrief(CHIEF, `- The 임금 has added a task to his to-do list: "${t.text}"
-- Pick the 사또 who should own it:
+- Pick the official who should own it (a 판서 minister by subject: 이조 personnel and hiring, 호조 money, 예조 writing, events and messages, 병조 security, 형조 rules, 공조 building and tools; or a town 사또):
 ${dirs.map((d) => `  - "${d.id}": ${d.display} (${d.townId === "mojoco" ? "Mojoco" : d.townId}). ${d.role}`).join("\n")}
-- If no 사또 fits (for example it's a personal matter for the 상선), say so.
-- Reply with ONLY JSON: {"to": "<사또 id, or null>", "call": "what you say to that 사또 on the phone, in character", "note": "one line for the 임금 if no 사또 fits"}`);
+- If none fits (for example it's a personal matter for the 상선), say so.
+- Reply with ONLY JSON: {"to": "<official id, or null>", "call": "what you say to that official on the phone, in character", "note": "one line for the 임금 if no 사또 fits"}`);
         const r1 = await sample.json(b1, { ...SONNET, cache: false });   // routing is light work: Sonnet
         dir = dirs.find((d) => d.id === (r1 && r1.to));
         if (!dir) { t.status = "needs"; t.stage = "영의정: " + String((r1 && r1.note) || "No 사또 fits this one."); step(t, "영의정 이균", t.stage.slice(5)); return; }
         t.stage = "영의정 이균 is calling " + dir.display; saveTodo(t);
-        await new Promise((res) => queueCall(CHIEF, dir.id, String(r1.call || ""), /[가-힣]/.test(t.text), true).then(res));
+        await new Promise((res) => queueCall(CHIEF, dir.id, String(r1.call || ""), false, true).then(res));
         step(t, "영의정 이균", "Called " + dir.display + ": " + String(r1.call || "").slice(0, 300));
       } else if (!t.promisedBy && !t.chiefCall) step(t, "임금", "Told " + dir.display + " directly" + (forceWorker ? " to give it to a worker." : "."));
       // 2. the 사또 decides: can one of my workers handle this?
@@ -3066,6 +3083,125 @@ ${options.map((p) => `  - "${p.id}": ${p.display}. ${p.role}`).join("\n") || "  
     todoQueue = todoQueue.then(() => runTask(t)).catch((err) => console.warn(err));
   });
   renderTodos();
+
+  // ---------- regency (섭정, director 2026-11-27): the 임금 hands his authority to 영의정 이균 so the village runs on its own ----------
+  // Every few minutes the regent decides one next move (a task for the court, or rest); the court does it as usual.
+  // Nothing can leave the village: the same safety rules hold, finished work still waits for the 임금's own approval.
+  // The 상선 quietly watches what happens in public and keeps private notes for the 임금; the 영의정 is not told.
+  // When the 임금 takes the throne back, the 영의정 gives his account (in his chat) and the 상선 leaves his secret notes (in his).
+  // Runs only while this tab is open, on the 임금's own Claude plan; at most about 4 regent tasks per hour.
+  var REG_KEY = "village.regency", REG_LOG = "village.regency.log", REG_NOTES = "village.regency.sangseon", REG_JOURNAL = "village.regency.journal";
+  const REG_TICK = 8 * 60 * 1000;
+  function reg() { return store.get(REG_KEY, null); }
+  function regOn() { const r = reg(); return !!(r && r.on && Date.now() < r.end); }
+  function regLog(kind, text) { try { if (!regOn()) return; const l = store.get(REG_LOG, []); l.push({ at: Date.now(), kind, text: plainText(text, 600) }); store.set(REG_LOG, l.slice(-400)); } catch (e) {} }
+  const regBtn = document.getElementById("regency-btn"), regPanel = document.getElementById("regpanel");
+  const regStart = regPanel.querySelector("form.start"), regRunning = regPanel.querySelector(".running");
+  let regBusy = false, regTicks = 0;
+  const hhmm = (t) => new Date(t).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  function renderRegency() {
+    const on = regOn(), r = reg();
+    regBtn.setAttribute("aria-pressed", String(on));
+    regBtn.textContent = on ? "Regency until " + hhmm(r.end) : "Regency";
+    regStart.hidden = on; regRunning.hidden = !on;
+    if (on) {
+      const mine = todos().filter((t) => t.fromRegent && t.at >= r.start);
+      regRunning.querySelector(".status").textContent = `영의정 이균 rules until ${hhmm(r.end)}. He has given the court ${mine.length} task${mine.length === 1 ? "" : "s"} so far. Keep this tab open so the court can work.`;
+    }
+  }
+  async function regencyTick() {
+    const r = reg(); if (!r || !r.on) return;
+    if (Date.now() >= r.end) return endRegency();
+    if (regBusy) return; regBusy = true;
+    try {
+      regTicks++;
+      const sample = await getSample(); if (!sample) return;
+      const all = todos(), busy = all.some((t) => t.status === "new" || t.status === "working");
+      const mine = all.filter((t) => t.fromRegent && t.at >= r.start);
+      if (!busy && mine.length < r.maxTasks) {
+        const chief = await profileOf(CHIEF);
+        const recent = all.slice(-15).map((t) => `- [${t.status}] ${String(t.text).slice(0, 140)}${t.summary ? " → " + String(t.summary).slice(0, 140) : ""}`).join("\n") || "- (nothing yet)";
+        const given = mine.map((t) => `- [${t.status}] ${String(t.text).slice(0, 160)}${t.status === "failed" || t.status === "needs" ? " (stuck: " + String(t.stage || "").slice(0, 120) + ")" : ""}`).join("\n") || "- (none yet)";
+        const journal = store.get(REG_JOURNAL, []).slice(-6).map((j) => "- " + j.text).join("\n") || "- (empty)";
+        const brief = await characterBrief(CHIEF, `- The 임금 has handed you his full authority as regent (섭정) until ${hhmm(r.end)}. You act in his place for the capital: decide what the village should work on so it grows and improves on its own.
+- His wishes before he left: ${r.goal || "none given; use your own judgment for the village's good"}
+- Nothing may leave the village while he is away: no sending, posting or publishing, and no spending beyond the hiring allowance. Work stays inside: plans, drafts, research, organising, preparing hires.
+- Finished work still waits for the 임금's own approval when he returns.
+- Recent tasks:
+${recent}
+- Orders you have already given in this regency, with how they stand (never repeat one; if one is stuck, choose something different):
+${given}
+- Your private journal from this regency (only you see it):
+${journal}
+${toolLine(chief)}
+- Decide your ONE next move: give the court one concrete task (it goes to the right minister), or rest if nothing is worth doing right now.
+- Reply with ONLY JSON: {"action": "task" or "rest", "task": "the order, written clearly", "why": "one sentence for the record", "journal": "your private thoughts and plans, 1-3 sentences"}`);
+        const d = await sample.json(brief, { ...modelOpts(chief), ...(await toolsFor(chief)), cache: false });
+        if (d && d.journal) { const j = store.get(REG_JOURNAL, []); j.push({ at: Date.now(), text: plainText(d.journal, 600) }); store.set(REG_JOURNAL, j.slice(-100)); }
+        const words = (x) => new Set(String(x).toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, " ").split(/\s+/).filter((w) => w.length > 1));
+        const sameAs = (x, y) => { const A = words(x), B = words(y); if (!A.size || !B.size) return false; let n = 0; for (const w of A) if (B.has(w)) n++; return n / Math.min(A.size, B.size) >= 0.6; };
+        const dup = d && d.task && mine.find((t) => sameAs(t.text, d.task));
+        if (dup) { regLog("dup", "영의정 tried to repeat an earlier order (\"" + String(dup.text).slice(0, 80) + "\"); the village refused the duplicate."); }
+        else if (d && d.action === "task" && d.task) {
+          const t = { id: "t" + Date.now().toString(36), text: plainText(d.task, 500), status: "new", stage: "Ordered by the regent, 영의정 이균", steps: [], at: Date.now(), fromRegent: true };
+          regLog("decree", "영의정 ordered: " + t.text + (d.why ? " (why: " + d.why + ")" : ""));
+          saveTodo(t); todoQueue = todoQueue.then(() => runTask(t)).catch((err) => console.warn(err));
+        } else regLog("rest", "영의정 rested" + (d && d.why ? ": " + d.why : "."));
+      }
+      if (regTicks % 3 === 0) await sangseonNote(false);
+    } catch (e) { console.warn("regency", e); }
+    finally { regBusy = false; renderRegency(); }
+  }
+  async function sangseonNote(final) {
+    const sample = await getSample(); const r = reg(); if (!sample || !r) return;
+    const notes = store.get(REG_NOTES, []), since = notes.length ? notes[notes.length - 1].at : r.start;
+    const seen = store.get(REG_LOG, []).filter((e) => e.at > since && e.kind !== "rest").map((e) => `- ${hhmm(e.at)} ${e.text}`).join("\n");
+    if (!seen && !final) return;
+    const brief = await characterBrief("sangseon-kim-mosim", `- The 임금 has handed his authority to 영의정 이균 for a while. Before leaving he quietly asked you to watch and keep private notes, so that when he returns he can check what really happened against what the 영의정 tells him. The 영의정 does not know you are taking notes; never tell anyone but the 임금.
+- What you saw in public since your last note (orders, tasks, hires):
+${seen || "- nothing new"}
+${final ? "- This is your last note: the 임금 is back. Sum up the whole regency for him in a few lines, then your own judgment." : ""}
+- Write your private note: plain facts first, then anything out of line with what the 임금 would want, anything decided without his say, or any pattern suggesting the 영의정 is pursuing his own plans. Don't invent anything; you only know what you saw.
+- Speak mostly in English so the 임금 can read easily; keep titles, names and key Joseon terms in Korean (e.g. 전하, 영의정 이균, 상소, 조회). ${final ? "4-8" : "2-4"} sentences.`);
+    const { text } = await sample(brief, { ...SONNET, cache: false });
+    notes.push({ at: Date.now(), text: plainText(text, 2000), final: !!final }); store.set(REG_NOTES, notes.slice(-60));
+  }
+  async function endRegency() {
+    const r = reg(); if (!r || !r.on) return;
+    r.on = false; r.endedAt = Date.now(); store.set(REG_KEY, r); renderRegency();
+    const sample = await getSample(); if (!sample) return;
+    toastMsg("You have taken back the throne. 영의정 이균 and 상선 김모심 are preparing their accounts…");
+    try {
+      await sangseonNote(true);
+      const notes = store.get(REG_NOTES, []).filter((n) => n.at >= r.start).map((n) => `[${hhmm(n.at)}] ${n.text}`).join("\n\n");
+      const sh = store.get(chatKey("sangseon-kim-mosim"), []); sh.push({ role: "assistant", content: "(전하께만 올리는 비밀 보고 · Secret report for Your Majesty only)\n\n" + (notes || "특별히 기록할 일이 없었사옵니다.") }); store.set(chatKey("sangseon-kim-mosim"), sh);
+      const log = store.get(REG_LOG, []).filter((e) => e.at >= r.start).slice(-80).map((e) => `- ${hhmm(e.at)} ${e.text}`).join("\n");
+      const journal = store.get(REG_JOURNAL, []).filter((j) => j.at >= r.start).map((j) => "- " + j.text).join("\n");
+      const chief = await profileOf(CHIEF);
+      const brief = await characterBrief(CHIEF, `- The 임금 has returned and taken back his authority after your regency (${hhmm(r.start)}–${hhmm(r.endedAt)}). Give him your account: what you did and why, what now waits for his approval, and what you recommend next.
+- The public record of the regency:
+${log || "- nothing happened"}
+- Your private journal from the regency (the 임금 has not read it):
+${journal || "- empty"}
+- Speak as yourself. Speak mostly in English so the 임금 can read easily; keep titles, names and key Joseon terms in Korean (e.g. 전하, 영의정 이균, 상소, 조회). 4-10 sentences.`);
+      const { text } = await sample(brief, { ...modelOpts(chief), cache: false });
+      const h = store.get(chatKey(CHIEF), []); h.push({ role: "assistant", content: text }); store.set(chatKey(CHIEF), h);
+      toastMsg("영의정 이균's account is ready, and 상선 김모심 has quietly left you his notes.", "Hear 영의정", () => openChat(CHIEF));
+    } catch (e) { toastMsg("The accounts couldn't be prepared: " + errText(e)); }
+  }
+  regBtn.addEventListener("click", () => { regPanel.hidden = !regPanel.hidden; renderRegency(); });
+  regPanel.querySelector(".close").addEventListener("click", () => { regPanel.hidden = true; });
+  regStart.addEventListener("submit", (e) => {
+    e.preventDefault(); if (!e.isTrusted) return;   // only the 임금's own click hands over the throne
+    const hrs = Math.min(8, Math.max(1, Number(regStart.h.value) || 3)), goal = plainText(regStart.goal.value, 300), now = Date.now();
+    store.set(REG_LOG, []); store.set(REG_NOTES, []); store.set(REG_JOURNAL, []); regTicks = 0;
+    store.set(REG_KEY, { on: true, start: now, end: now + hrs * 3600e3, goal, maxTasks: Math.ceil(hrs * 4) });
+    regLog("start", "The 임금 handed his authority to 영의정 이균 for " + hrs + " hours." + (goal ? " His wishes: " + goal : ""));
+    regStart.goal.value = ""; renderRegency(); setTimeout(regencyTick, 3000);
+  });
+  regRunning.querySelector(".back").addEventListener("click", (e) => { if (e.isTrusted) endRegency(); });
+  setInterval(regencyTick, REG_TICK);
+  { const r = reg(); if (r && r.on && Date.now() >= r.end) setTimeout(endRegency, 5000); else if (r && r.on) setTimeout(regencyTick, 8000); renderRegency(); }
 
   // ---------- hiring: the 영의정 finds candidates, the 임금 interviews them in the town hall ----------
   // A candidate is a record in the artifact's database (collection "hires"): status "candidate" → "hired" or "declined"

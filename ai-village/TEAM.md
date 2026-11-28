@@ -166,3 +166,10 @@ Town life: 파발 마날쌘 · 포졸 돌쇠 · 주모 막순이
   - The palace 사관 kneels at the side and records.
 - The shared specialists, 내관 and 상궁 stand along the walls in both meetings; they are not part of the assembly.
 - Dress: officials in red 관복 with 흉배 and 사모; house heads (행수) are nobility in a 갓; workers are commoners in plain clothes with no hat (see STYLE_GUIDE.md).
+
+# Regency (섭정) (director, 2026-11-27)
+- The 임금 can hand his authority to 영의정 이균 for 1-8 hours with the Regency button. The regent then decides what the village works on, giving the court one task at a time, and the court does it as usual.
+- Nothing leaves the village: the safety rules hold, and finished work still waits for the 임금's own approval.
+- The 상선 secretly keeps notes on what happens in public. The 영의정 is not told. When the 임금 takes the throne back, the 영의정 gives his account and the 상선 gives his private notes, so the 임금 can compare them.
+- Work routing: the 영의정 sends each task to the minister (판서) whose subject it is, or to a town 사또 once towns exist.
+- The 임금 lives in Bentonville, Arkansas (US Central Time). All dates and times are read and written in Central Time.
